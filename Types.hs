@@ -1,4 +1,4 @@
-module Tokens where
+module Types where
 
 data BoolExp = BoolConst Bool
              | BoolNegate BoolExp
@@ -18,3 +18,5 @@ data Statement = Seq [Statement]
                | Hungry BoolExp Statement Statement
                | Eating BoolExp Statement
                deriving Show
+
+newtype Parser a = Parser (String -> [(a, String)])
