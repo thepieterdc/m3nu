@@ -26,6 +26,10 @@ letter = spot isAlpha
 letters :: Parser String
 letters = some letter
 
+-- parses a lowercase letter
+lower :: Parser Char
+lower = spot isLower
+
 -- parses a space/newline/tabs
 space :: Parser Char
 space = spot isSpace
@@ -46,9 +50,14 @@ string = mapM token
 tab :: Parser Char
 tab = token '\t'
 
+-- matches multiple tabs
 tabs :: Parser String
 tabs = some (token '\t')
 
 -- matches a given char
 token :: Char -> Parser Char
 token c = spot (== c)
+
+-- matches an uppercase letter
+upper :: Parser Char
+upper = spot isUpper
