@@ -20,7 +20,8 @@ pukeParser = do
 
 -- reviewParser :: Parser Statement
 -- reviewParser = do
---   _ <- string "review"
+--   _ <- identifier "review"
+--   txt <-
 
 parseString :: String -> Statement
 parseString = doParse parse
