@@ -32,7 +32,7 @@ lower = spot isLower
 
 -- parses a semicolon
 semicolon :: Parser Char
-semicolon = token ';'
+semicolon = do { ret <- token ';'; _ <- whitespace; return ret }
 
 -- parses a space/newline/tabs
 space :: Parser Char
@@ -48,7 +48,7 @@ spot p = do { c <- char; guard (p c); return c}
 
 -- matches a string
 string :: String -> Parser String
-string = mapM token
+string s = do { ret <- mapM token s; _ <- whitespace; return ret }
 
 -- matches a tab character
 tab :: Parser Char
@@ -65,6 +65,10 @@ token c = spot (== c)
 -- matches an uppercase letter
 upper :: Parser Char
 upper = spot isUpper
+
+-- parses whitespace
+whitespace :: Parser String
+whitespace = many space
 
 -- [ TOKENIZERS ] --
 tokenizeString :: Parser String

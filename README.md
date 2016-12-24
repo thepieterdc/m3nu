@@ -19,6 +19,6 @@ http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-
 parsec lib voor hulpfuncties
 
 features
-
+- vrij modulair
 - whitespace maakt totaal niet uit
 - robot deel staat los van volledige taal
