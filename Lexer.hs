@@ -18,6 +18,14 @@ digit = spot isDigit
 digits :: Parser String
 digits = some digit
 
+-- parses the end of a line
+endline :: Parser ()
+endline = do { _ <- (semicolon <|> linefeed); return ()}
+
+-- parses an identifier; must always be followed by at least one whitespace
+identifier :: String -> Parser String
+identifier s = do { i <- string s; _ <- spaces; return i}
+
 -- parsers a letter
 letter :: Parser Char
 letter = spot isAlpha
@@ -25,6 +33,12 @@ letter = spot isAlpha
 -- parses multiple letters
 letters :: Parser String
 letters = some letter
+
+-- parses a linefeed
+linefeed :: Parser Char
+linefeed = clrf <|> lf where
+  clrf = do {_ <- token '\r'; _ <- lf; return '\n'}
+  lf = token '\n'
 
 -- parses a lowercase letter
 lower :: Parser Char
@@ -48,11 +62,11 @@ spot p = do { c <- char; guard (p c); return c}
 
 -- matches a string
 string :: String -> Parser String
-string s = do { ret <- mapM token s; _ <- whitespace; return ret }
+string = mapM token
 
 -- matches a tab character
 tab :: Parser Char
-tab = spot (== '\t')
+tab = token '\t'
 
 -- matches multiple tabs
 tabs :: Parser String
@@ -60,7 +74,7 @@ tabs = some tab
 
 -- matches a given char
 token :: Char -> Parser Char
-token c = do { ret <- spot (== c); _ <- whitespace; return ret }
+token c = spot (== c)
 
 -- matches an uppercase letter
 upper :: Parser Char

@@ -20,5 +20,5 @@ parsec lib voor hulpfuncties
 
 features
 - vrij modulair
-- whitespace maakt totaal niet uit
+- whitespace maakt totaal niet uit (moet wel minstens 1 whitespace na identifier staan)
 - robot deel staat los van volledige taal

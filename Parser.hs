@@ -4,7 +4,8 @@ import Lexer
 import Types
 
 parse :: Parser Statement
-parse = pukeParser
+parse = --reviewParser
+        pukeParser
         <|> anyParser
 
 anyParser :: Parser Statement
@@ -12,10 +13,14 @@ anyParser = do { o <- many (spot isAscii); return (Puke o)}
 
 pukeParser :: Parser Statement
 pukeParser = do
-  _ <- string "puke"
+  _ <- identifier "puke"
   txt <- tokenizeString
-  _ <- semicolon
+  _ <- endline
   return $ Puke txt
+
+-- reviewParser :: Parser Statement
+-- reviewParser = do
+--   _ <- string "review"
 
 parseString :: String -> Statement
 parseString = doParse parse
