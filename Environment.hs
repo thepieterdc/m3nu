@@ -6,5 +6,5 @@ data EnvVal = EnvInt Int deriving (Eq, Show)
 
 type Environment = Map.Map String EnvVal
 
-new :: Environment
-new = Map.fromList []
+newEnvironment :: Environment
+newEnvironment = Map.fromList []
