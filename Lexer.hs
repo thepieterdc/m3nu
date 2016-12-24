@@ -52,15 +52,15 @@ string s = do { ret <- mapM token s; _ <- whitespace; return ret }
 
 -- matches a tab character
 tab :: Parser Char
-tab = token '\t'
+tab = spot (== '\t')
 
 -- matches multiple tabs
 tabs :: Parser String
-tabs = some (token '\t')
+tabs = some tab
 
 -- matches a given char
 token :: Char -> Parser Char
-token c = spot (== c)
+token c = do { ret <- spot (== c); _ <- whitespace; return ret }
 
 -- matches an uppercase letter
 upper :: Parser Char
