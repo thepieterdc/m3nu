@@ -8,3 +8,4 @@ true/false = tasty/disguisting
 x = 5    -> order x 5
 bool exp = and/or ipv && / ||
 comments = review test
+print = puke "test"

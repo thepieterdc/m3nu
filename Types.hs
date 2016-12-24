@@ -8,6 +8,13 @@ newtype Parser a = Parser (String -> [(a, String)])
 apply :: Parser a -> String -> [(a, String)]
 apply (Parser f) = f
 
+doParse :: Parser a -> String -> a
+doParse m s = one [x | (x,t) <- apply m s, t == "" ] where
+  one [x] = x
+  one [] = error "Parse not completed."
+  one xs | length xs > 1 = error "Multiple possible parses found."
+  one _ = error "Unknown parse error."
+
 instance Functor Parser where
   fmap = liftM
 
@@ -42,9 +49,11 @@ data BoolExp = BoolConst Bool
 
 data BoolBinaryOp = And | Or deriving Show
 
-data RelationalBinaryOp = Greater | Less | Equals deriving Show
+data RelationalBinaryOp = Equals | Greater | Less deriving Show
 
 data ArithExp = ArithConst Double
               deriving Show
 
-data Statement = Order String ArithExp deriving Show
+data Statement = Order String ArithExp
+               | Puke String
+               deriving Show
