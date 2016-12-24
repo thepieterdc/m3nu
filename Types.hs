@@ -48,8 +48,4 @@ data ArithExp = Variable String
               | ArithConst Double
               deriving Show
 
-data Statement = Seq [Statement]
-               | Order String ArithExp
-               | Hungry BoolExp Statement Statement
-               | Eating BoolExp Statement
-               deriving Show
+data Statement = Order String ArithExp deriving Show
