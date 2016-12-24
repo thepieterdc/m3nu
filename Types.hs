@@ -44,8 +44,7 @@ data BoolBinaryOp = And | Or deriving Show
 
 data RelationalBinaryOp = Greater | Less | Equals deriving Show
 
-data ArithExp = Variable String
-              | ArithConst Double
+data ArithExp = ArithConst Double
               deriving Show
 
 data Statement = Order String ArithExp deriving Show
