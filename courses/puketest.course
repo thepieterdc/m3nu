@@ -1,18 +1,1 @@
 puke "Jeej";
-#comments#
-
-order leukevar Tasty;
-
-hungry (leukevar)
-  -> puke "Honger jeej";
-stuffed
-  -> puke "Geen honger :(";
-satisfied
-
-eating (Tasty)
-  -> puke "While loop";
-enough
-
-eating (Disguisting)
-  -> puke "Dit wordt nooit geprint"
-enough
