@@ -1,4 +1,4 @@
-module Lexer where
+module Lexer(module Lexer, module Data.Char) where
 
 import Data.Char
 
@@ -29,6 +29,10 @@ letters = some letter
 -- parses a lowercase letter
 lower :: Parser Char
 lower = spot isLower
+
+-- parses a semicolon
+semicolon :: Parser Char
+semicolon = token ';'
 
 -- parses a space/newline/tabs
 space :: Parser Char
@@ -61,3 +65,7 @@ token c = spot (== c)
 -- matches an uppercase letter
 upper :: Parser Char
 upper = spot isUpper
+
+-- [ TOKENIZERS ] --
+tokenizeString :: Parser String
+tokenizeString = do { _ <- token '"'; s <- many (spot (/= '"')); _ <- token '"'; return s}

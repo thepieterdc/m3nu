@@ -1,9 +1,21 @@
 module Parser where
 
+import Lexer
 import Types
 
 parse :: Parser Statement
-parse = return $ Puke "Test"
+parse = pukeParser
+        <|> anyParser
+
+anyParser :: Parser Statement
+anyParser = do { o <- many (spot isAscii); return (Puke o)}
+
+pukeParser :: Parser Statement
+pukeParser = do
+  _ <- string "puke"
+  txt <- tokenizeString
+  _ <- semicolon
+  return $ Puke txt
 
 parseString :: String -> Statement
 parseString = doParse parse
