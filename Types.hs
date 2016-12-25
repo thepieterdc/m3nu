@@ -54,7 +54,8 @@ data RelationalBinaryOp = Equals | Greater | Less deriving Show
 data ArithExp = ArithConst Double
               deriving Show
 
-data Statement = Order String ArithExp
-               | Puke String
+data Statement = Debug String
+               | Order String ArithExp
+               | Puke ArithExp
                | Review
                deriving Show

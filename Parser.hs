@@ -9,25 +9,25 @@ parse = reviewParser
         <|> anyParser
 
 anyParser :: Parser Statement
-anyParser = do { o <- many (spot isAscii); return (Puke o)}
+anyParser = do { o <- many (spot isAscii); return (Debug o)}
 
 -- parses orders (assignments)
 orderParser :: Parser Statement
 orderParser = do
   _ <- identifier "order"
-  var <- many isAlnum
+  var <- many (spot isAlphaNum)
   _ <- spaces
-  val <- many isAlnum
+  val <- tokenizeNumber
   _ <- endline
-  return $ Order var val
+  return $ Order var (ArithConst val)
 
 -- parses pukes (prints)
 pukeParser :: Parser Statement
 pukeParser = do
   _ <- identifier "puke"
-  txt <- tokenizeString
+  var <- tokenizeNumber
   _ <- endline
-  return $ Puke txt
+  return $ Puke $ ArithConst var
 
 -- parses reviews (comments -> destroying these)
 reviewParser :: Parser Statement

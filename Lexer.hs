@@ -20,7 +20,7 @@ digits = some digit
 
 -- parses the end of a line
 endline :: Parser ()
-endline = do { _ <- (semicolon <|> linefeed); return ()}
+endline = do { _ <- semicolon <|> linefeed; return ()}
 
 -- parses an identifier; must always be followed by at least one whitespace
 identifier :: String -> Parser String
@@ -86,12 +86,16 @@ whitespace = many space
 
 -- [ TOKENIZERS ] --
 
--- parses a "string"
-tokenizeString :: Parser String
-tokenizeString = do { _ <- token '"'; s <- many (spot (/= '"')); _ <- token '"'; return s}
+-- parses a double number
+tokenizeNumber :: Parser Double
+tokenizeNumber = parseFloat <|> parseNegFloat <|> parseNat <|> parseNegNat where
+  parseFloat = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
+  parseNat = do { s <- digits; return $ read s}
+  parseNegFloat = do { _ <- token '-'; n <- parseFloat; return $ -n}
+  parseNegNat = do { _ <- token '-'; n <- parseNat; return $ -n}
 
 -- skips until a given token
-tokenizeUntil :: Parser a -> Parser ()
+tokenizeUntil :: Parser a -> Parser String
 tokenizeUntil cond = done <|> oncemore where
-  done = do { _ <- cond; return ()}
-  oncemore = do { _ <- char; _ <- tokenizeUntil cond; return ()}
+  done = do { _ <- cond; return ""}
+  oncemore = do { c <- char; b <- tokenizeUntil cond; return (c : b)}
