@@ -98,4 +98,4 @@ tokenizeNumber = parseFloat <|> parseNegFloat <|> parseNat <|> parseNegNat where
 tokenizeUntil :: Parser a -> Parser String
 tokenizeUntil cond = done <|> oncemore where
   done = do { _ <- cond; return ""}
-  oncemore = do { c <- char; b <- tokenizeUntil cond; return (c : b)}
+  oncemore = do { c <- char; b <- tokenizeUntil cond; return $ c : b}

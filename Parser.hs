@@ -5,11 +5,12 @@ import Types
 
 parse :: Parser Statement
 parse = reviewParser
+        <|> orderParser
         <|> pukeParser
         <|> anyParser
 
 anyParser :: Parser Statement
-anyParser = do { o <- many (spot isAscii); return (Debug o)}
+anyParser = do { o <- many (spot isAscii); return $ Debug o}
 
 -- parses orders (assignments)
 orderParser :: Parser Statement
@@ -41,4 +42,4 @@ parseString :: String -> Statement
 parseString = doParse parse
 
 parseFile :: String -> IO Statement
-parseFile file = do { code <- readFile file; return (doParse parse code) }
+parseFile file = do { code <- readFile file; return $ doParse parse code }
