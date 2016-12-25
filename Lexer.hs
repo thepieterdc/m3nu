@@ -20,7 +20,7 @@ digits = some digit
 
 -- parses the end of a line
 endline :: Parser ()
-endline = do { _ <- semicolon <|> linefeed; return ()}
+endline = do { _ <- semicolon; _ <- whitespace; return ()}
 
 -- parses an identifier; must always be followed by at least one whitespace
 identifier :: String -> Parser String
@@ -34,19 +34,13 @@ letter = spot isAlpha
 letters :: Parser String
 letters = some letter
 
--- parses a linefeed
-linefeed :: Parser Char
-linefeed = clrf <|> lf where
-  clrf = do {_ <- token '\r'; _ <- lf; return '\n'}
-  lf = token '\n'
-
 -- parses a lowercase letter
 lower :: Parser Char
 lower = spot isLower
 
 -- parses a semicolon
 semicolon :: Parser Char
-semicolon = do { ret <- token ';'; _ <- whitespace; return ret }
+semicolon = token ';'
 
 -- parses a space/newline/tabs
 space :: Parser Char

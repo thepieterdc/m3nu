@@ -9,11 +9,11 @@ while = eating | enough
 true/false = tasty/disguisting
 x = 5    -> order x 5
 bool exp = and/or ipv && / ||
-arith exp = + - * / % 
+arith exp = + - * / %
 comments = review test
 print = puke "test"
 
-semicolons
+semicolons verplicht
 
 sources
 https://wiki.haskell.org/Parsing_a_simple_imperative_language
