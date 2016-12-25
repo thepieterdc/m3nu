@@ -11,6 +11,16 @@ parse = reviewParser
 anyParser :: Parser Statement
 anyParser = do { o <- many (spot isAscii); return (Puke o)}
 
+-- parses orders (assignments)
+orderParser :: Parser Statement
+orderParser = do
+  _ <- identifier "order"
+  var <- many isAlnum
+  _ <- spaces
+  val <- many isAlnum
+  _ <- endline
+  return $ Order var val
+
 -- parses pukes (prints)
 pukeParser :: Parser Statement
 pukeParser = do
