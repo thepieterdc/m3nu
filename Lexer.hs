@@ -93,26 +93,29 @@ tokenizeArithExp = tokenizeParenthesis tokenizeArithExp
                  <|> cst <|> var where
   cst = do { num <- tokenizeNumber; _ <- whitespace; return $ ArithConst num }
   var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
-  add = do { x <- nxt; _ <- token '+'; y <- nxt; return $ ArithBinary Add x y}
-  sub = do { x <- nxt; _ <- token '-'; y <- nxt; return $ ArithBinary Minus x y}
-  mul = do { x <- nxt; _ <- token '*'; y <- nxt; return $ ArithBinary Multiply x y}
-  dvd = do { x <- nxt; _ <- token '/'; y <- nxt; return $ ArithBinary Divide x y}
+  add = do { x <- nxt; _ <- token '+'; y <- nxt; _ <- whitespace; return $ ArithBinary Add x y}
+  sub = do { x <- nxt; _ <- token '-'; y <- nxt; _ <- whitespace; return $ ArithBinary Minus x y}
+  mul = do { x <- nxt; _ <- token '*'; y <- nxt; _ <- whitespace; return $ ArithBinary Multiply x y}
+  dvd = do { x <- nxt; _ <- token '/'; y <- nxt; _ <- whitespace; return $ ArithBinary Divide x y}
   nxt = cst <|> var <|> tokenizeArithExp
 
 -- parses between two delims
 tokenizeBetween :: Char -> Char -> Parser a -> Parser a
-tokenizeBetween l r p = do { _ <- token l; ret <- p; _ <- token r; return ret}
+tokenizeBetween l r p = do { _ <- token l; ret <- p; _ <- token r; _ <- whitespace; return ret}
 
 -- parses a bool expr
 tokenizeBoolExp :: Parser BoolExp
-tokenizeBoolExp = test
-                   <|> binand <|> binor
+tokenizeBoolExp = tokenizeParenthesis tokenizeBoolExp
+                   <|> binand <|> binor <|> relgt <|> releq <|> rellt
                    <|> true <|> false where
-  test = do { _ <- token '('; ret <- tokenizeBoolExp; _ <- token ')'; _ <- whitespace; return ret}
   true = do { _ <- string "tasty"; _ <- whitespace; return $ BoolConst True }
   false = do { _ <- string "disguisting"; _ <- whitespace; return $ BoolConst False }
   binand = do { x <- nxt; _ <- identifier "and"; y <- nxt; _ <- whitespace; return $ BoolBinary And x y }
   binor = do { x <- nxt; _ <- identifier "or"; y <- nxt; _ <- whitespace; return $ BoolBinary Or x y }
+  relgt = do { x <- tokenizeArithExp; _ <- token '>'; _ <- whitespace; y <- tokenizeArithExp; _ <- whitespace; return $ RelationalBinary Greater x y }
+  releq = do { x <- tokenizeArithExp; _ <- string "=="; _ <- whitespace; y <- tokenizeArithExp; _ <- whitespace; return $ RelationalBinary Equals x y }
+  rellt = do { x <- tokenizeArithExp; _ <- token '<'; _ <- whitespace; y <- tokenizeArithExp; _ <- whitespace; return $ RelationalBinary Less x y }
+
   nxt = true <|> false <|> tokenizeBoolExp
 
 -- parses a double number
