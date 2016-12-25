@@ -88,7 +88,7 @@ whitespace = many space
 
 -- parses an arith expr
 tokenizeArithExp :: Parser ArithExp
-tokenizeArithExp = (tokenizeParenthesis tokenizeArithExp)
+tokenizeArithExp = tokenizeParenthesis tokenizeArithExp
                  <|> add <|> sub <|> mul <|> dvd
                  <|> cst <|> var where
   cst = do { num <- tokenizeNumber; _ <- whitespace; return $ ArithConst num }
@@ -106,14 +106,14 @@ tokenizeBetween l r p = do { _ <- token l; ret <- p; _ <- token r; return ret}
 -- parses a bool expr
 tokenizeBoolExp :: Parser BoolExp
 tokenizeBoolExp = test
-                   -- <|> binand <|> binor
-                   <|> t <|> f where
-  test = do { _ <- token '('; ret <- tokenizeBoolExp; _ <- token ')'; return ret}
-  t = do { _ <- string "tasty"; _ <- whitespace; return $ BoolConst True }
-  f = do { _ <- string "disguisting"; _ <- whitespace; return $ BoolConst False }
-  --binand = do { x <- nxt; _ <- identifier "and"; y <- nxt; _ <- whitespace; return $ BoolBinary And x y }
-  --binor = do { x <- nxt; _ <- identifier "or"; y <- nxt; _ <- whitespace; return $ BoolBinary Or x y }
-  --nxt = t <|> f <|> tokenizeBoolExp
+                   <|> binand <|> binor
+                   <|> true <|> false where
+  test = do { _ <- token '('; ret <- tokenizeBoolExp; _ <- token ')'; _ <- whitespace; return ret}
+  true = do { _ <- string "tasty"; _ <- whitespace; return $ BoolConst True }
+  false = do { _ <- string "disguisting"; _ <- whitespace; return $ BoolConst False }
+  binand = do { x <- nxt; _ <- identifier "and"; y <- nxt; _ <- whitespace; return $ BoolBinary And x y }
+  binor = do { x <- nxt; _ <- identifier "or"; y <- nxt; _ <- whitespace; return $ BoolBinary Or x y }
+  nxt = true <|> false <|> tokenizeBoolExp
 
 -- parses a double number
 tokenizeNumber :: Parser Double
