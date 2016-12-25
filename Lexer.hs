@@ -105,9 +105,14 @@ tokenizeBetween l r p = do { _ <- token l; ret <- p; _ <- token r; return ret}
 
 -- parses a bool expr
 tokenizeBoolExp :: Parser BoolExp
-tokenizeBoolExp = true <|> false where
+tokenizeBoolExp = tokenizeParenthesis tokenizeBoolExp
+                   <|> binand <|> binor
+                   <|> true <|> false where
   true = do { _ <- string "tasty"; _ <- whitespace; return $ BoolConst True }
   false = do { _ <- string "disguisting"; _ <- whitespace; return $ BoolConst False }
+  binand = do { x <- nxt; _ <- identifier "and"; y <- nxt; return $ BoolBinary And x y }
+  binor = do { x <- nxt; _ <- identifier "or"; y <- nxt; return $ BoolBinary Or x y }
+  nxt = true <|> false <|> tokenizeBoolExp
 
 -- parses a double number
 tokenizeNumber :: Parser Double

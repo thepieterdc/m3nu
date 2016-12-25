@@ -5,6 +5,6 @@ import Parser
 
 main :: IO ()
 main = do
-  ast <- parseFile "courses/test_arithexpr.course"
+  ast <- parseFile "courses/test_boolexpr.course"
   out <- evaluate ast newEnvironment
   print out
