@@ -24,7 +24,7 @@ endline = do { _ <- semicolon <|> linefeed; return ()}
 
 -- parses an identifier; must always be followed by at least one whitespace
 identifier :: String -> Parser String
-identifier s = do { i <- string s; _ <- spaces; return i}
+identifier s = do {i <- string s; _ <- spaces; return i}
 
 -- parsers a letter
 letter :: Parser Char
@@ -89,14 +89,14 @@ whitespace = many space
 -- parses an arith expr
 tokenizeArithExp :: Parser ArithExp
 tokenizeArithExp = cst <|> var where
-  cst = do { num <- tokenizeNumber; return $ ArithConst num }
-  var = do { x <- some (spot isAlphaNum); return $ Variable x }
+  cst = do { num <- tokenizeNumber; _ <- whitespace; return $ ArithConst num }
+  var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
 
 -- parses a bool expr
 tokenizeBoolExp :: Parser BoolExp
 tokenizeBoolExp = true <|> false where
-  true = do { _ <- string "tasty"; return $ BoolConst True }
-  false = do { _ <- string "disguisting"; return $ BoolConst False }
+  true = do { _ <- string "tasty"; _ <- whitespace; return $ BoolConst True }
+  false = do { _ <- string "disguisting"; _ <- whitespace; return $ BoolConst False }
 
 -- parses a double number
 tokenizeNumber :: Parser Double
