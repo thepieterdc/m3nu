@@ -10,6 +10,8 @@ bool exp = and/or ipv && / ||
 comments = review test
 print = puke "test"
 
+semicolons mogen maar zijn niet veprlicht
+
 sources
 https://wiki.haskell.org/Parsing_a_simple_imperative_language
 slides - Monads
@@ -19,6 +21,7 @@ http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-
 parsec lib voor hulpfuncties
 
 features
+- semicolons niet veprlicht
 - vrij modulair
 - whitespace maakt totaal niet uit (moet wel minstens 1 whitespace na identifier staan)
 - robot deel staat los van volledige taal
