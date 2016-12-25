@@ -56,7 +56,7 @@ data ArithExp = ArithConst Double
               | Variable String
               deriving Show
 
-data ArithBinaryOp = Add | Minus | Multiply | Divide | Modulo deriving Show
+data ArithBinaryOp = Add | Minus | Multiply | Divide deriving Show
 
 data Statement = Debug String
                | Eating BoolExp Statement

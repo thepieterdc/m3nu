@@ -88,9 +88,16 @@ whitespace = many space
 
 -- parses an arith expr
 tokenizeArithExp :: Parser ArithExp
-tokenizeArithExp = cst <|> var where
+tokenizeArithExp = tokenizeParenthesis tokenizeArithExp
+                 <|> add <|> sub <|> mul <|> dvd
+                 <|> cst <|> var where
   cst = do { num <- tokenizeNumber; _ <- whitespace; return $ ArithConst num }
   var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
+  add = do { x <- nxt; _ <- token '+'; y <- nxt; return $ ArithBinary Add x y}
+  sub = do { x <- nxt; _ <- token '-'; y <- nxt; return $ ArithBinary Minus x y}
+  mul = do { x <- nxt; _ <- token '*'; y <- nxt; return $ ArithBinary Multiply x y}
+  dvd = do { x <- nxt; _ <- token '/'; y <- nxt; return $ ArithBinary Divide x y}
+  nxt = cst <|> var <|> tokenizeArithExp
 
 -- parses between two delims
 tokenizeBetween :: Char -> Char -> Parser a -> Parser a

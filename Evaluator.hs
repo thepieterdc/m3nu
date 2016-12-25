@@ -14,7 +14,14 @@ evaluate Review = return
 
 evaluateArithExp :: ArithExp -> Environment -> IO Double
 evaluateArithExp (ArithConst c) _ = return c
+evaluateArithExp (ArithBinary op x y) env = evaluateArithBinaryExp op x y env
 evaluateArithExp (Variable v) env = return $ fromMaybe (error $ "Unknown variable: " ++ v) (getVariable v env)
+
+evaluateArithBinaryExp :: ArithBinaryOp -> ArithExp -> ArithExp -> Environment -> IO Double
+evaluateArithBinaryExp Add x y env = do { xe <- evaluateArithExp x env; ye <- evaluateArithExp y env; return $ xe+ye}
+evaluateArithBinaryExp Minus x y env = do { xe <- evaluateArithExp x env; ye <- evaluateArithExp y env; return $ xe-ye}
+evaluateArithBinaryExp Multiply x y env = do { xe <- evaluateArithExp x env; ye <- evaluateArithExp y env; return $ xe*ye}
+evaluateArithBinaryExp Divide x y env = do { xe <- evaluateArithExp x env; ye <- evaluateArithExp y env; return $ xe/ye}
 
 evaluateBoolExp :: BoolExp -> Environment -> IO Bool
 evaluateBoolExp (BoolConst b) _ = return b
