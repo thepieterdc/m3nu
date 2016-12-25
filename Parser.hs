@@ -7,10 +7,11 @@ parse :: Parser Statement
 parse = reviewParser
         <|> orderParser
         <|> pukeParser
-        <|> anyParser
+        <|> debugParser
 
-anyParser :: Parser Statement
-anyParser = do { o <- many (spot isAscii); return $ Debug o}
+-- parses anything for debugging
+debugParser :: Parser Statement
+debugParser = do { o <- many (spot isAscii); return $ Debug o}
 
 -- parses orders (assignments)
 orderParser :: Parser Statement
@@ -26,9 +27,9 @@ orderParser = do
 pukeParser :: Parser Statement
 pukeParser = do
   _ <- identifier "puke"
-  var <- tokenizeArithExpr
+  var <- tokenizeArithExp
   _ <- endline
-  return $ Puke $ ArithConst var
+  return $ Puke var
 
 -- parses reviews (comments -> destroying these)
 reviewParser :: Parser Statement

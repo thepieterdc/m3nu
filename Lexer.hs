@@ -86,13 +86,19 @@ whitespace = many space
 
 -- [ TOKENIZERS ] --
 
+-- parses an arith expr
+tokenizeArithExp :: Parser ArithExp
+tokenizeArithExp = cst <|> var where
+  cst = do { num <- tokenizeNumber; return $ ArithConst num }
+  var = cst
+
 -- parses a double number
 tokenizeNumber :: Parser Double
-tokenizeNumber = parseFloat <|> parseNegFloat <|> parseNat <|> parseNegNat where
-  parseFloat = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
-  parseNat = do { s <- digits; return $ read s}
-  parseNegFloat = do { _ <- token '-'; n <- parseFloat; return $ -n}
-  parseNegNat = do { _ <- token '-'; n <- parseNat; return $ -n}
+tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
+  float = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
+  nat = do { s <- digits; return $ read s}
+  negFloat = do { _ <- token '-'; n <- float; return $ -n}
+  negNat = do { _ <- token '-'; n <- nat; return $ -n}
 
 -- skips until a given token
 tokenizeUntil :: Parser a -> Parser String
