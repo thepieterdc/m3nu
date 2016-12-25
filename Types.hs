@@ -1,5 +1,6 @@
 module Types (module Types, module Control.Applicative, module Control.Monad) where
 
+import Data.Char
 import Control.Applicative
 import Control.Monad
 
@@ -12,7 +13,7 @@ doParse :: Parser a -> String -> a
 doParse m s = one [x | (x,t) <- apply m s, t == "" ] where
   one [x] = x
   one [] = error "Parse not completed."
-  one xs | length xs > 1 = error "Multiple possible parses found."
+  one xs | length xs > 1 = error (show (length xs) ++ " possible parses found.")
   one _ = error "Unknown parse error."
 
 instance Functor Parser where
@@ -56,6 +57,7 @@ data ArithExp = ArithConst Double
               deriving Show
 
 data Statement = Debug String
+               | Eating BoolExp Statement
                | Hungry BoolExp Statement Statement
                | Order String ArithExp
                | Puke ArithExp
