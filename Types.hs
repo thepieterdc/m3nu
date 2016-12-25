@@ -9,11 +9,11 @@ newtype Parser a = Parser (String -> [(a, String)])
 apply :: Parser a -> String -> [(a, String)]
 apply (Parser f) = f
 
-doParse :: Parser a -> String -> a
+doParse :: (Show a) => Parser a -> String -> a
 doParse m s = one [x | (x,t) <- apply m s, t == "" ] where
   one [x] = x
   one [] = error "Parse not completed."
-  one xs | length xs > 1 = error (show (length xs) ++ " possible parses found.")
+  one xs | length xs > 1 = error ("Multiple parses found:\n " ++ show xs)
   one _ = error "Unknown parse error."
 
 instance Functor Parser where
