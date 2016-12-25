@@ -92,6 +92,10 @@ tokenizeArithExp = cst <|> var where
   cst = do { num <- tokenizeNumber; _ <- whitespace; return $ ArithConst num }
   var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
 
+-- parses between two delims
+tokenizeBetween :: Char -> Char -> Parser a -> Parser a
+tokenizeBetween l r p = do { _ <- token l; ret <- p; _ <- token r; return ret}
+
 -- parses a bool expr
 tokenizeBoolExp :: Parser BoolExp
 tokenizeBoolExp = true <|> false where
@@ -106,9 +110,8 @@ tokenizeNumber = tokenizeParenthesis tokenizeNumber <|> float <|> negFloat <|> n
   negFloat = do { _ <- token '-'; n <- float; return $ -n}
   negNat = do { _ <- token '-'; n <- nat; return $ -n}
 
--- removes parenthesis ( )
 tokenizeParenthesis :: Parser a -> Parser a
-tokenizeParenthesis p = do { _ <- token '('; ret <- p; _ <- token ')'; return ret}
+tokenizeParenthesis = tokenizeBetween '(' ')'
 
 -- skips until a given token
 tokenizeUntil :: Parser a -> Parser String
