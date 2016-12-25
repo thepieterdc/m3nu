@@ -4,13 +4,14 @@ import Lexer
 import Types
 
 parse :: Parser Statement
-parse = --reviewParser
-        pukeParser
+parse = reviewParser
+        <|> pukeParser
         <|> anyParser
 
 anyParser :: Parser Statement
 anyParser = do { o <- many (spot isAscii); return (Puke o)}
 
+-- parses pukes (prints)
 pukeParser :: Parser Statement
 pukeParser = do
   _ <- identifier "puke"
@@ -18,10 +19,13 @@ pukeParser = do
   _ <- endline
   return $ Puke txt
 
--- reviewParser :: Parser Statement
--- reviewParser = do
---   _ <- identifier "review"
---   txt <-
+-- parses reviews (comments -> destroying these)
+reviewParser :: Parser Statement
+reviewParser = do
+  _ <- identifier "review"
+  _ <- tokenizeUntil endline
+  _ <- endline
+  return Review
 
 parseString :: String -> Statement
 parseString = doParse parse

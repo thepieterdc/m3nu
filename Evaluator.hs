@@ -5,6 +5,7 @@ import Types
 
 evaluate :: Statement -> Environment -> IO Environment
 evaluate (Puke s) = evaluatePuke s
+evaluate Review = return
 
 evaluateBoolExp :: BoolExp -> Environment -> IO Bool
 evaluateBoolExp (BoolConst b) _ = return b

@@ -56,4 +56,5 @@ data ArithExp = ArithConst Double
 
 data Statement = Order String ArithExp
                | Puke String
+               | Review
                deriving Show
