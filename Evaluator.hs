@@ -12,19 +12,19 @@ evaluate Review = return
 
 evaluateArithExp :: ArithExp -> Environment -> IO Double
 evaluateArithExp (ArithConst c) _ = return c
-evaluateArithExp (Variable v) e = return $ fromMaybe (error $ "Unknown order: " ++ v) (getVariable v e)
+evaluateArithExp (Variable v) env = return $ fromMaybe (error $ "Unknown order: " ++ v) (getVariable v env)
 
 evaluateBoolExp :: BoolExp -> Environment -> IO Bool
 evaluateBoolExp (BoolConst b) _ = return b
-evaluateBoolExp (BoolNegate bExp) e = do { ex <- evaluateBoolExp bExp e; return $ not ex}
+evaluateBoolExp (BoolNegate bExp) env = do { ex <- evaluateBoolExp bExp env; return $ not ex}
 
 evaluateDebug :: String -> Environment -> IO Environment
-evaluateDebug txt e = do { print txt; return e}
+evaluateDebug txt env = do { print txt; return env}
 
 evaluateOrder :: String -> ArithExp -> Environment -> IO Environment
-evaluateOrder var val e = do
-  x <- evaluateArithExp val e
-  return $ setVariable var x e
+evaluateOrder var val env = do
+  x <- evaluateArithExp val env
+  return $ setVariable var x env
 
 evaluatePuke :: ArithExp -> Environment -> IO Environment
-evaluatePuke (ArithConst c) e = do { print c; return e}
+evaluatePuke e env = do { val <- evaluateArithExp e env; print val; return env}

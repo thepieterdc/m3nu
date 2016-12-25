@@ -26,7 +26,7 @@ orderParser = do
 pukeParser :: Parser Statement
 pukeParser = do
   _ <- identifier "puke"
-  var <- tokenizeNumber
+  var <- tokenizeArithExpr
   _ <- endline
   return $ Puke $ ArithConst var
 
