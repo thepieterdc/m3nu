@@ -85,10 +85,12 @@ whitespace :: Parser String
 whitespace = many space
 
 -- [ TOKENIZERS ] --
+
+-- parses a "string"
 tokenizeString :: Parser String
 tokenizeString = do { _ <- token '"'; s <- many (spot (/= '"')); _ <- token '"'; return s}
 
--- skips
+-- skips until a given token
 tokenizeUntil :: Parser a -> Parser ()
 tokenizeUntil cond = done <|> oncemore where
   done = do { _ <- cond; return ()}
