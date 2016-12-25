@@ -105,9 +105,10 @@ tokenizeBetween l r p = do { _ <- token l; ret <- p; _ <- token r; return ret}
 
 -- parses a bool expr
 tokenizeBoolExp :: Parser BoolExp
-tokenizeBoolExp = tokenizeParenthesis tokenizeBoolExp
+tokenizeBoolExp = test
                    -- <|> binand <|> binor
                    <|> t <|> f where
+  test = do { _ <- token '('; ret <- tokenizeBoolExp; _ <- token ')'; return ret}
   t = do { _ <- string "tasty"; _ <- whitespace; return $ BoolConst True }
   f = do { _ <- string "disguisting"; _ <- whitespace; return $ BoolConst False }
   --binand = do { x <- nxt; _ <- identifier "and"; y <- nxt; _ <- whitespace; return $ BoolBinary And x y }
