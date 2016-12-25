@@ -6,6 +6,7 @@ import Types
 
 evaluate :: Statement -> Environment -> IO Environment
 evaluate (Debug s) = evaluateDebug s
+evaluate (Hungry cond t d) = evaluateHungry cond t d
 evaluate (Order val var) = evaluateOrder val var
 evaluate (Puke v) = evaluatePuke v
 evaluate Review = return
@@ -20,6 +21,12 @@ evaluateBoolExp (BoolNegate bExp) env = do { ex <- evaluateBoolExp bExp env; ret
 
 evaluateDebug :: String -> Environment -> IO Environment
 evaluateDebug txt env = do { print txt; return env}
+
+evaluateHungry :: BoolExp -> Statement -> Statement -> Environment -> IO Environment
+evaluateHungry cond ifc elsec env = do
+  c <- evaluateBoolExp cond env
+  if c then evaluate ifc env
+  else evaluate elsec env
 
 evaluateOrder :: String -> ArithExp -> Environment -> IO Environment
 evaluateOrder var val env = do
