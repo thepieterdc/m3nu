@@ -90,7 +90,7 @@ whitespace = many space
 tokenizeArithExp :: Parser ArithExp
 tokenizeArithExp = cst <|> var where
   cst = do { num <- tokenizeNumber; return $ ArithConst num }
-  var = cst
+  var = do { x <- some (spot isAlphaNum); return $ Variable x }
 
 -- parses a double number
 tokenizeNumber :: Parser Double
