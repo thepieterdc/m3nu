@@ -1,6 +1,5 @@
 module Types (module Types, module Control.Applicative, module Control.Monad) where
 
-import Data.Char
 import Control.Applicative
 import Control.Monad
 

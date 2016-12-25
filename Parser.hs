@@ -51,6 +51,7 @@ orderParser = do
 -- parses pukes (prints)
 pukeParser :: Parser Statement
 pukeParser = do
+  _ <- whitespace
   _ <- identifier "puke"
   var <- tokenizeArithExp
   _ <- endline
