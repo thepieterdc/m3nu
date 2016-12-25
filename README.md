@@ -9,6 +9,7 @@ while = eating | enough
 true/false = tasty/disguisting
 x = 5    -> order x 5
 bool exp = and/or ipv && / ||
+arith exp = + - * / % 
 comments = review test
 print = puke "test"
 

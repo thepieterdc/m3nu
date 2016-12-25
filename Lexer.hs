@@ -100,11 +100,15 @@ tokenizeBoolExp = true <|> false where
 
 -- parses a double number
 tokenizeNumber :: Parser Double
-tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
+tokenizeNumber = tokenizeParenthesis tokenizeNumber <|> float <|> negFloat <|> nat <|> negNat where
   float = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
   nat = do { s <- digits; return $ read s}
   negFloat = do { _ <- token '-'; n <- float; return $ -n}
   negNat = do { _ <- token '-'; n <- nat; return $ -n}
+
+-- removes parenthesis ( )
+tokenizeParenthesis :: Parser a -> Parser a
+tokenizeParenthesis p = do { _ <- token '('; ret <- p; _ <- token ')'; return ret}
 
 -- skips until a given token
 tokenizeUntil :: Parser a -> Parser String
