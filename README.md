@@ -21,6 +21,7 @@ http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-
 parsec lib voor hulpfuncties
 
 features
+- nummers zijn doubles want ints zijn doubles maar doubles zijn geen ints
 - semicolons niet veprlicht
 - vrij modulair
 - whitespace maakt totaal niet uit (moet wel minstens 1 whitespace na identifier staan)

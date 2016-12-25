@@ -1,5 +1,6 @@
 module Evaluator(module Evaluator, module Environment, module Types) where
 
+import Data.Maybe
 import Environment
 import Types
 
@@ -11,6 +12,7 @@ evaluate Review = return
 
 evaluateArithExp :: ArithExp -> Environment -> IO Double
 evaluateArithExp (ArithConst c) _ = return c
+evaluateArithExp (Variable v) e = return $ fromMaybe (error $ "Unknown order: " ++ v) (getVariable v e)
 
 evaluateBoolExp :: BoolExp -> Environment -> IO Bool
 evaluateBoolExp (BoolConst b) _ = return b

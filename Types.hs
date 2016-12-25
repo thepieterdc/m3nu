@@ -52,6 +52,7 @@ data BoolBinaryOp = And | Or deriving Show
 data RelationalBinaryOp = Equals | Greater | Less deriving Show
 
 data ArithExp = ArithConst Double
+              | Variable String
               deriving Show
 
 data Statement = Debug String
