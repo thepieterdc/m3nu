@@ -12,7 +12,7 @@ evaluate Review = return
 
 evaluateArithExp :: ArithExp -> Environment -> IO Double
 evaluateArithExp (ArithConst c) _ = return c
-evaluateArithExp (Variable v) env = return $ fromMaybe (error $ "Unknown order: " ++ v) (getVariable v env)
+evaluateArithExp (Variable v) env = return $ fromMaybe (error $ "Unknown variable: " ++ v) (getVariable v env)
 
 evaluateBoolExp :: BoolExp -> Environment -> IO Bool
 evaluateBoolExp (BoolConst b) _ = return b

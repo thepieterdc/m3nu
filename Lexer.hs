@@ -92,6 +92,12 @@ tokenizeArithExp = cst <|> var where
   cst = do { num <- tokenizeNumber; return $ ArithConst num }
   var = do { x <- some (spot isAlphaNum); return $ Variable x }
 
+-- parses a bool expr
+tokenizeBoolExp :: Parser BoolExp
+tokenizeBoolExp = true <|> false where
+  true = do { _ <- string "tasty"; return $ BoolConst True }
+  false = do { _ <- string "disguisting"; return $ BoolConst False }
+
 -- parses a double number
 tokenizeNumber :: Parser Double
 tokenizeNumber = float <|> negFloat <|> nat <|> negNat where

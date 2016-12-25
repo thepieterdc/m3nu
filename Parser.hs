@@ -5,6 +5,7 @@ import Types
 
 parse :: Parser Statement
 parse = reviewParser
+        <|> hungryParser
         <|> orderParser
         <|> pukeParser
         <|> debugParser
@@ -12,6 +13,19 @@ parse = reviewParser
 -- parses anything for debugging
 debugParser :: Parser Statement
 debugParser = do { o <- many (spot isAscii); return $ Debug o}
+
+-- parses hungry (if else)
+hungryParser :: Parser Statement
+hungryParser = do
+  _ <- identifier "hungry"
+  cond <- tokenizeBoolExp
+  _ <- identifier "->"
+  ifClause <- parse
+  _ <- identifier "stuffed"
+  _ <- identifier "->"
+  elseClause <- parse
+  _ <- identifier "satisfied"
+  return $ Hungry cond ifClause elseClause
 
 -- parses orders (assignments)
 orderParser :: Parser Statement

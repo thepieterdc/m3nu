@@ -56,6 +56,7 @@ data ArithExp = ArithConst Double
               deriving Show
 
 data Statement = Debug String
+               | Hungry BoolExp Statement Statement
                | Order String ArithExp
                | Puke ArithExp
                | Review
