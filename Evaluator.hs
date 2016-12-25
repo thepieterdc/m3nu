@@ -24,8 +24,13 @@ evaluateArithBinaryExp Multiply x y env = do { xe <- evaluateArithExp x env; ye 
 evaluateArithBinaryExp Divide x y env = do { xe <- evaluateArithExp x env; ye <- evaluateArithExp y env; return $ xe/ye}
 
 evaluateBoolExp :: BoolExp -> Environment -> IO Bool
+evaluateBoolExp (BoolBinary op x y) env = evaluateBoolBinaryExp op x y env
 evaluateBoolExp (BoolConst b) _ = return b
 evaluateBoolExp (BoolNegate bExp) env = do { ex <- evaluateBoolExp bExp env; return $ not ex}
+
+evaluateBoolBinaryExp :: BoolBinaryOp -> BoolExp -> BoolExp -> Environment -> IO Bool
+evaluateBoolBinaryExp And x y env = do { xe <- evaluateBoolExp x env; ye <- evaluateBoolExp y env; return $ xe && ye}
+evaluateBoolBinaryExp Or x y env = do { xe <- evaluateBoolExp x env; ye <- evaluateBoolExp y env; return $ xe || ye}
 
 evaluateDebug :: String -> Environment -> IO Environment
 evaluateDebug txt env = do { print txt; return env}
