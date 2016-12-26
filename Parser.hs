@@ -10,7 +10,10 @@ parse = parens parse <|> multipleStatementsParser
 multipleStatementsParser :: Parser Statement
 multipleStatementsParser = do
   list <- sepBy1 statementParser semicolon
-  return $ if length list == 1 then head list else Seq list
+  if length list == 1 then
+    error $ show list
+  else
+    return $ Seq list
 
 -- parses a statement
 statementParser :: Parser Statement
@@ -19,6 +22,7 @@ statementParser = reviewParser
                 <|> hungryParser
                 <|> orderParser
                 <|> pukeParser
+                <|> debugParser
 
 -- parses anything for debugging
 debugParser :: Parser Statement
