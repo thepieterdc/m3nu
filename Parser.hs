@@ -9,11 +9,16 @@ parse = parens parse <|> multipleStatementsParser
 -- parses multiple statements
 multipleStatementsParser :: Parser Statement
 multipleStatementsParser = do
-  list <- sepBy1 statementParser semicolon
-  if length list == 1 then
-    error $ show list
-  else
-    return $ Seq list
+  r <- debugParser;
+  --first <- orderParser;
+  --second <- pukeParser;
+  return $ Puke $ ArithConst 5
+-- multipleStatementsParser = do
+--   list <- sepBy1 statementParser semicolon
+--   if length list == 1 then
+--     return $ head list
+--   else
+--     return $ Seq list
 
 -- parses a statement
 statementParser :: Parser Statement
