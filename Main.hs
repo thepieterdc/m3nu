@@ -5,7 +5,6 @@ import Parser
 
 main :: IO ()
 main = do
-  --ast <- parseFile "courses/test_order_and_puke.course"
-  ast <- parseString "order y 5;puke y;puke y;" -- WERKT DUS ZIJN WHITESPACE BUGS HOERA
+  ast <- parseFile "courses/test_counter.course"
   out <- evaluate ast newEnvironment
   print out
