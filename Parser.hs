@@ -17,11 +17,7 @@ statementParser = reviewParser
                 <|> hungryParser
                 <|> orderParser
                 <|> pukeParser
-                <|> endParser
                 -- <|> debugParser -- vervangen door error
-
-endParser :: Parser Statement
-endParser = do { _ <- token '$'; _ <- whitespace; return End}
 
 -- parses anything for debugging
 debugParser :: Parser Statement

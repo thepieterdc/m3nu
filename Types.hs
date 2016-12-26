@@ -60,7 +60,6 @@ data ArithBinaryOp = Add | Minus | Multiply | Divide deriving Show
 
 data Statement = Debug String
                | Eating BoolExp Statement
-               | End
                | Hungry BoolExp Statement Statement
                | Order String ArithExp
                | Puke ArithExp

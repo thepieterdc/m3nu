@@ -11,7 +11,6 @@ bool exp = and/or ipv && / ||
 arith exp = + - * / %
 comments = review test
 print = puke "test"
-einde = $ (want rekening)
 
 semicolons verplicht
 newlines verplicht
