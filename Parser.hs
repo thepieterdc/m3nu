@@ -9,9 +9,9 @@ parse = parens parse <|> multipleStatementsParser
 -- parses multiple statements
 multipleStatementsParser :: Parser Statement
 multipleStatementsParser = do
-  list <- sepBy1 statementParser endline
-  return $ debugParser
-  return $ if length list == 1 then head list else Seq list
+    st <- statementParser
+    sttwo <- statementParser
+    debugParser
 
 -- parses a statement
 statementParser :: Parser Statement
