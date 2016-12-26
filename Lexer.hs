@@ -20,7 +20,7 @@ digits = some digit
 
 -- parses the end of a line
 endline :: Parser Char
-endline = do { _ <- semicolon; _ <- whitespace; return ';'}
+endline = do { _ <- some semicolon; _ <- whitespace; return ';'}
 
 -- parses an identifier; must always be followed by at least one whitespace
 identifier :: String -> Parser String
