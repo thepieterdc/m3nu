@@ -1,1 +1,1 @@
-order x 1;eating tasty { puke x;order x (x+1); } 
+order x 1;eating (x < 10) { puke x;order x (x+1); } 

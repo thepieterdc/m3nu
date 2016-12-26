@@ -47,9 +47,9 @@ data BoolExp = BoolConst Bool
              | RelationalBinary RelationalBinaryOp ArithExp ArithExp
              deriving Show
 
-data BoolBinaryOp = And | Or deriving Show
+data BoolBinaryOp = And | Or | BoolEquals deriving Show
 
-data RelationalBinaryOp = Equals | Greater | Less deriving Show
+data RelationalBinaryOp = RelEquals | Greater | Less deriving Show
 
 data ArithExp = ArithConst Double
               | ArithBinary ArithBinaryOp ArithExp ArithExp

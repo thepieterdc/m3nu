@@ -28,10 +28,12 @@ evaluateBoolExp :: BoolExp -> Environment -> IO Bool
 evaluateBoolExp (BoolBinary op x y) env = evaluateBoolBinaryExp op x y env
 evaluateBoolExp (BoolConst b) _ = return b
 evaluateBoolExp (BoolNegate bExp) env = do { ex <- evaluateBoolExp bExp env; return $ not ex}
+evaluateBoolExp (RelationalBinary op x y) env = evaluateRelationalExp op x y env
 
 evaluateBoolBinaryExp :: BoolBinaryOp -> BoolExp -> BoolExp -> Environment -> IO Bool
 evaluateBoolBinaryExp And x y env = do { xe <- evaluateBoolExp x env; ye <- evaluateBoolExp y env; return $ xe && ye}
 evaluateBoolBinaryExp Or x y env = do { xe <- evaluateBoolExp x env; ye <- evaluateBoolExp y env; return $ xe || ye}
+evaluateBoolBinaryExp BoolEquals x y env = do { xe <- evaluateBoolExp x env; ye <- evaluateBoolExp y env; return $ xe == ye }
 
 evaluateDebug :: String -> Environment -> IO Environment
 evaluateDebug txt env = do { print txt; return env}
@@ -57,6 +59,11 @@ evaluateOrder var val env = do
 
 evaluatePuke :: ArithExp -> Environment -> IO Environment
 evaluatePuke e env = do { val <- evaluateArithExp e env; print val; return env}
+
+evaluateRelationalExp :: RelationalBinaryOp -> ArithExp -> ArithExp -> Environment -> IO Bool
+evaluateRelationalExp Greater x y env = do { xe <- evaluateArithExp x env; ye <- evaluateArithExp y env; return $ xe > ye}
+evaluateRelationalExp RelEquals x y env = do { xe <- evaluateArithExp x env; ye <- evaluateArithExp y env; return $ xe == ye}
+evaluateRelationalExp Less x y env = do { xe <- evaluateArithExp x env; ye <- evaluateArithExp y env; return $ xe < ye}
 
 evaluateSequence :: [Statement] -> Environment -> IO Environment
 evaluateSequence [] env = return env
