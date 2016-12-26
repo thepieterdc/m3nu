@@ -1,1 +1,3 @@
-eating tasty -> puke 5; satisfied
+eating tasty {
+puke 5;
+}

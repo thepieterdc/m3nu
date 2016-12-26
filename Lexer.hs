@@ -38,6 +38,10 @@ letters = some letter
 lower :: Parser Char
 lower = spot isLower
 
+-- runs the parser between ( )
+parens :: Parser a -> Parser a
+parens = tokenizeBetween '(' ')'
+
 -- parses a semicolon
 semicolon :: Parser Char
 semicolon = token ';'
@@ -82,7 +86,7 @@ whitespace = many space
 
 -- parses an arith expr
 tokenizeArithExp :: Parser ArithExp
-tokenizeArithExp = tokenizeParenthesis tokenizeArithExp
+tokenizeArithExp = parens tokenizeArithExp
                  -- <|> add <|> sub <|> mul <|> dvd
                  <|> cst <|> var where
   cst = do { num <- tokenizeNumber; _ <- whitespace; return $ ArithConst num }
@@ -99,7 +103,7 @@ tokenizeBetween l r p = do { _ <- token l; ret <- p; _ <- token r; _ <- whitespa
 
 -- parses a bool expr
 tokenizeBoolExp :: Parser BoolExp
-tokenizeBoolExp = tokenizeParenthesis tokenizeBoolExp
+tokenizeBoolExp = parens tokenizeBoolExp
                    <|> relgt <|> releq <|> rellt
                    <|> binand <|> binor
                    <|> true <|> false
@@ -116,16 +120,13 @@ tokenizeBoolExp = tokenizeParenthesis tokenizeBoolExp
 
 -- parses a double number
 tokenizeNumber :: Parser Double
-tokenizeNumber = tokenizeParenthesis tokenizeNumber <|> float <|> negFloat <|> nat <|> negNat where
+tokenizeNumber = parens tokenizeNumber <|> float <|> negFloat <|> nat <|> negNat where
   float = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
   nat = do { s <- digits; return $ read s}
   negFloat = do { _ <- token '-'; n <- float; return $ -n}
   negNat = do { _ <- token '-'; n <- nat; return $ -n}
 
-tokenizeParenthesis :: Parser a -> Parser a
-tokenizeParenthesis = tokenizeBetween '(' ')'
-
--- skips until a given token
+-- skips until a given token, returning the skipped part including the cond obv because parsed
 tokenizeUntil :: Parser a -> Parser String
 tokenizeUntil cond = done <|> oncemore where
   done = do { _ <- cond; return ""}

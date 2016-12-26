@@ -20,9 +20,9 @@ eatingParser :: Parser Statement
 eatingParser = do
   _ <- identifier "eating"
   cond <- tokenizeBoolExp
-  _ <- identifier "->"
+  _ <- identifier "{"
   action <- parse
-  _ <- identifier "satisfied"
+  _ <- identifier "}"
   return $ Eating cond action
 
 -- parses hungry (if else)
@@ -30,12 +30,13 @@ hungryParser :: Parser Statement
 hungryParser = do
   _ <- identifier "hungry"
   cond <- tokenizeBoolExp
-  _ <- identifier "->"
+  _ <- identifier "{"
   ifClause <- parse
+  _ <- identifier "}"
   _ <- identifier "stuffed"
-  _ <- identifier "->"
+  _ <- identifier "{"
   elseClause <- parse
-  _ <- identifier "satisfied"
+  _ <- identifier "}"
   return $ Hungry cond ifClause elseClause
 
 -- parses orders (assignments)
@@ -62,7 +63,6 @@ reviewParser :: Parser Statement
 reviewParser = do
   _ <- identifier "review"
   _ <- tokenizeUntil endline
-  _ <- endline
   return Review
 
 parseString :: String -> Statement

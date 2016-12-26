@@ -3,9 +3,8 @@ Project Functioneel Programmeren - Parser
 
 lowercase alles
 
-if/else = hunry/stuffed then
-fi = satisfied
-while = eating | enough
+if/else = hunry/stuffed {}
+while = eating {}
 true/false = tasty/disguisting
 x = 5    -> order x 5
 bool exp = and/or ipv && / ||
@@ -14,6 +13,7 @@ comments = review test
 print = puke "test"
 
 semicolons verplicht
+newlines verplicht
 
 sources
 https://wiki.haskell.org/Parsing_a_simple_imperative_language

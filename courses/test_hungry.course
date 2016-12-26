@@ -1,3 +1,5 @@
-hungry (tasty) -> puke 5;
-stuffed -> puke 6;
-satisfied
+hungry (tasty) {
+puke 5;
+} stuffed {
+puke 6;
+}
