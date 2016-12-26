@@ -1,10 +1,12 @@
 module Main where
 
+import System.Environment
+
 import Evaluator
 import Parser
 
-main :: IO ()
+main :: IO Environment
 main = do
-  ast <- parseFile "courses/test_order_and_puke.course"
-  out <- evaluate ast newEnvironment
-  print out
+  args <- getArgs
+  if length args /= 1 then error "Usage: ./Main path_to_course.course"
+  else do { ast <- parseFile $ head args; evaluate ast newEnvironment}
