@@ -82,6 +82,10 @@ upper = spot isUpper
 whitespace :: Parser String
 whitespace = many space
 
+-- [ OTHER FUNCTIONS ] --
+trim :: String -> String
+trim = filter (/= '\n') . filter (/= '\r')
+
 -- [ TOKENIZERS ] --
 
 -- parses an arith expr
