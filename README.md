@@ -14,6 +14,7 @@ print = puke "test"
 
 semicolons verplicht
 newlines verplicht
+expressies moeten tussen ()
 
 sources
 https://wiki.haskell.org/Parsing_a_simple_imperative_language

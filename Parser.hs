@@ -46,10 +46,8 @@ orderParser = do
   var <- many (spot isAlphaNum)
   _ <- spaces
   val <- tokenizeArithExp
-  -- _ <- endline
-  rest <- debugParser
-  -- return $ Order var val
-  return $ rest
+  _ <- endline
+  return $ Order var val
 
 -- parses pukes (prints)
 pukeParser :: Parser Statement

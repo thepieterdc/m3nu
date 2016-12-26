@@ -26,10 +26,6 @@ endline = do { _ <- semicolon; _ <- whitespace; return ()}
 identifier :: String -> Parser String
 identifier s = do {i <- string s; _ <- spaces; return i}
 
--- looks ahead
-isNot :: String -> Parser String
-isNot s = some (spot (`notElem` s))
-
 -- parsers a letter
 letter :: Parser Char
 letter = spot isAlpha
@@ -90,15 +86,15 @@ whitespace = many space
 
 -- parses an arith expr
 tokenizeArithExp :: Parser ArithExp
-tokenizeArithExp = parens tokenizeArithExp
-                 <|> cst <|> var
-                 <|> mul
-                 <|> anything
-                 where
-  cst = do { num <- tokenizeNumber; _ <- isNot "*+/-"; _ <- whitespace; return $ ArithConst num }
+tokenizeArithExp = cst <|> var <|> add <|> sub <|> mul <|> dvd where
+  cst = do { num <- tokenizeNumber <|> parens tokenizeNumber; _ <- whitespace; return $ ArithConst num }
   var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
-  mul = do { x <- tokenizeArithExp; _ <- token '*'; y <- tokenizeArithExp; _ <- whitespace; return $ ArithBinary Multiply x y }
-  anything = do { x <- many (spot (const True)); return $ Variable x}
+  add = do { ret <- bin2 '+' Add; _ <- whitespace; return ret }
+  sub = do { ret <- bin2 '-' Minus; _ <- whitespace; return ret }
+  mul = do { ret <- bin2 '*' Multiply; _ <- whitespace; return ret }
+  dvd = do { ret <- bin2 '/' Divide; _ <- whitespace; return ret }
+  bin2 tk op = parens $ bin tk op
+  bin tk op = do { x <- tokenizeArithExp; _ <- token tk; y <- tokenizeArithExp; _ <- whitespace; return $ ArithBinary op x y}
 
 -- parses between two delims
 tokenizeBetween :: Char -> Char -> Parser a -> Parser a
@@ -123,7 +119,7 @@ tokenizeBoolExp = parens tokenizeBoolExp
 
 -- parses a double number
 tokenizeNumber :: Parser Double
-tokenizeNumber = parens tokenizeNumber <|> float <|> negFloat <|> nat <|> negNat where
+tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
   float = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
   nat = do { s <- digits; return $ read s}
   negFloat = do { _ <- token '-'; n <- float; return $ -n}
