@@ -1,10 +1,12 @@
 module Evaluator(module Evaluator, module Environment, module Types) where
 
+import Control.Concurrent(threadDelay)
 import Data.Maybe
 import Environment
 import Types
 
 evaluate :: Statement -> Environment -> IO Environment
+evaluate (Cook a) = evaluateCook a
 evaluate (Debug s) = evaluateDebug s
 evaluate (Eating cond s) = evaluateEating cond s
 evaluate (Hungry cond t d) = evaluateHungry cond t d
@@ -34,6 +36,9 @@ evaluateBoolBinaryExp :: BoolBinaryOp -> BoolExp -> BoolExp -> Environment -> IO
 evaluateBoolBinaryExp And x y env = do { xe <- evaluateBoolExp x env; ye <- evaluateBoolExp y env; return $ xe && ye}
 evaluateBoolBinaryExp Or x y env = do { xe <- evaluateBoolExp x env; ye <- evaluateBoolExp y env; return $ xe || ye}
 evaluateBoolBinaryExp BoolEquals x y env = do { xe <- evaluateBoolExp x env; ye <- evaluateBoolExp y env; return $ xe == ye }
+
+evaluateCook :: ArithExp -> Environment -> IO Environment
+evaluateCook amtexp env = do { amt <- evaluateArithExp amtexp env; _ <- threadDelay $ round $ amt*1000000; return env}
 
 evaluateDebug :: String -> Environment -> IO Environment
 evaluateDebug txt env = do { print txt; return env}

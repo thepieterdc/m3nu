@@ -17,7 +17,16 @@ statementParser = reviewParser
                 <|> hungryParser
                 <|> orderParser
                 <|> pukeParser
+                <|> cookParser
                 -- <|> debugParser -- vervangen door error
+
+-- parses cook (sleep)
+cookParser :: Parser Statement
+cookParser = do
+  _ <- identifier "cook"
+  amt <- tokenizeArithExp
+  _ <- endline
+  return $ Cook amt
 
 -- parses anything for debugging
 debugParser :: Parser Statement

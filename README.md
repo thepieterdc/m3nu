@@ -11,6 +11,7 @@ bool exp = and/or ipv && / ||
 arith exp = + - * / %
 comments = review test
 print = puke "test"
+sleep = cook (want kan niet eten tijdens koken) tijd in seconden!
 
 semicolons verplicht
 newlines verplicht
