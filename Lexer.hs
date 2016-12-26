@@ -102,20 +102,14 @@ tokenizeBetween l r p = do { _ <- token l; ret <- p; _ <- token r; _ <- whitespa
 
 -- parses a bool expr
 tokenizeBoolExp :: Parser BoolExp
-tokenizeBoolExp = parens tokenizeBoolExp
-                   <|> relgt <|> releq <|> rellt
-                   <|> binand <|> binor
-                   <|> true <|> false
-                   where
+tokenizeBoolExp = true <|> false <|> binand <|> binor <|> relgt <|> releq <|> rellt where
   true = do { _ <- string "tasty"; _ <- whitespace; return $ BoolConst True }
   false = do { _ <- string "disguisting"; _ <- whitespace; return $ BoolConst False }
-  binand = do { x <- nxt; _ <- identifier "and"; y <- nxt; _ <- whitespace; return $ BoolBinary And x y }
-  binor = do { x <- nxt; _ <- identifier "or"; y <- nxt; _ <- whitespace; return $ BoolBinary Or x y }
-  relgt = do { x <- tokenizeArithExp; _ <- token '>'; _ <- whitespace; y <- tokenizeArithExp; _ <- whitespace; return $ RelationalBinary Greater x y }
-  releq = do { x <- tokenizeArithExp; _ <- string "=="; _ <- whitespace; y <- tokenizeArithExp; _ <- whitespace; return $ RelationalBinary Equals x y }
-  rellt = do { x <- tokenizeArithExp; _ <- whitespace; _ <- token '<'; _ <- whitespace; y <- tokenizeArithExp; _ <- whitespace; return $ RelationalBinary Less x y }
-
-  nxt = true <|> false <|> tokenizeBoolExp
+  binand = do { _ <- token '('; x <- tokenizeBoolExp; _ <- identifier "and"; y <- tokenizeBoolExp; _ <- token ')'; _ <- whitespace; return $ BoolBinary And x y}
+  binor = do { _ <- token '('; x <- tokenizeBoolExp; _ <- identifier "or"; y <- tokenizeBoolExp; _ <- token ')'; _ <- whitespace; return $ BoolBinary Or x y}
+  relgt = do { _ <- token '('; x <- tokenizeArithExp; _ <- identifier ">"; y <- tokenizeArithExp; _ <- token ')'; _ <- whitespace; return $ RelationalBinary Greater x y}
+  releq = do { _ <- token '('; x <- tokenizeArithExp; _ <- identifier "=="; y <- tokenizeArithExp; _ <- token ')'; _ <- whitespace; return $ RelationalBinary Equals x y}
+  rellt = do { _ <- token '('; x <- tokenizeArithExp; _ <- identifier "<"; y <- tokenizeArithExp; _ <- token ')'; _ <- whitespace; return $ RelationalBinary Less x y}
 
 -- parses a double number
 tokenizeNumber :: Parser Double
