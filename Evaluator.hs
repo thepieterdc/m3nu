@@ -10,8 +10,8 @@ evaluate (Eating cond s) = evaluateEating cond s
 evaluate (Hungry cond t d) = evaluateHungry cond t d
 evaluate (Order val var) = evaluateOrder val var
 evaluate (Puke v) = evaluatePuke v
-evaluate Review = return
 evaluate (Seq s) = evaluateSequence s
+evaluate _ = return
 
 evaluateArithExp :: ArithExp -> Environment -> IO Double
 evaluateArithExp (ArithConst c) _ = return c

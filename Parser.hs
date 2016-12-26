@@ -8,10 +8,7 @@ parse = parens parse <|> multipleStatementsParser
 
 -- parses multiple statements
 multipleStatementsParser :: Parser Statement
-multipleStatementsParser = do
-    st <- statementParser
-    sttwo <- statementParser
-    return $ Seq [st, sttwo]
+multipleStatementsParser = do { mult <- many statementParser; return $ Seq mult}
 
 -- parses a statement
 statementParser :: Parser Statement
@@ -20,7 +17,11 @@ statementParser = reviewParser
                 <|> hungryParser
                 <|> orderParser
                 <|> pukeParser
-                <|> debugParser -- vervangen door error
+                <|> endParser
+                -- <|> debugParser -- vervangen door error
+
+endParser :: Parser Statement
+endParser = do { _ <- token '$'; _ <- whitespace; return End}
 
 -- parses anything for debugging
 debugParser :: Parser Statement
