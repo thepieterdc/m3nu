@@ -9,10 +9,9 @@ parse = parens parse <|> multipleStatementsParser
 -- parses multiple statements
 multipleStatementsParser :: Parser Statement
 multipleStatementsParser = do
-  r <- debugParser;
-  --first <- orderParser;
-  --second <- pukeParser;
-  return $ Puke $ ArithConst 5
+  first <- orderParser;
+  second <- pukeParser;
+  return $ Seq [first, second]
 -- multipleStatementsParser = do
 --   list <- sepBy1 statementParser semicolon
 --   if length list == 1 then
@@ -83,8 +82,8 @@ reviewParser = do
   _ <- tokenizeUntil endline
   return Review
 
-parseString :: String -> Statement
-parseString = doParse parse
+parseString :: String -> IO Statement
+parseString code = return $ doParse parse code
 
 parseFile :: String -> IO Statement
 parseFile file = do { code <- readFile file; return $ doParse parse code }

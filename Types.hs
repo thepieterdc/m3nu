@@ -58,11 +58,11 @@ data ArithExp = ArithConst Double
 
 data ArithBinaryOp = Add | Minus | Multiply | Divide deriving Show
 
-data Statement = Seq [Statement]
-               | Debug String
+data Statement = Debug String
                | Eating BoolExp Statement
                | Hungry BoolExp Statement Statement
                | Order String ArithExp
                | Puke ArithExp
                | Review
+               | Seq [Statement]
                deriving Show

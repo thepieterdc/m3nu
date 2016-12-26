@@ -11,6 +11,7 @@ evaluate (Hungry cond t d) = evaluateHungry cond t d
 evaluate (Order val var) = evaluateOrder val var
 evaluate (Puke v) = evaluatePuke v
 evaluate Review = return
+evaluate (Seq s) = evaluateSequence s
 
 evaluateArithExp :: ArithExp -> Environment -> IO Double
 evaluateArithExp (ArithConst c) _ = return c
@@ -56,3 +57,9 @@ evaluateOrder var val env = do
 
 evaluatePuke :: ArithExp -> Environment -> IO Environment
 evaluatePuke e env = do { val <- evaluateArithExp e env; print val; return env}
+
+evaluateSequence :: [Statement] -> Environment -> IO Environment
+evaluateSequence [] env = return env
+evaluateSequence (s:sq) env = do
+  env' <- evaluate s env
+  evaluateSequence sq env'
