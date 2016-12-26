@@ -19,8 +19,8 @@ digits :: Parser String
 digits = some digit
 
 -- parses the end of a line
-endline :: Parser ()
-endline = do { _ <- semicolon; _ <- whitespace; return ()}
+endline :: Parser Char
+endline = do { _ <- semicolon; _ <- whitespace; return ';'}
 
 -- parses an identifier; must always be followed by at least one whitespace
 identifier :: String -> Parser String
@@ -45,10 +45,6 @@ parens = tokenizeBetween '(' ')'
 -- parses a semicolon
 semicolon :: Parser Char
 semicolon = token ';'
-
--- seperates by delim
-sepBy1 :: Parser a -> Parser b -> Parser [a]
-sepBy1 p sep = do{x <- p; xs <- many (sep >> p); return (x:xs)}
 
 -- parses a space/newline/tabs
 space :: Parser Char

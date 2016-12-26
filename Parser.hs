@@ -9,15 +9,9 @@ parse = parens parse <|> multipleStatementsParser
 -- parses multiple statements
 multipleStatementsParser :: Parser Statement
 multipleStatementsParser = do
-  first <- orderParser;
-  second <- pukeParser;
-  return $ Seq [first, second]
--- multipleStatementsParser = do
---   list <- sepBy1 statementParser semicolon
---   if length list == 1 then
---     return $ head list
---   else
---     return $ Seq list
+  list <- sepBy1 statementParser endline
+  return $ debugParser
+  return $ if length list == 1 then head list else Seq list
 
 -- parses a statement
 statementParser :: Parser Statement
@@ -26,7 +20,7 @@ statementParser = reviewParser
                 <|> hungryParser
                 <|> orderParser
                 <|> pukeParser
-                <|> debugParser
+                <|> debugParser -- vervangen door error
 
 -- parses anything for debugging
 debugParser :: Parser Statement
