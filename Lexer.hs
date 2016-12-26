@@ -46,6 +46,10 @@ parens = tokenizeBetween '(' ')'
 semicolon :: Parser Char
 semicolon = token ';'
 
+-- seperates by delim
+sepBy1 :: Parser a -> Parser b -> Parser [a]
+sepBy1 p sep = do{x <- p; xs <- many (sep >> p); return (x:xs)}
+
 -- parses a space/newline/tabs
 space :: Parser Char
 space = spot isSpace

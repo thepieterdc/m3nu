@@ -23,6 +23,7 @@ http://dev.stephendiehl.com/fun/WYAH.pdf
 https://cseweb.ucsd.edu/classes/wi12/cse230-a/lectures/parsers.html
 http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-in-haskell
 parsec lib voor hulpfuncties
+https://en.wikibooks.org/wiki/Haskell/ParseExps
 
 features
 - nummers zijn doubles want ints zijn doubles maar doubles zijn geen ints

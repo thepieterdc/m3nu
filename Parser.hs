@@ -4,12 +4,21 @@ import Lexer
 import Types
 
 parse :: Parser Statement
-parse = reviewParser
-        <|> eatingParser
-        <|> hungryParser
-        <|> orderParser
-        <|> pukeParser
-        <|> debugParser
+parse = parens parse <|> multipleStatementsParser
+
+-- parses multiple statements
+multipleStatementsParser :: Parser Statement
+multipleStatementsParser = do
+  list <- sepBy1 statementParser semicolon
+  return $ if length list == 1 then head list else Seq list
+
+-- parses a statement
+statementParser :: Parser Statement
+statementParser = reviewParser
+                <|> eatingParser
+                <|> hungryParser
+                <|> orderParser
+                <|> pukeParser
 
 -- parses anything for debugging
 debugParser :: Parser Statement
