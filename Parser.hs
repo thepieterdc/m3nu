@@ -11,7 +11,7 @@ multipleStatementsParser :: Parser Statement
 multipleStatementsParser = do
     st <- statementParser
     sttwo <- statementParser
-    debugParser
+    return $ Seq [st, sttwo]
 
 -- parses a statement
 statementParser :: Parser Statement
