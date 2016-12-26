@@ -26,6 +26,10 @@ endline = do { _ <- semicolon; _ <- whitespace; return ()}
 identifier :: String -> Parser String
 identifier s = do {i <- string s; _ <- spaces; return i}
 
+-- looks ahead
+isNot :: String -> Parser String
+isNot s = some (spot (`notElem` s))
+
 -- parsers a letter
 letter :: Parser Char
 letter = spot isAlpha
@@ -87,15 +91,14 @@ whitespace = many space
 -- parses an arith expr
 tokenizeArithExp :: Parser ArithExp
 tokenizeArithExp = parens tokenizeArithExp
-                 -- <|> add <|> sub <|> mul <|> dvd
-                 <|> cst <|> var where
-  cst = do { num <- tokenizeNumber; _ <- whitespace; return $ ArithConst num }
+                 <|> cst <|> var
+                 <|> mul
+                 <|> anything
+                 where
+  cst = do { num <- tokenizeNumber; _ <- isNot "*+/-"; _ <- whitespace; return $ ArithConst num }
   var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
-  add = do { x <- nxt; _ <- whitespace; _ <- token '+'; _ <- whitespace; y <- nxt; _ <- whitespace; return $ ArithBinary Add x y}
-  sub = do { x <- nxt; _ <- whitespace; _ <- token '-'; _ <- whitespace; y <- nxt; _ <- whitespace; return $ ArithBinary Minus x y}
-  mul = do { x <- nxt; _ <- whitespace; _ <- token '*'; _ <- whitespace; y <- nxt; _ <- whitespace; return $ ArithBinary Multiply x y}
-  dvd = do { x <- nxt; _ <- whitespace; _ <- token '/'; _ <- whitespace; y <- nxt; _ <- whitespace; return $ ArithBinary Divide x y}
-  nxt = cst <|> var <|> tokenizeArithExp
+  mul = do { x <- tokenizeArithExp; _ <- token '*'; y <- tokenizeArithExp; _ <- whitespace; return $ ArithBinary Multiply x y }
+  anything = do { x <- many (spot (const True)); return $ Variable x}
 
 -- parses between two delims
 tokenizeBetween :: Char -> Char -> Parser a -> Parser a
