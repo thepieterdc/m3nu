@@ -1,9 +1,10 @@
-module Types (module Types, module Control.Applicative, module Control.Monad) where
+module Types where
 
 import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.State.Lazy
 import qualified Data.Map as Map
+import Data.Maybe
 
 newtype Parser a = Parser (String -> [(a, String)])
 
@@ -70,3 +71,12 @@ data Statement = Cook Exp
 type EnvironmentVar = Map.Map String Double
 
 type Environment a = StateT EnvironmentVar IO a
+
+-- fromjust want als var niet bestaat gaat toch niet werken
+-- gets variable
+environmentGet :: String -> Environment Double
+environmentGet k = do { env <- get; return $ fromJust $ Map.lookup k env }
+
+-- sets variable
+environmentSet :: String -> Double -> Environment ()
+environmentSet k v = do { env <- get; put $ Map.insert k v env; return () }
