@@ -149,10 +149,17 @@ tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
   negFloat = do { _ <- token '-'; n <- float; return $ -n}
   negNat = do { _ <- token '-'; n <- nat; return $ -n}
 
+tokenizeRelExp :: Parser Exp
+tokenizeRelExp = gt <|> lt <|> eq where
+  gt = do { ret <- parens $ rel ">" Greater; _ <- whitespace; return ret }
+  lt = do { ret <- parens $ rel "-" Less; _ <- whitespace; return ret }
+  eq = do { ret <- parens $ rel "==" Equals; _ <- whitespace; return ret }
+  rel tk op = do { x <- tokenizeExp; _ <- string tk; y <- tokenizeExp; _ <- whitespace; return $ Relational op x y}
+
 -- parses a Unary expression
 tokenizeUnaryExp :: Parser Exp
 tokenizeUnaryExp = parens absval <|> absval where
-  absval = do { ret <- between '|' '|' tokenizeExp; return }
+  absval = do { ret <- between '|' '|' tokenizeExp; return $ Unary Abs ret }
 
 -- skips until a given token, returning the skipped part including the cond obv because parsed
 tokenizeUntil :: Parser a -> Parser String
