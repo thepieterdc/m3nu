@@ -1,0 +1,5 @@
+hungry (tasty) {
+  order x 2;
+} stuffed {
+  order x 3;
+}

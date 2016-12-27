@@ -56,10 +56,12 @@ hungryParser = do
   cond <- tokenizeExp
   _ <- identifier "{"
   ifClause <- parse
+  _ <- whitespace
   _ <- identifier "}"
   _ <- identifier "stuffed"
   _ <- identifier "{"
   elseClause <- parse
+  _ <- whitespace
   _ <- identifier "}"
   return $ Hungry cond ifClause elseClause
 
