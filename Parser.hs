@@ -6,6 +6,13 @@ import Types
 parse :: Parser Statement
 parse = parens parse <|> multipleStatementsParser
 
+doParse :: (Show a) => Parser a -> String -> a
+doParse m s = one [x | (x,t) <- apply m s, t == "" ] where
+  one [x] = x
+  one [] = error "Parse not completed."
+  one xs | length xs > 1 = error ("Multiple parses found:\n " ++ show xs)
+  one _ = error "Unknown parse error."
+
 -- parses multiple statements
 multipleStatementsParser :: Parser Statement
 multipleStatementsParser = do { mult <- many statementParser; return $ Seq mult}

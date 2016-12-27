@@ -8,13 +8,6 @@ newtype Parser a = Parser (String -> [(a, String)])
 apply :: Parser a -> String -> [(a, String)]
 apply (Parser f) = f
 
-doParse :: (Show a) => Parser a -> String -> a
-doParse m s = one [x | (x,t) <- apply m s, t == "" ] where
-  one [x] = x
-  one [] = error "Parse not completed."
-  one xs | length xs > 1 = error ("Multiple parses found:\n " ++ show xs)
-  one _ = error "Unknown parse error."
-
 instance Functor Parser where
   fmap = liftM
 
@@ -47,6 +40,14 @@ data Exp = Constant Double
          | Unary UnaryOp Exp
          | Relational RelationalOp Exp Exp
          deriving Show
+
+-- converts bool to double
+boolDouble :: Bool -> Double
+boolDouble x = if x then 1 else 0
+
+-- converts double to bool
+doubleBool :: Double -> Bool
+doubleBool = (/= 0)
 
 data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving Show
 
