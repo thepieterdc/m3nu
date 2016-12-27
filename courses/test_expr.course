@@ -5,3 +5,6 @@ puke (tasty == disguisting);
 puke (tasty == tasty);
 puke (10 > 4);
 puke (10 < 4);
+puke 10;
+puke (10);
+puke tasty;
