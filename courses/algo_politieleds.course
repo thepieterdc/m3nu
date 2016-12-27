@@ -1,0 +1,6 @@
+order x tasty;
+eating (tasty) ->
+  order x (not x);
+  light -> (255-255*x) 0 (255*x);
+  right -> (255*x) 0 (255-255*x);
+enough;

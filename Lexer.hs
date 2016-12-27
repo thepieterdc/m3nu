@@ -152,7 +152,7 @@ tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
 -- parses a Unary expression
 tokenizeUnaryExp :: Parser Exp
 tokenizeUnaryExp = parens absval <|> absval where
-  absval = do { between _ <- token '|'; e <- tokenizeExp; _ <- token '|' Add; _ <- whitespace; return ret }
+  absval = do { ret <- between '|' '|' tokenizeExp; return }
 
 -- skips until a given token, returning the skipped part including the cond obv because parsed
 tokenizeUntil :: Parser a -> Parser String
