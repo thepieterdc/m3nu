@@ -1,6 +1,7 @@
-puke (6+4);
-puke (tasty == disguisting);
-puke (tasty and disguisting);
-puke (tasty or disguisting);
-puke (|6|);
+puke (10+4);
 puke (tasty);
+puke (disguisting);
+puke (tasty == disguisting);
+puke (tasty == tasty);
+puke (10 > 4);
+puke (10 < 4);

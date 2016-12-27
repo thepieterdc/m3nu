@@ -115,32 +115,6 @@ tokenizeExp = parens tokenizeBool <|> tokenizeBool
   num = do { n <- tokenizeNumber; _ <- whitespace; return $ Constant n }
   var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
 
---
--- tokenizeArithExp :: Parser Exp
--- tokenizeArithExp = cst <|> var
---                  <|> add <|> sub <|> mul <|> dvd
---                  <|>  where
---   cst = do { num <- tokenizeNumber <|> parens tokenizeNumber; _ <- whitespace; return $ ArithConst num }
---   var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
---   add = do { ret <- bin2 '+' Add; _ <- whitespace; return ret }
---   sub = do { ret <- bin2 '-' Minus; _ <- whitespace; return ret }
---   mul = do { ret <- bin2 '*' Multiply; _ <- whitespace; return ret }
---   dvd = do { ret <- bin2 '/' Divide; _ <- whitespace; return ret }
---   bin2 tk op = parens $ bin tk op
---   bin tk op = do { x <- tokenizeArithExp; _ <- token tk; y <- tokenizeArithExp; _ <- whitespace; return $ ArithBinary op x y}
---
--- -- parses a bool expr
--- tokenizeBoolExp :: Parser BoolExp
--- tokenizeBoolExp = true <|> false <|> binand <|> binor <|> bineq <|> relgt <|> releq <|> rellt where
---   true = do { _ <- string "tasty"; _ <- whitespace; return $ BoolConst True }
---   false = do { _ <- string "disguisting"; _ <- whitespace; return $ BoolConst False }
---   binand = do { _ <- token '('; x <- tokenizeBoolExp; _ <- identifier "and"; y <- tokenizeBoolExp; _ <- token ')'; _ <- whitespace; return $ BoolBinary And x y}
---   binor = do { _ <- token '('; x <- tokenizeBoolExp; _ <- identifier "or"; y <- tokenizeBoolExp; _ <- token ')'; _ <- whitespace; return $ BoolBinary Or x y}
---   bineq = do { _ <- token '('; x <- tokenizeBoolExp; _ <- identifier "==="; y <- tokenizeBoolExp; _ <- token ')'; _ <- whitespace; return $ BoolBinary BoolEquals x y}
---   relgt = do { _ <- token '('; x <- tokenizeArithExp; _ <- identifier ">"; y <- tokenizeArithExp; _ <- token ')'; _ <- whitespace; return $ RelationalBinary Greater x y}
---   releq = do { _ <- token '('; x <- tokenizeArithExp; _ <- identifier "=="; y <- tokenizeArithExp; _ <- token ')'; _ <- whitespace; return $ RelationalBinary RelEquals x y}
---   rellt = do { _ <- token '('; x <- tokenizeArithExp; _ <- identifier "<"; y <- tokenizeArithExp; _ <- token ')'; _ <- whitespace; return $ RelationalBinary Less x y}
-
 -- parses a double number
 tokenizeNumber :: Parser Double
 tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
@@ -152,9 +126,9 @@ tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
 tokenizeRelExp :: Parser Exp
 tokenizeRelExp = gt <|> lt <|> eq where
   gt = do { ret <- parens $ rel ">" Greater; _ <- whitespace; return ret }
-  lt = do { ret <- parens $ rel "-" Less; _ <- whitespace; return ret }
+  lt = do { ret <- parens $ rel "<" Less; _ <- whitespace; return ret }
   eq = do { ret <- parens $ rel "==" Equals; _ <- whitespace; return ret }
-  rel tk op = do { x <- tokenizeExp; _ <- string tk; y <- tokenizeExp; _ <- whitespace; return $ Relational op x y}
+  rel tk op = do { x <- tokenizeExp; _ <- string tk; _ <- whitespace; y <- tokenizeExp; _ <- whitespace; return $ Relational op x y}
 
 -- parses a Unary expression
 tokenizeUnaryExp :: Parser Exp
