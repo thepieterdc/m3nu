@@ -54,15 +54,19 @@ hungryParser :: Parser Statement
 hungryParser = do
   _ <- identifier "hungry"
   cond <- tokenizeExp
-  _ <- identifier "{"
+  _ <- token '{'
+  _ <- whitespace
   ifClause <- parse
   _ <- whitespace
-  _ <- identifier "}"
+  _ <- token '}'
+  _ <- whitespace
   _ <- identifier "stuffed"
-  _ <- identifier "{"
+  _ <- token '{'
+  _ <- whitespace
   elseClause <- parse
   _ <- whitespace
-  _ <- identifier "}"
+  _ <- token '}'
+  _ <- whitespace
   return $ Hungry cond ifClause elseClause
 
 -- parses orders (assignments)
