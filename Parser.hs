@@ -60,14 +60,10 @@ hungryParser = do
   _ <- whitespace
   _ <- token '}'
   _ <- whitespace
-  _ <- identifier "stuffed"
-  _ <- token '{'
-  _ <- whitespace
-  elseClause <- parse
-  _ <- whitespace
-  _ <- token '}'
-  _ <- whitespace
-  return $ Hungry cond ifClause elseClause
+  elseClause <- ifelse <|> none
+  return $ Hungry cond ifClause elseClause where
+    ifelse = do {_ <- identifier "stuffed"; _ <- token '{'; _ <- whitespace; ret <- parse; _ <- whitespace; _ <- token '}'; _ <- whitespace; return ret }
+    none = return Review
 
 -- parses orders (assignments)
 orderParser :: Parser Statement
