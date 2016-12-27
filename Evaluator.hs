@@ -70,4 +70,4 @@ evaluateSequence (s:sq) env = do
   evaluateSequence sq env'
 
 evaluateUnaryExp :: UnaryOp -> Exp -> Environment -> IO Double
-evaluateUnaryExp Abs x env = do { e <- evaluateExp x env; return $ if x < 0 then -e else e }
+evaluateUnaryExp Abs x env = do { e <- evaluateExp x env; return $ if e < 0 then -e else e }
