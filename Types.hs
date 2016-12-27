@@ -41,29 +41,25 @@ instance MonadPlus Parser where
   mzero = Parser (const [])
   mplus m n = Parser (\s -> apply m s ++ apply n s)
 
-data BoolExp = BoolConst Bool
-             | BoolNegate BoolExp
-             | BoolBinary BoolBinaryOp BoolExp BoolExp
-             | RelationalBinary RelationalBinaryOp ArithExp ArithExp
-             deriving Show
+data Exp = Constant Double
+         | Variable String
+         | Binary BinaryOp Exp Exp
+         | Unary UnaryOp Exp
+         | Relational RelationalOp Exp Exp
+         deriving Show
 
-data BoolBinaryOp = And | Or | BoolEquals deriving Show
+data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving Show
 
-data RelationalBinaryOp = RelEquals | Greater | Less deriving Show
+data UnaryOp = Abs deriving Show
 
-data ArithExp = ArithConst Double
-              | ArithBinary ArithBinaryOp ArithExp ArithExp
-              | Variable String
-              deriving Show
+data RelationalOp = Greater | Equals | Less deriving Show
 
-data ArithBinaryOp = Add | Minus | Multiply | Divide deriving Show
-
-data Statement = Cook ArithExp
+data Statement = Cook Exp
                | Debug String
-               | Eating BoolExp Statement
-               | Hungry BoolExp Statement Statement
-               | Order String ArithExp
-               | Puke ArithExp
+               | Eating Exp Statement
+               | Hungry Exp Statement Statement
+               | Order String Exp
+               | Puke Exp
                | Review
                | Seq [Statement]
                deriving Show

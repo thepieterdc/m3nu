@@ -27,6 +27,7 @@ parsec lib voor hulpfuncties
 https://en.wikibooks.org/wiki/Haskell/ParseExps
 
 features
+- bools worden als doubles gezien zoals in C en PHP
 - nummers zijn doubles want ints zijn doubles maar doubles zijn geen ints
 - vrij modulair
 - whitespace maakt totaal niet uit (moet wel minstens 1 whitespace na identifier staan)
