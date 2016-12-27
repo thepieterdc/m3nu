@@ -1,4 +1,6 @@
 puke (6+4);
 puke (tasty == disguisting);
+puke (tasty and disguisting);
+puke (tasty or disguisting);
 puke (|6|);
 puke (tasty);

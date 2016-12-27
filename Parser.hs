@@ -24,7 +24,7 @@ statementParser = reviewParser
 cookParser :: Parser Statement
 cookParser = do
   _ <- identifier "cook"
-  amt <- tokenizeArithExp
+  amt <- tokenizeExp
   _ <- endline
   return $ Cook amt
 
@@ -36,7 +36,7 @@ debugParser = do { o <- many (spot isAscii); return $ Debug o}
 eatingParser :: Parser Statement
 eatingParser = do
   _ <- identifier "eating"
-  cond <- tokenizeBoolExp
+  cond <- tokenizeExp
   _ <- identifier "{"
   action <- parse
   _ <- identifier "}"
@@ -46,7 +46,7 @@ eatingParser = do
 hungryParser :: Parser Statement
 hungryParser = do
   _ <- identifier "hungry"
-  cond <- tokenizeBoolExp
+  cond <- tokenizeExp
   _ <- identifier "{"
   ifClause <- parse
   _ <- identifier "}"
@@ -62,7 +62,7 @@ orderParser = do
   _ <- identifier "order"
   var <- many (spot isAlphaNum)
   _ <- spaces
-  val <- tokenizeArithExp
+  val <- tokenizeExp
   _ <- endline
   return $ Order var val
 
@@ -71,7 +71,7 @@ pukeParser :: Parser Statement
 pukeParser = do
   _ <- whitespace
   _ <- identifier "puke"
-  var <- tokenizeArithExp
+  var <- tokenizeExp
   _ <- endline
   return $ Puke var
 
