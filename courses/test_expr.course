@@ -8,3 +8,4 @@ puke (10 < 4);
 puke 10;
 puke (10);
 puke tasty;
+puke (1+tasty);
