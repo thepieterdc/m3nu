@@ -41,7 +41,7 @@ data Exp = Constant Double
          | Relational RelationalOp Exp Exp
          deriving Show
 
--- converts bool to double
+-- converts bool to double-- converts bool to double
 boolDouble :: Bool -> Double
 boolDouble x = if x then 1 else 0
 
