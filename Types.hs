@@ -2,6 +2,8 @@ module Types (module Types, module Control.Applicative, module Control.Monad) wh
 
 import Control.Applicative
 import Control.Monad
+import Control.Monad.Trans.State.Lazy
+import qualified Data.Map as Map
 
 newtype Parser a = Parser (String -> [(a, String)])
 
@@ -64,3 +66,7 @@ data Statement = Cook Exp
                | Review
                | Seq [Statement]
                deriving Show
+
+type EnvironmentVar = Map.Map String Double
+
+type Environment a = StateT EnvironmentVar IO a

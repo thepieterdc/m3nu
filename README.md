@@ -25,6 +25,7 @@ https://cseweb.ucsd.edu/classes/wi12/cse230-a/lectures/parsers.html
 http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-in-haskell
 parsec lib voor hulpfuncties
 https://en.wikibooks.org/wiki/Haskell/ParseExps
+https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/12-State-Monad
 
 features
 - bools worden als doubles gezien zoals in C en PHP ,zelfde als python (0 = false, rest is true)
