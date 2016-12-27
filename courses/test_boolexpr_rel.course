@@ -1,3 +1,0 @@
-hungry (tasty < 6) -> puke 5;
-stuffed -> puke 6;
-satisfied
