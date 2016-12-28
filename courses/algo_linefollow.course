@@ -1,17 +1,25 @@
-order x linesensor;
+order prev linesensor;
 eating (tasty) {
-  order prev x;
   order x linesensor;
   hungry (x == 3) {
+    order prev x;
     drive forward;
   }
   hungry (x == 2) {
+    order prev x;
     drive right;
   }
   hungry (x == 1) {
+    order prev x;
     drive left;
   }
   hungry (x == 0) {
+    hungry (prev == 1) {
+      drive backwardright;
+    }
+    hungry (prev == 2) {
+      drive backwardleft;
+    }
     drive backward;
   }
 }
