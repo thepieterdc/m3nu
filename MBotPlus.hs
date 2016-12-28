@@ -67,3 +67,8 @@ motorDirection Brake = stop
 -- gets the identifier of a motor
 motorId :: Motor -> Int
 motorId r = fromJust $ mapLookup [(LeftMotor, 0x9), (RightMotor, 0xa)] r
+
+
+-- gets the ultrason value
+ultrason :: Device -> IO Double
+ultrason d = do { val <- readUltraSonic d; return $ floatDouble val}

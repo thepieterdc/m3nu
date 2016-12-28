@@ -16,6 +16,10 @@ doubleBool = (/= 0)
 doubleInt :: Double -> Int
 doubleInt = round
 
+-- converts float to double
+floatDouble :: Float -> Double
+floatDouble = realToFrac
+
 -- gets the index of an element in a list and errors otherwise
 index :: (Eq a) => [a] -> a -> Int
 index xs x = fromJust $ elemIndex x xs

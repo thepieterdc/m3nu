@@ -46,6 +46,7 @@ data Exp = Constant Double
          | Unary UnaryOp Exp
          | Relational RelationalOp Exp Exp
          | RobotLineSensor
+         | RobotUltrason
          deriving (Eq, Show)
 
 data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving (Eq, Show)

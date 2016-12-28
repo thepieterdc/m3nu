@@ -45,6 +45,7 @@ evaluateExp (Binary op x y) = evaluateBinaryExp op x y
 evaluateExp (Unary op x) = evaluateUnaryExp op x
 evaluateExp (Relational op x y) = evaluateRelationalExp op x y
 evaluateExp RobotLineSensor = evaluateRobotLineSensor
+evaluateExp RobotUltrason = evaluateRobotUltrason
 
 evaluateHungry :: Exp -> Statement -> Statement -> Environment ()
 evaluateHungry cond ifc elsec = do
@@ -81,6 +82,13 @@ evaluateRobotLineSensor :: Environment Double
 evaluateRobotLineSensor = do
   handle <- liftIO Bot.connect
   val <- liftIO $ Bot.lineSensor handle
+  liftIO $ Bot.close handle
+  return val
+
+evaluateRobotUltrason :: Environment Double
+evaluateRobotUltrason = do
+  handle <- liftIO Bot.connect
+  val <- liftIO $ Bot.ultrason handle
   liftIO $ Bot.close handle
   return val
 
