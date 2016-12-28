@@ -2,6 +2,7 @@ module Lexer(module Lexer, module Types, module Data.Char) where
 
 import Data.Char
 
+import qualified MBotPlus as Bot
 import Types
 
 -- parses between two delims
@@ -136,22 +137,22 @@ tokenizeRelExp = gt <|> lt <|> eq where
   eq = do { ret <- parens $ rel "==" Equals; _ <- whitespace; return ret }
   rel tk op = do { x <- tokenizeExp; _ <- string tk; _ <- whitespace; y <- tokenizeExp; _ <- whitespace; return $ Relational op x y}
 
-tokenizeRobotDirection :: Parser RobotDirection
+tokenizeRobotDirection :: Parser Bot.Direction
 tokenizeRobotDirection = parens tokenizeRobotDirection <|> brake <|>forward
                        <|> left <|> right
                        <|> backward <|> backwardleft <|> backwardright where
-  forward = do { _ <- string "forward"; _ <- whitespace; return DirForward}
-  left = do { _ <- string "left"; _ <- whitespace; return DirLeft}
-  right = do { _ <- string "right"; _ <- whitespace; return DirRight}
-  backward = do { _ <- string "backward"; _ <- whitespace; return DirBackward}
-  backwardleft = do { _ <- string "backwardleft"; _ <- whitespace; return DirBackwardLeft}
-  backwardleft = do { _ <- string "backwardright"; _ <- whitespace; return DirBackwardRight}
-  brake = do { _ <- string "brake"; _ <- whitespace; return Brake}
+  forward = do { _ <- string "forward"; _ <- whitespace; return Bot.DirForward}
+  left = do { _ <- string "left"; _ <- whitespace; return Bot.DirLeft}
+  right = do { _ <- string "right"; _ <- whitespace; return Bot.DirRight}
+  backward = do { _ <- string "backward"; _ <- whitespace; return Bot.DirBackward}
+  backwardleft = do { _ <- string "backwardleft"; _ <- whitespace; return Bot.DirBackwardLeft}
+  backwardright = do { _ <- string "backwardright"; _ <- whitespace; return Bot.DirBackwardRight}
+  brake = do { _ <- string "brake"; _ <- whitespace; return Bot.Brake}
 
-tokenizeRobotLed :: Parser RobotLed
+tokenizeRobotLed :: Parser Bot.Led
 tokenizeRobotLed = left <|> right where
-  left = do { _ <- identifier "left"; return LeftLed}
-  right = do { _ <- identifier "right"; return RightLed}
+  left = do { _ <- identifier "left"; return Bot.LeftLed}
+  right = do { _ <- identifier "right"; return Bot.RightLed}
 
 -- parses a Unary expression
 tokenizeUnaryExp :: Parser Exp

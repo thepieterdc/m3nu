@@ -61,8 +61,8 @@ data Statement = Cook Exp
                | Order String Exp
                | Puke Exp
                | Review
-               | RobotDrive RobotDirection
-               | RobotLeds RobotLed Exp Exp Exp
+               | RobotDrive Bot.Direction
+               | RobotLeds Bot.Led Exp Exp Exp
                | Seq [Statement]
                deriving Show
 

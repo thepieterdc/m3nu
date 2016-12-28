@@ -3,7 +3,7 @@ module Evaluator(module Evaluator, module Types) where
 import Control.Concurrent(threadDelay)
 import Control.Monad
 import Control.Monad.IO.Class
-import MBot
+import qualified MBotPlus as Bot
 
 import Types
 
@@ -62,27 +62,27 @@ evaluateRelationalExp Greater x y = do { xe <- evaluateExp x; ye <- evaluateExp 
 evaluateRelationalExp Equals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe == ye}
 evaluateRelationalExp Less x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe < ye}
 
-evaluateRobotDrive :: RobotDirection -> Environment ()
+evaluateRobotDrive :: Bot.Direction -> Environment ()
 evaluateRobotDrive dir = do
-  handle <- liftIO openMBot
-  liftIO $ robotMotorDirection dir handle
-  liftIO $ closeMBot handle
+  handle <- liftIO Bot.connect
+  liftIO $ Bot.motorDirection dir handle
+  liftIO $ Bot.close handle
 
-evaluateRobotLed :: RobotLed -> Exp -> Exp -> Exp -> Environment ()
+evaluateRobotLed :: Bot.Led -> Exp -> Exp -> Exp -> Environment ()
 evaluateRobotLed l r g b = do
   rv <- evaluateExp r
   gv <- evaluateExp g
   bv <- evaluateExp b
-  handle <- liftIO openMBot
-  liftIO $ sendCommand handle $ setRGB (robotLedId l) (doubleInt rv) (doubleInt gv) (doubleInt bv)
-  liftIO $ closeMBot handle
+  handle <- liftIO Bot.connect
+  liftIO $ Bot.led handle l rv gv bv
+  liftIO $ Bot.close handle
 
 evaluateRobotLineSensor :: Environment Double
 evaluateRobotLineSensor = do
-  handle <- liftIO openMBot
-  val <- liftIO $ readLineFollower handle
-  liftIO $ closeMBot handle
-  return $ robotLineDouble val
+  handle <- liftIO Bot.connect
+  val <- liftIO $ Bot.lineSensor handle
+  liftIO $ Bot.close handle
+  return val
 
 evaluateSequence :: [Statement] -> Environment ()
 evaluateSequence [] = return ()
