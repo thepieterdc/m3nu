@@ -22,12 +22,17 @@ motorDirection DirBackwardLeft = backwardsLeft
 motorDirection DirBackwardRight = backwardsRight
 motorDirection Brake = stop
 
+-- right motor backwards, left motor zero -> moves left
+backwardsLeft :: Device -> IO()
+backwardsLeft = do
+  sendCommand d $ setMotor (motorId LeftMotor) 0 0
+  sendCommand d $ setMotor (motorId RightMotor) (complement 60) (complement 0)
+
 -- left motor backwards, right motor zero -> moves right
 backwardsRight :: Device -> IO()
 backwardsRight = do
-  sendCommand d $ setMotor rightMotor (complement speed) (complement stops)
-  sendCommand d $ setMotor leftMotor  speed stops
-
+  sendCommand d $ setMotor (motorId LeftMotor) 60 0
+  sendCommand d $ setMotor (motorId RightMotor) 0 0
 
 -- gets the identifier of a led
 ledId :: Led -> Int
