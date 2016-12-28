@@ -8,19 +8,19 @@ import Types
 
 evaluate :: Statement -> Environment ()
 -- evaluate (Cook a) = evaluateCook a
--- evaluate (Debug s) = evaluateDebug s
+evaluate (Debug s) = evaluateDebug s
 -- evaluate (Eating cond s) = evaluateEating cond s
 -- evaluate (Hungry cond t d) = evaluateHungry cond t d
 evaluate (Order val var) = evaluateOrder val var
 evaluate (Puke v) = evaluatePuke v
--- evaluate Review = return ()
+evaluate Review = return ()
 -- evaluate (Seq s) = evaluateSequence s
 
 evaluateExp :: Exp -> Environment Double
 evaluateExp (Constant c) = return c
--- evaluateExp (Variable v) env = return $ fromMaybe (error $ "Unknown variable: " ++ v) (getVariable v env)
+evaluateExp (Variable v) = environmentGet v
 -- evaluateExp (Binary op x y) env = evaluateBinaryExp op x y env
--- evaluateExp (Unary op x) env = evaluateUnaryExp op x env
+evaluateExp (Unary op x) = evaluateUnaryExp op x
 -- evaluateExp (Relational op x y) env = evaluateRelationalExp op x y env
 --
 -- evaluateBinaryExp :: BinaryOp -> Exp -> Exp -> Environment Double
@@ -33,10 +33,10 @@ evaluateExp (Constant c) = return c
 --
 -- evaluateCook :: Exp -> Environment ()
 -- evaluateCook amtexp env = do { amt <- evaluateExp amtexp env; _ <- threadDelay $ round $ amt*1000000; return env}
---
--- evaluateDebug :: String -> Environment ()
--- evaluateDebug txt env = do { print txt; return env}
---
+
+evaluateDebug :: String -> Environment ()
+evaluateDebug txt = do { liftIO $ print txt; return ()}
+
 -- evaluateEating :: Exp -> Statement -> Environment ()
 -- evaluateEating cond task env = do
 --   loopcond <- evaluateExp cond env
@@ -66,6 +66,6 @@ evaluatePuke e = do { val <- evaluateExp e; liftIO $ print val; return ()}
 -- evaluateSequence (s:sq) env = do
 --   env' <- evaluate s env
 --   evaluateSequence sq env'
---
--- evaluateUnaryExp :: UnaryOp -> Exp -> Environment Double
--- evaluateUnaryExp Abs x = do { e <- evaluateExp x; return $ if e < 0 then -e else e }
+
+evaluateUnaryExp :: UnaryOp -> Exp -> Environment Double
+evaluateUnaryExp Abs x = do { e <- evaluateExp x; return $ if e < 0 then -e else e }
