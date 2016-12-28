@@ -110,10 +110,12 @@ tokenizeBool = true <|> false where
 -- parses an expr
 tokenizeExp :: Parser Exp
 tokenizeExp = parens tokenizeBool <|> tokenizeBool
-            <|> parens num <|> num <|> var
+            <|> parens robotline <|> robotline
+            <|> parens num <|> num <|> parens var <|> var
             <|> tokenizeBinExp <|> tokenizeUnaryExp <|> tokenizeRelExp where
   num = do { n <- tokenizeNumber; _ <- whitespace; return $ Constant n }
   var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
+  robotline = do { _ <- string "linesensor"; _ <- whitespace; return RobotLineSensor}
 
 -- parses a double number
 tokenizeNumber :: Parser Double

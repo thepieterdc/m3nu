@@ -1,1 +1,4 @@
 puke (6);
+order x 2;
+puke x;
+puke (x);

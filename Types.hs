@@ -42,6 +42,7 @@ data Exp = Constant Double
          | Binary BinaryOp Exp Exp
          | Unary UnaryOp Exp
          | Relational RelationalOp Exp Exp
+         | RobotLineSensor
          deriving Show
 
 -- converts bool to double-- converts bool to double
