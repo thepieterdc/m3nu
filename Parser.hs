@@ -1,4 +1,4 @@
-module Parser where
+module Parser(module Parser, module Lexer, module Types) where
 
 import Lexer
 import Types
