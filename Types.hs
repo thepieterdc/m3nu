@@ -1,4 +1,4 @@
-module Types(module Types, module Control.Applicative, module Control.Monad) where
+module Types(module Types, module Control.Applicative, module Control.Monad, module Utils) where
 
 import Control.Applicative
 import Control.Monad
@@ -7,6 +7,8 @@ import qualified Data.Map as Map
 import Data.List
 import Data.Maybe
 import MBot
+
+import Utils
 
 newtype Parser a = Parser (String -> [(a, String)])
 
@@ -47,35 +49,34 @@ data Exp = Constant Double
          | RobotLineSensor
          deriving Show
 
--- converts bool to double-- converts bool to double
-boolDouble :: Bool -> Double
-boolDouble x = if x then 1 else 0
-
--- converts double to bool
-doubleBool :: Double -> Bool
-doubleBool = (/= 0)
-
--- converts double to int
-doubleInt :: Double -> Int
-doubleInt = round
-
--- converts int to double
-intDouble :: Int -> Double
-intDouble x = fromIntegral x :: Double
-
--- converts MBot Line to double
-lineDouble :: Line -> Double
-lineDouble x = intDouble $ fromJust $ elemIndex x [BOTHW, LEFTB, RIGHTB, BOTHB]
-
 data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving Show
+
+instance Read BinaryOp where
+  readsPrec = getReadsPrec [("and", And), ("or", Or), ("+", Add), ("-", Minus),
+                            ("*", Multiply), ("/", Divide)]
 
 data UnaryOp = Abs | Not deriving Show
 
 data RelationalOp = Greater | Equals | Less deriving Show
 
-data RobotDirection = Forward | Left | Right | Backward deriving Show
+instance Read RelationalOp where
+  readsPrec = getReadsPrec [(">", Greater), ("==", Equals), ("<", Less)]
+
+data RobotDirection = DirForward | DirLeft | DirRight | DirBackward deriving Show
+
+instance Read RobotDirection where
+  readsPrec = getReadsPrec [("forward", DirForward), ("left", DirLeft),
+                            ("right", DirRight), ("backward", DirBackward)]
 
 data RobotLed = LeftLed | RightLed deriving Show
+
+instance Read RobotLed where
+  readsPrec = getReadsPrec [("left", LeftLed), ("right", RightLed)]
+
+data RobotMotor = LeftMotor | RightMotor deriving Show
+
+instance Read RobotMotor where
+  readsPrec = getReadsPrec [("left", LeftMotor), ("right", RightMotor)]
 
 data Statement = Cook Exp
                | Debug String

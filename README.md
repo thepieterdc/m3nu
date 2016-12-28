@@ -33,6 +33,7 @@ https://en.wikibooks.org/wiki/Haskell/ParseExps
 https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/12-State-Monad
 
 features
+- read geimplementeerd om ifs te vermijden
 - bools worden als doubles gezien zoals in C en PHP ,zelfde als python (0 = false, rest is true)
 - nummers zijn doubles want ints zijn doubles maar doubles zijn geen ints
 - vrij modulair
