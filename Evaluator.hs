@@ -1,10 +1,8 @@
 module Evaluator(module Evaluator, module Types) where
 
 import Control.Concurrent(threadDelay)
-import Data.Maybe
 import Control.Monad
 import Control.Monad.IO.Class
-import Control.Monad.Trans.State.Lazy
 import Types
 
 evaluate :: Statement -> Environment ()
