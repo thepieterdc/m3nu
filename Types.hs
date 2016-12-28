@@ -6,6 +6,7 @@ import Control.Monad.Trans.State.Lazy
 import qualified Data.Map as Map
 import Data.Maybe
 import MBot
+import System.HIDAPI as HID
 
 import Utils
 
@@ -58,7 +59,8 @@ data UnaryOp = Abs | Not deriving (Eq, Show)
 
 data RelationalOp = Greater | Equals | Less deriving (Eq, Show)
 
-data RobotDirection = DirForward | DirLeft | DirRight | DirBackward deriving (Eq, Show)
+data RobotDirection = DirForward | DirLeft | DirRight | Brake | DirBackward
+                    | DirBackwardLeft | DirBackwardRight deriving (Eq, Show)
 
 data RobotLed = LeftLed | RightLed deriving (Eq, Ord, Show)
 
@@ -67,6 +69,15 @@ robotLedId :: RobotLed -> Int
 robotLedId x = 1 + index [LeftLed, RightLed] x
 
 data RobotMotor = LeftMotor | RightMotor deriving (Eq, Ord, Show)
+
+robotMotorDirection :: RobotDirection -> (Device -> IO())
+robotMotorDirection DirForward = goAhead
+robotMotorDirection DirLeft = goLeft
+robotMotorDirection DirRight = goRight
+robotMotorDirection DirBackward = goBackwards
+robotMotorDirection DirBackwardLeft = robotBackwardsLeft
+robotMotorDirection DirBackwardRight = robotBackwardsRight
+robotMotorDirection Brake = stop
 
 -- gets the identifier of a motor
 robotMotorId :: RobotMotor -> Int
@@ -79,6 +90,7 @@ data Statement = Cook Exp
                | Order String Exp
                | Puke Exp
                | Review
+               | RobotDrive RobotDirection
                | RobotLeds RobotLed Exp Exp Exp
                | Seq [Statement]
                deriving Show

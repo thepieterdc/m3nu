@@ -29,7 +29,7 @@
 = Programming the mBot
 
 With this library it is possible to control the mBot robot from within Haskell over 2.4ghz wireless.
-The mBot itself needs to contain the standard firmware otherwise the library will not behave as expected. 
+The mBot itself needs to contain the standard firmware otherwise the library will not behave as expected.
 There is support for steering the motors and leds and for reading the linesensor and the ultrasonic sensor.
 An small example program is shown below, for more information about the individual functions take a look at the api documentation below.
 
@@ -46,7 +46,7 @@ main =  do
   putStrLn "Look at all the pretty colors !"
   -- Turn on led 2 of the mBot and set the RGB value to (100,0,0)
   sendCommand d $ setRGB 2 100 0 0
-  -- close the connection with the mBot 
+  -- close the connection with the mBot
   closeMBot d
 @
 -}
@@ -65,7 +65,7 @@ module MBot (openMBot,
              setRGB,
              setMotor,
              Line(LEFTB, RIGHTB, BOTHB, BOTHW),
-             Command() ) where 
+             Command() ) where
 
 import Control.Monad.Trans
 import Control.Concurrent
@@ -116,11 +116,11 @@ data Dev     = VERSION | ULTRASONIC_SENSOR | TEMPERATURE_SENSOR  | LIGHT_SENSOR 
 {-|
 
 The line sensor consists of two sensors which are able to detect either a black or a white surface.
-Therefore there are four different states to represent the state of the line sensor 
+Therefore there are four different states to represent the state of the line sensor
 
 -}
-data Line = LEFTB  -- ^ Left sensor  reads black right sensor reads white 
-          | RIGHTB -- ^ Right sensor reads black left sensor reads white 
+data Line = LEFTB  -- ^ Left sensor  reads black right sensor reads white
+          | RIGHTB -- ^ Right sensor reads black left sensor reads white
           | BOTHB  -- ^ Both the left and right sensor observe a black surface
           | BOTHW  -- ^ Both the left and right sensor observe a white surface
           deriving(Show,Eq)
@@ -156,7 +156,8 @@ sensorLength = 10
 -- maximum retries
 maxRetries   = 15
 -- defaults for motor speed
-speed        = 60
+--speed        = 60
+speed = 60
 stops        = 0
 -- port of the rbg led
 rgbp         = 7
@@ -284,9 +285,9 @@ ultra  = unsafeCoerce . shiftMap 0 . take 4 . drop 4
 --------------------------------------------------------------------------------------------
 
 {-|
-   Opens a connection with the mBot 
+   Opens a connection with the mBot
 -}
-openMBot :: (IO Device) -- ^ gives back the connection with the mBot 
+openMBot :: (IO Device) -- ^ gives back the connection with the mBot
 openMBot = withHIDAPI $ do
              HID.init
              d <- HID.open dongleID deviceID Nothing
@@ -315,8 +316,8 @@ sendCommand device (MBotCommand idx act dev port args) =
        clearBuffer device act
        return ()
 
-{-| 
-  Create an mBot command to turn on the led on a particular rgb value 
+{-|
+  Create an mBot command to turn on the led on a particular rgb value
 -}
 setRGB  index red green blue = MBotCommand idx RUN  RGBLED rgbp  [2,index,red,green,blue]
 
@@ -327,11 +328,11 @@ getUltrasonicSensor          = MBotCommand  ultraIdx  GET ULTRASONIC_SENSOR sonp
 
 
 {-|
-   Read out the status of the ultrasonic line follower 
+   Read out the status of the ultrasonic line follower
 -}
 readUltraSonic   d = ultra <$> readSensor d getUltrasonicSensor ultraIdx
 {-|
-   Read out the status of line follower sensor 
+   Read out the status of line follower sensor
 -}
 readLineFollower d = convertToReading <$> readSensor d getLineFollower  lineIdx
 
@@ -349,23 +350,21 @@ goAhead d = do  sendCommand d $ setMotor rightMotor speed  stops
    Start both motors so that the robot moves backwards
 -}
 goBackwards d = do  sendCommand d $ setMotor rightMotor (complement speed) (complement stops)
-                    sendCommand d $ setMotor leftMotor  speed stops 
-
-
+                    sendCommand d $ setMotor leftMotor  speed stops
 
 {-|
   Start the motors let the mBot turn left
 -}
 goLeft d  = do   sendCommand d $ setMotor leftMotor  stops stops
-                 sendCommand d $ setMotor rightMotor speed stops 
+                 sendCommand d $ setMotor rightMotor speed stops
 
 {-|
-  Start the motors so that the robots turns right 
+  Start the motors so that the robots turns right
 -}
 goRight d = do  sendCommand d $ setMotor rightMotor  stops               stops
-                sendCommand d $ setMotor leftMotor   (complement speed)  (complement stops) 
+                sendCommand d $ setMotor leftMotor   (complement speed)  (complement stops)
 
-{-| 
+{-|
    Stop both motors
 -}
 stop d   = do   sendCommand d $ setMotor rightMotor  stops stops

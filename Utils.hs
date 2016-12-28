@@ -1,8 +1,10 @@
 module Utils(module Utils) where
 
+import Data.Bits(complement)
 import Data.List(elemIndex)
 import Data.Maybe(fromJust)
 import qualified Data.Map as Map
+import System.HIDAPI as HID
 
 -- converts bool to double-- converts bool to double
 boolDouble :: Bool -> Double
@@ -27,3 +29,7 @@ intDouble x = fromIntegral x :: Double
 -- map.lookup for lists
 mapLookup :: (Ord a) => [(a,b)] -> a -> Maybe b
 mapLookup xs x = Map.lookup x $ Map.fromList xs
+
+-- left motor backwards, right motor zero -> moves right
+robotBackwardsRight :: Device -> IO()
+robotBackwardsRight =

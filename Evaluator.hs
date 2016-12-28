@@ -15,6 +15,7 @@ evaluate (Hungry cond t d) = evaluateHungry cond t d
 evaluate (Order val var) = evaluateOrder val var
 evaluate (Puke v) = evaluatePuke v
 evaluate Review = return ()
+evaluate (RobotDrive d) = evaluateRobotDrive d
 evaluate (RobotLeds l r g b) = evaluateRobotLed l r g b
 evaluate (Seq s) = evaluateSequence s
 
@@ -60,6 +61,12 @@ evaluateRelationalExp :: RelationalOp -> Exp -> Exp -> Environment Double
 evaluateRelationalExp Greater x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe > ye}
 evaluateRelationalExp Equals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe == ye}
 evaluateRelationalExp Less x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe < ye}
+
+evaluateRobotDrive :: RobotDirection -> Environment ()
+evaluateRobotDrive dir = do
+  handle <- liftIO openMBot
+  liftIO $ robotMotorDirection dir handle
+  liftIO $ closeMBot handle
 
 evaluateRobotLed :: RobotLed -> Exp -> Exp -> Exp -> Environment ()
 evaluateRobotLed l r g b = do

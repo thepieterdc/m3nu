@@ -1,1 +1,17 @@
-eating (tasty) {order x linesensor;hungry (x == 3){puke x;}}
+order x linesensor;
+eating (tasty) {
+  order prev x;
+  order x linesensor;
+  hungry (x == 3) {
+    drive forward;
+  }
+  hungry (x == 2) {
+    drive right;
+  }
+  hungry (x == 1) {
+    drive left;
+  }
+  hungry (x == 0) {
+    drive backward;
+  }
+}

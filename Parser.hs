@@ -25,6 +25,7 @@ statementParser = reviewParser
                 <|> orderParser
                 <|> pukeParser
                 <|> cookParser
+                <|> robotDriveParser
                 <|> robotLedParser
                 -- <|> debugParser -- vervangen door error
 
@@ -90,6 +91,13 @@ reviewParser = do
   _ <- identifier "review"
   _ <- tokenizeUntil endline
   return Review
+
+robotDriveParser :: Parser Statement
+robotDriveParser = do
+  _ <- identifier "drive"
+  dir <- tokenizeRobotDirection
+  _ <- endline
+  return $ RobotDrive dir
 
 robotLedParser :: Parser Statement
 robotLedParser = do

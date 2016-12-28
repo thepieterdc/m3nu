@@ -136,6 +136,18 @@ tokenizeRelExp = gt <|> lt <|> eq where
   eq = do { ret <- parens $ rel "==" Equals; _ <- whitespace; return ret }
   rel tk op = do { x <- tokenizeExp; _ <- string tk; _ <- whitespace; y <- tokenizeExp; _ <- whitespace; return $ Relational op x y}
 
+tokenizeRobotDirection :: Parser RobotDirection
+tokenizeRobotDirection = parens tokenizeRobotDirection <|> brake <|>forward
+                       <|> left <|> right
+                       <|> backward <|> backwardleft <|> backwardright where
+  forward = do { _ <- string "forward"; _ <- whitespace; return DirForward}
+  left = do { _ <- string "left"; _ <- whitespace; return DirLeft}
+  right = do { _ <- string "right"; _ <- whitespace; return DirRight}
+  backward = do { _ <- string "backward"; _ <- whitespace; return DirBackward}
+  backwardleft = do { _ <- string "backwardleft"; _ <- whitespace; return DirBackwardLeft}
+  backwardleft = do { _ <- string "backwardright"; _ <- whitespace; return DirBackwardRight}
+  brake = do { _ <- string "brake"; _ <- whitespace; return Brake}
+
 tokenizeRobotLed :: Parser RobotLed
 tokenizeRobotLed = left <|> right where
   left = do { _ <- identifier "left"; return LeftLed}

@@ -16,6 +16,9 @@ led left 0 0 0 = led 1
 led right 0 0 0 = led 2
 linesensor = positie in [BOTHW, LEFTB, RIGHTB, BOTHB]
 not x = 0 als niet 0 anders 1
+drive forward left right backward brake
+drive backwardleft/right = rij achterwaarts op het andere wiel
+  -> backwardright laat het rechtse wiel staan
 
 robotstuff uiteraard niets te zien met eten want kan niet
 semicolons verplicht
