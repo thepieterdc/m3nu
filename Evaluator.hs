@@ -67,9 +67,7 @@ evaluateRobotLed l r g b = do
   gv <- evaluateExp g
   bv <- evaluateExp b
   handle <- liftIO openMBot
-  case l of
-    LeftLed -> liftIO $ sendCommand handle $ setRGB 1 (doubleInt rv) (doubleInt gv) (doubleInt bv)
-    _ -> liftIO $ sendCommand handle $ setRGB 2 (doubleInt rv) (doubleInt gv) (doubleInt bv)
+  liftIO $ sendCommand handle $ setRGB (robotLedId l) (doubleInt rv) (doubleInt gv) (doubleInt bv)
   liftIO $ closeMBot handle
 
 evaluateRobotLineSensor :: Environment Double
@@ -77,7 +75,7 @@ evaluateRobotLineSensor = do
   handle <- liftIO openMBot
   val <- liftIO $ readLineFollower handle
   liftIO $ closeMBot handle
-  return $ lineDouble val
+  return $ robotLineDouble val
 
 evaluateSequence :: [Statement] -> Environment ()
 evaluateSequence [] = return ()

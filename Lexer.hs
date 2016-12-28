@@ -8,6 +8,10 @@ import Types
 between :: Char -> Char -> Parser a -> Parser a
 between l r p = do { _ <- token l; ret <- p; _ <- token r; _ <- whitespace; return ret}
 
+-- runs the parser between { }
+brackets :: Parser a -> Parser a
+brackets = between '{' '}'
+
 -- parser one char, anything, returns the char + rest of string
 char :: Parser Char
 char = Parser f where

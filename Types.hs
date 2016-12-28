@@ -4,7 +4,6 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.State.Lazy
 import qualified Data.Map as Map
-import Data.List
 import Data.Maybe
 import MBot
 
@@ -47,36 +46,31 @@ data Exp = Constant Double
          | Unary UnaryOp Exp
          | Relational RelationalOp Exp Exp
          | RobotLineSensor
-         deriving Show
+         deriving (Eq, Show)
 
-data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving Show
+-- gets the double of a line
+robotLineDouble :: Line -> Double
+robotLineDouble x = intDouble $ index [BOTHW, LEFTB, RIGHTB, BOTHB] x
 
-instance Read BinaryOp where
-  readsPrec = getReadsPrec [("and", And), ("or", Or), ("+", Add), ("-", Minus),
-                            ("*", Multiply), ("/", Divide)]
+data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving (Eq, Show)
 
-data UnaryOp = Abs | Not deriving Show
+data UnaryOp = Abs | Not deriving (Eq, Show)
 
-data RelationalOp = Greater | Equals | Less deriving Show
+data RelationalOp = Greater | Equals | Less deriving (Eq, Show)
 
-instance Read RelationalOp where
-  readsPrec = getReadsPrec [(">", Greater), ("==", Equals), ("<", Less)]
+data RobotDirection = DirForward | DirLeft | DirRight | DirBackward deriving (Eq, Show)
 
-data RobotDirection = DirForward | DirLeft | DirRight | DirBackward deriving Show
+data RobotLed = LeftLed | RightLed deriving (Eq, Ord, Show)
 
-instance Read RobotDirection where
-  readsPrec = getReadsPrec [("forward", DirForward), ("left", DirLeft),
-                            ("right", DirRight), ("backward", DirBackward)]
+-- gets the identifier of a led
+robotLedId :: RobotLed -> Int
+robotLedId x = 1 + index [LeftLed, RightLed] x
 
-data RobotLed = LeftLed | RightLed deriving Show
+data RobotMotor = LeftMotor | RightMotor deriving (Eq, Ord, Show)
 
-instance Read RobotLed where
-  readsPrec = getReadsPrec [("left", LeftLed), ("right", RightLed)]
-
-data RobotMotor = LeftMotor | RightMotor deriving Show
-
-instance Read RobotMotor where
-  readsPrec = getReadsPrec [("left", LeftMotor), ("right", RightMotor)]
+-- gets the identifier of a motor
+robotMotorId :: RobotMotor -> Int
+robotMotorId r = fromJust $ mapLookup [(LeftMotor, 0x9), (RightMotor, 0xa)] r
 
 data Statement = Cook Exp
                | Debug String
@@ -93,7 +87,6 @@ type EnvironmentVar = Map.Map String Double
 
 type Environment a = StateT EnvironmentVar IO a
 
--- fromjust want als var niet bestaat gaat toch niet werken
 -- gets variable
 environmentGet :: String -> Environment Double
 environmentGet k = do { env <- get; return $ fromJust $ Map.lookup k env }
