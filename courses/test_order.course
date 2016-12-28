@@ -1,1 +1,6 @@
-order x 5;
+order x tasty;
+puke x;
+order x (not x);
+puke x;
+order x (not x);
+puke x;

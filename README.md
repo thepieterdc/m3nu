@@ -14,6 +14,7 @@ print = puke "test"
 sleep = cook (want kan niet eten tijdens koken) tijd in seconden!
 led left 0 0 0 = led 1
 led right 0 0 0 = led 2
+not x = 0 als niet 0 anders 1
 
 semicolons verplicht
 newlines verplicht

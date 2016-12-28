@@ -1,2 +1,1 @@
-order x tasty;
-eating (tasty) { order x (not x); puke x; }
+order x tasty;eating (tasty) {order x (not x);led left -> 0 0 0;led right -> 0 0 0;led left -> (255-(255*x)) 0 (255*x);led right -> (255*x) 0 (255-(255*x));}

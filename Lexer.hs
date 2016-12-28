@@ -95,10 +95,10 @@ trim = filter (/= '\n') . filter (/= '\r')
 -- parses a binary expression -- todo add bools
 tokenizeBinExp :: Parser Exp
 tokenizeBinExp = add <|> sub <|> mul <|> dvd where
-  add = do { ret <- parens $ bin '+' Add; _ <- whitespace; return ret }
-  sub = do { ret <- parens $ bin '-' Minus; _ <- whitespace; return ret }
-  mul = do { ret <- parens $ bin '*' Multiply; _ <- whitespace; return ret }
-  dvd = do { ret <- parens $ bin '/' Divide; _ <- whitespace; return ret }
+  add = do { ret <- parens $ bin '+' Add; return ret }
+  sub = do { ret <- parens $ bin '-' Minus; return ret }
+  mul = do { ret <- parens $ bin '*' Multiply; return ret }
+  dvd = do { ret <- parens $ bin '/' Divide; return ret }
   bin tk op = do { x <- tokenizeExp; _ <- token tk; y <- tokenizeExp; _ <- whitespace; return $ Binary op x y}
 
 -- parses a boolean
