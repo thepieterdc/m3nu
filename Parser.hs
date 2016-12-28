@@ -45,9 +45,9 @@ eatingParser :: Parser Statement
 eatingParser = do
   _ <- identifier "eating"
   cond <- tokenizeExp
-  _ <- identifier "{"
+  _ <- token '{'
   action <- parse
-  _ <- identifier "}"
+  _ <- token '}'
   return $ Eating cond action
 
 -- parses hungry (if else)

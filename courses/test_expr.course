@@ -1,5 +1,6 @@
 puke (10+4);
 puke (tasty);
+puke (not tasty);
 puke (disguisting);
 puke (tasty == disguisting);
 puke (tasty == tasty);

@@ -62,7 +62,7 @@ intDouble x = fromIntegral x :: Double
 
 data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving Show
 
-data UnaryOp = Abs deriving Show
+data UnaryOp = Abs | Not deriving Show
 
 data RelationalOp = Greater | Equals | Less deriving Show
 

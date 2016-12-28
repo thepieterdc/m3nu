@@ -77,3 +77,4 @@ evaluateSequence (s:sq) = do {_ <- evaluate s; evaluateSequence sq}
 
 evaluateUnaryExp :: UnaryOp -> Exp -> Environment Double
 evaluateUnaryExp Abs x = do { e <- evaluateExp x; return $ if e < 0 then -e else e }
+evaluateUnaryExp Not x = do { e <- evaluateExp x; return $ if e == 0 then 1 else 0}

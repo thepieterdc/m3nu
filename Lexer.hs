@@ -137,8 +137,10 @@ tokenizeRobotLed = left <|> right where
 
 -- parses a Unary expression
 tokenizeUnaryExp :: Parser Exp
-tokenizeUnaryExp = parens absval <|> absval where
+tokenizeUnaryExp = parens absval <|> absval
+                 <|> parens notval <|> notval where
   absval = do { ret <- between '|' '|' tokenizeExp; return $ Unary Abs ret }
+  notval = do { _ <- identifier "not"; ret <- tokenizeExp; return $ Unary Not ret }
 
 -- skips until a given token, returning the skipped part including the cond obv because parsed
 tokenizeUntil :: Parser a -> Parser String
