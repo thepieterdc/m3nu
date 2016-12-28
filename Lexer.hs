@@ -97,14 +97,16 @@ trim = filter (/= '\n') . filter (/= '\r')
 
 -- [ TOKENIZERS ] --
 
--- parses a binary expression -- todo add bools
+-- parses a binary expression
 tokenizeBinExp :: Parser Exp
-tokenizeBinExp = add <|> sub <|> mul <|> dvd where
-  add = do { ret <- parens $ bin '+' Add; return ret }
-  sub = do { ret <- parens $ bin '-' Minus; return ret }
-  mul = do { ret <- parens $ bin '*' Multiply; return ret }
-  dvd = do { ret <- parens $ bin '/' Divide; return ret }
-  bin tk op = do { x <- tokenizeExp; _ <- token tk; y <- tokenizeExp; _ <- whitespace; return $ Binary op x y}
+tokenizeBinExp = add <|> sub <|> mul <|> dvd <|> binand <|> binor where
+  add = do { ret <- parens $ bin "+" Add; _ <- whitespace; return ret }
+  sub = do { ret <- parens $ bin "-" Minus; _ <- whitespace; return ret }
+  mul = do { ret <- parens $ bin "*" Multiply; _ <- whitespace; return ret }
+  dvd = do { ret <- parens $ bin "/" Divide; _ <- whitespace; return ret }
+  binand = do { ret <- parens $ bin "and" And; _ <- whitespace; return ret }
+  binor = do { ret <- parens $ bin "or" Or; _ <- whitespace; return ret }
+  bin tk op = do { x <- tokenizeExp; _ <- string tk; _ <- whitespace; y <- tokenizeExp; _ <- whitespace; return $ Binary op x y}
 
 -- parses a boolean
 tokenizeBool :: Parser Exp
@@ -140,7 +142,7 @@ tokenizeRelExp = gt <|> lt <|> eq where
 tokenizeRobotDirection :: Parser Bot.Direction
 tokenizeRobotDirection = parens tokenizeRobotDirection <|> brake <|>forward
                        <|> left <|> right
-                       <|> backward <|> backwardleft <|> backwardright where
+                       <|> backwardleft <|> backwardright<|> backward where
   forward = do { _ <- string "forward"; _ <- whitespace; return Bot.DirForward}
   left = do { _ <- string "left"; _ <- whitespace; return Bot.DirLeft}
   right = do { _ <- string "right"; _ <- whitespace; return Bot.DirRight}

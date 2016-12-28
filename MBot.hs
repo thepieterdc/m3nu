@@ -157,7 +157,7 @@ sensorLength = 10
 maxRetries   = 15
 -- defaults for motor speed
 --speed        = 60
-speed = 60
+speed = 80
 stops        = 0
 -- port of the rbg led
 rgbp         = 7

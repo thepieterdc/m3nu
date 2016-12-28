@@ -18,12 +18,12 @@ data Motor = LeftMotor | RightMotor deriving (Eq, Ord, Show)
 backwardsLeft :: Device -> IO()
 backwardsLeft d = do
   sendCommand d $ setMotor (motorId LeftMotor) 0 0
-  sendCommand d $ setMotor (motorId RightMotor) (complement 60) (complement 0)
+  sendCommand d $ setMotor (motorId RightMotor) (complement 80) (complement 0)
 
 -- left motor backwards, right motor zero -> moves right
 backwardsRight :: Device -> IO()
 backwardsRight d = do
-  sendCommand d $ setMotor (motorId LeftMotor) 60 0
+  sendCommand d $ setMotor (motorId LeftMotor) 80 0
   sendCommand d $ setMotor (motorId RightMotor) 0 0
 
 -- closes connection

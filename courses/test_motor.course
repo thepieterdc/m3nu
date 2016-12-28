@@ -1,1 +1,13 @@
 drive forward;
+cook 0.5;
+drive backward;
+cook 0.5;
+drive left;
+cook 0.5;
+drive right;
+cook 0.5;
+drive backwardleft;
+cook 0.5;
+drive backwardright;
+cook 0.5;
+drive brake;
