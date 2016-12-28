@@ -25,6 +25,7 @@ statementParser = reviewParser
                 <|> orderParser
                 <|> pukeParser
                 <|> cookParser
+                <|> robotLedParser
                 -- <|> debugParser -- vervangen door error
 
 -- parses cook (sleep)
@@ -90,6 +91,17 @@ reviewParser = do
   _ <- identifier "review"
   _ <- tokenizeUntil endline
   return Review
+
+robotLedParser :: Parser Statement
+robotLedParser = do
+  _ <- identifier "led"
+  l <- tokenizeRobotLed
+  _ <- identifier "->"
+  r <- tokenizeExp
+  g <- tokenizeExp
+  b <- tokenizeExp
+  _ <- endline
+  return $ RobotLeds l r g b
 
 parseString :: String -> IO Statement
 parseString code = return $ doParse parse $ trim code

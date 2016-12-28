@@ -58,6 +58,8 @@ data UnaryOp = Abs deriving Show
 
 data RelationalOp = Greater | Equals | Less deriving Show
 
+data RobotLed = LeftLed | RightLed deriving Show
+
 data Statement = Cook Exp
                | Debug String
                | Eating Exp Statement
@@ -65,6 +67,7 @@ data Statement = Cook Exp
                | Order String Exp
                | Puke Exp
                | Review
+               | RobotLeds RobotLed Exp Exp Exp
                | Seq [Statement]
                deriving Show
 

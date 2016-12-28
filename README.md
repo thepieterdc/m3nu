@@ -12,6 +12,8 @@ arith exp = + - * / %
 comments = review test
 print = puke "test"
 sleep = cook (want kan niet eten tijdens koken) tijd in seconden!
+led left 0 0 0 = led 1
+led right 0 0 0 = led 2
 
 semicolons verplicht
 newlines verplicht
@@ -32,4 +34,4 @@ features
 - nummers zijn doubles want ints zijn doubles maar doubles zijn geen ints
 - vrij modulair
 - whitespace maakt totaal niet uit (moet wel minstens 1 whitespace na identifier staan)
-- robot deel staat los van volledige taal
+- overal hlint/gekeken om het te verkorten

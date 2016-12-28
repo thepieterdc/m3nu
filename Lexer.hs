@@ -130,6 +130,11 @@ tokenizeRelExp = gt <|> lt <|> eq where
   eq = do { ret <- parens $ rel "==" Equals; _ <- whitespace; return ret }
   rel tk op = do { x <- tokenizeExp; _ <- string tk; _ <- whitespace; y <- tokenizeExp; _ <- whitespace; return $ Relational op x y}
 
+tokenizeRobotLed :: Parser RobotLed
+tokenizeRobotLed = left <|> right where
+  left = do { _ <- identifier "left"; return LeftLed}
+  right = do { _ <- identifier "right"; return RightLed}
+
 -- parses a Unary expression
 tokenizeUnaryExp :: Parser Exp
 tokenizeUnaryExp = parens absval <|> absval where
