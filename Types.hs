@@ -5,9 +5,8 @@ import Control.Monad
 import Control.Monad.Trans.State.Lazy
 import qualified Data.Map as Map
 import Data.Maybe
-import MBot
-import System.HIDAPI as HID
 
+import qualified MBotPlus as Bot
 import Utils
 
 newtype Parser a = Parser (String -> [(a, String)])
@@ -49,39 +48,11 @@ data Exp = Constant Double
          | RobotLineSensor
          deriving (Eq, Show)
 
--- gets the double of a line
-robotLineDouble :: Line -> Double
-robotLineDouble x = intDouble $ index [BOTHW, LEFTB, RIGHTB, BOTHB] x
-
 data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving (Eq, Show)
 
 data UnaryOp = Abs | Not deriving (Eq, Show)
 
 data RelationalOp = Greater | Equals | Less deriving (Eq, Show)
-
-data RobotDirection = DirForward | DirLeft | DirRight | Brake | DirBackward
-                    | DirBackwardLeft | DirBackwardRight deriving (Eq, Show)
-
-data RobotLed = LeftLed | RightLed deriving (Eq, Ord, Show)
-
--- gets the identifier of a led
-robotLedId :: RobotLed -> Int
-robotLedId x = 1 + index [LeftLed, RightLed] x
-
-data RobotMotor = LeftMotor | RightMotor deriving (Eq, Ord, Show)
-
-robotMotorDirection :: RobotDirection -> (Device -> IO())
-robotMotorDirection DirForward = goAhead
-robotMotorDirection DirLeft = goLeft
-robotMotorDirection DirRight = goRight
-robotMotorDirection DirBackward = goBackwards
-robotMotorDirection DirBackwardLeft = robotBackwardsLeft
-robotMotorDirection DirBackwardRight = robotBackwardsRight
-robotMotorDirection Brake = stop
-
--- gets the identifier of a motor
-robotMotorId :: RobotMotor -> Int
-robotMotorId r = fromJust $ mapLookup [(LeftMotor, 0x9), (RightMotor, 0xa)] r
 
 data Statement = Cook Exp
                | Debug String
