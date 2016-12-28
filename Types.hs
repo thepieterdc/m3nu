@@ -73,6 +73,8 @@ data UnaryOp = Abs | Not deriving Show
 
 data RelationalOp = Greater | Equals | Less deriving Show
 
+data RobotDirection = Forward | Left | Right | Backward deriving Show
+
 data RobotLed = LeftLed | RightLed deriving Show
 
 data Statement = Cook Exp

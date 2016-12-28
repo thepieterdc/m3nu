@@ -14,8 +14,10 @@ print = puke "test"
 sleep = cook (want kan niet eten tijdens koken) tijd in seconden!
 led left 0 0 0 = led 1
 led right 0 0 0 = led 2
+linesensor = positie in [BOTHW, LEFTB, RIGHTB, BOTHB]
 not x = 0 als niet 0 anders 1
 
+robotstuff uiteraard niets te zien met eten want kan niet
 semicolons verplicht
 newlines verplicht
 expressies moeten tussen ()
