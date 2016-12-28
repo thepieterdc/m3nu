@@ -1,4 +1,4 @@
-module Evaluator(module Evaluator, module Environment, module Types) where
+module Evaluator where
 
 import Control.Concurrent(threadDelay)
 import Data.Maybe
@@ -15,7 +15,7 @@ evaluate (Order val var) = evaluateOrder val var
 -- evaluate (Seq s) = evaluateSequence s
 
 evaluateExp :: Exp -> Environment Double
-evaluateExp (Constant c) _ = return c
+evaluateExp (Constant c) = return c
 -- evaluateExp (Variable v) env = return $ fromMaybe (error $ "Unknown variable: " ++ v) (getVariable v env)
 -- evaluateExp (Binary op x y) env = evaluateBinaryExp op x y env
 -- evaluateExp (Unary op x) env = evaluateUnaryExp op x env
@@ -49,11 +49,7 @@ evaluateExp (Constant c) _ = return c
 --   if doubleBool c then evaluate ifc env else evaluate elsec env
 
 evaluateOrder :: String -> Exp -> Environment ()
-evaluateOrder var val = do
-  x <- evaluateExp val
-  env <- get
-  put $ M.insert var x env
-  return $ setVariable var x env
+evaluateOrder var v = do { x <- evaluateExp v; environmentSet var x; return () }
 --
 -- evaluatePuke :: Exp -> Environment ()
 -- evaluatePuke e = do { val <- evaluateExp e env; print val; return env}
