@@ -3,6 +3,8 @@ module Evaluator(module Evaluator, module Types) where
 import Control.Concurrent(threadDelay)
 import Control.Monad
 import Control.Monad.IO.Class
+import MBot
+
 import Types
 
 evaluate :: Statement -> Environment ()
@@ -13,6 +15,7 @@ evaluate (Hungry cond t d) = evaluateHungry cond t d
 evaluate (Order val var) = evaluateOrder val var
 evaluate (Puke v) = evaluatePuke v
 evaluate Review = return ()
+evaluate (RobotLeds l r g b) = evaluateRobotLed l r g b
 evaluate (Seq s) = evaluateSequence s
 
 evaluateBinaryExp :: BinaryOp -> Exp -> Exp -> Environment Double
@@ -56,6 +59,17 @@ evaluateRelationalExp :: RelationalOp -> Exp -> Exp -> Environment Double
 evaluateRelationalExp Greater x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe > ye}
 evaluateRelationalExp Equals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe == ye}
 evaluateRelationalExp Less x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe < ye}
+
+evaluateRobotLed :: RobotLed -> Exp -> Exp -> Exp -> Environment ()
+evaluateRobotLed l r g b = do
+  rv <- evaluateExp r
+  gv <- evaluateExp g
+  bv <- evaluateExp b
+  handle <- liftIO openMBot
+  case l of
+    LeftLed -> liftIO $ sendCommand handle $ setRGB 1 (doubleInt rv) (doubleInt gv) (doubleInt bv)
+    _ -> liftIO $ sendCommand handle $ setRGB 2 (doubleInt rv) (doubleInt gv) (doubleInt bv)
+  liftIO $ closeMBot handle
 
 evaluateSequence :: [Statement] -> Environment ()
 evaluateSequence [] = return ()

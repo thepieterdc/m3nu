@@ -52,6 +52,14 @@ boolDouble x = if x then 1 else 0
 doubleBool :: Double -> Bool
 doubleBool = (/= 0)
 
+-- converts double to int
+doubleInt :: Double -> Int
+doubleInt = round
+
+-- converts int to double
+intDouble :: Int -> Double
+intDouble x = fromIntegral x :: Double
+
 data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving Show
 
 data UnaryOp = Abs deriving Show
