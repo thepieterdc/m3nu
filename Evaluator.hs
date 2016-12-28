@@ -43,6 +43,7 @@ evaluateExp (Variable v) = environmentGet v
 evaluateExp (Binary op x y) = evaluateBinaryExp op x y
 evaluateExp (Unary op x) = evaluateUnaryExp op x
 evaluateExp (Relational op x y) = evaluateRelationalExp op x y
+evaluateExp RobotLineSensor = evaluateRobotLineSensor
 
 evaluateHungry :: Exp -> Statement -> Statement -> Environment ()
 evaluateHungry cond ifc elsec = do
@@ -70,6 +71,13 @@ evaluateRobotLed l r g b = do
     LeftLed -> liftIO $ sendCommand handle $ setRGB 1 (doubleInt rv) (doubleInt gv) (doubleInt bv)
     _ -> liftIO $ sendCommand handle $ setRGB 2 (doubleInt rv) (doubleInt gv) (doubleInt bv)
   liftIO $ closeMBot handle
+
+evaluateRobotLineSensor :: Environment Double
+evaluateRobotLineSensor = do
+  handle <- liftIO openMBot
+  val <- liftIO $ readLineFollower handle
+  liftIO $ closeMBot handle
+  return $ lineDouble val
 
 evaluateSequence :: [Statement] -> Environment ()
 evaluateSequence [] = return ()

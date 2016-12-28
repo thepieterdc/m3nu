@@ -4,7 +4,9 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.State.Lazy
 import qualified Data.Map as Map
+import Data.List
 import Data.Maybe
+import MBot
 
 newtype Parser a = Parser (String -> [(a, String)])
 
@@ -60,6 +62,10 @@ doubleInt = round
 -- converts int to double
 intDouble :: Int -> Double
 intDouble x = fromIntegral x :: Double
+
+-- converts MBot Line to double
+lineDouble :: Line -> Double
+lineDouble x = intDouble $ fromJust $ elemIndex x [BOTHW, LEFTB, RIGHTB, BOTHB]
 
 data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving Show
 
