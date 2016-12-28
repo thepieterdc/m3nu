@@ -14,7 +14,7 @@ evaluate (Debug s) = evaluateDebug s
 evaluate (Order val var) = evaluateOrder val var
 evaluate (Puke v) = evaluatePuke v
 evaluate Review = return ()
--- evaluate (Seq s) = evaluateSequence s
+evaluate (Seq s) = evaluateSequence s
 
 evaluateExp :: Exp -> Environment Double
 evaluateExp (Constant c) = return c
@@ -60,12 +60,10 @@ evaluatePuke e = do { val <- evaluateExp e; liftIO $ print val; return ()}
 -- evaluateRelationalExp Greater x y env = do { xe <- evaluateExp x env; ye <- evaluateExp y env; return $ boolDouble $ xe > ye}
 -- evaluateRelationalExp Equals x y env = do { xe <- evaluateExp x env; ye <- evaluateExp y env; return $ boolDouble $ xe == ye}
 -- evaluateRelationalExp Less x y env = do { xe <- evaluateExp x env; ye <- evaluateExp y env; return $ boolDouble $ xe < ye}
---
--- evaluateSequence :: [Statement] -> Environment ()
--- evaluateSequence [] env = return env
--- evaluateSequence (s:sq) env = do
---   env' <- evaluate s env
---   evaluateSequence sq env'
+
+evaluateSequence :: [Statement] -> Environment ()
+evaluateSequence [] = return ()
+evaluateSequence (s:sq) = do {_ <- evaluate s; evaluateSequence sq}
 
 evaluateUnaryExp :: UnaryOp -> Exp -> Environment Double
 evaluateUnaryExp Abs x = do { e <- evaluateExp x; return $ if e < 0 then -e else e }
