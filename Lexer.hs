@@ -1,7 +1,7 @@
 module Lexer(module Lexer, module Types, module Data.Char) where
 
 import Data.Char
-
+--
 import qualified MBotPlus as Bot
 import Types
 
@@ -76,19 +76,19 @@ preprocess = filter (`notElem` [' ', '\t', '\n', '\r'])
 -- parses a binary expression
 tokenizeBinExp :: Parser Exp
 tokenizeBinExp = add <|> sub <|> mul <|> dvd <|> binand <|> binor where
-  add = do { ret <- parens $ bin "+" Add; return ret }
-  sub = do { ret <- parens $ bin "-" Minus; return ret }
-  mul = do { ret <- parens $ bin "*" Multiply; return ret }
-  dvd = do { ret <- parens $ bin "/" Divide; return ret }
-  binand = do { ret <- parens $ bin "and" And; return ret }
-  binor = do { ret <- parens $ bin "or" Or; return ret }
+  add = parens $ bin "+" Add;
+  sub = parens $ bin "-" Minus;
+  mul = parens $ bin "*" Multiply;
+  dvd = parens $ bin "/" Divide;
+  binand = parens $ bin "and" And;
+  binor = parens $ bin "or" Or;
   bin tk op = do { x <- tokenizeExp; _ <- string tk; y <- tokenizeExp; return $ Binary op x y}
 
 -- parses a boolean
 tokenizeBool :: Parser Exp
 tokenizeBool = true <|> false where
-  true = do { _ <- string "tasty"; _ <- whitespace; return $ Constant 1 }
-  false = do { _ <- string "disguisting"; _ <- whitespace; return $ Constant 0 }
+  true = do { _ <- string "tasty"; return $ Constant 1 }
+  false = do { _ <- string "disguisting"; return $ Constant 0 }
 
 tokenizeColor :: Parser Color
 tokenizeColor = rgb <|> off <|> white <|> red <|> green <|> blue
@@ -110,10 +110,10 @@ tokenizeExp = parens tokenizeBool <|> tokenizeBool
             <|> parens robotultrason <|> robotultrason
             <|> parens num <|> num <|> parens var <|> var
             <|> tokenizeBinExp <|> tokenizeUnaryExp <|> tokenizeRelExp where
-  num = do { n <- tokenizeNumber; _ <- whitespace; return $ Constant n }
-  var = do { x <- some (spot isAlphaNum); _ <- whitespace; return $ Variable x }
-  robotline = do { _ <- string "linesensor"; _ <- whitespace; return RobotLineSensor}
-  robotultrason = do { _ <- string "ultrason"; _ <- whitespace; return RobotUltrason}
+  num = do { n <- tokenizeNumber; return $ Constant n }
+  var = do { x <- some (spot isAlphaNum); return $ Variable x }
+  robotline = do { _ <- string "linesensor"; return RobotLineSensor}
+  robotultrason = do { _ <- string "ultrason"; return RobotUltrason}
 
 -- parses a double number
 tokenizeNumber :: Parser Double
@@ -125,24 +125,24 @@ tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
 
 tokenizeRelExp :: Parser Exp
 tokenizeRelExp = gteq <|> lteq <|> gt <|> lt <|> eq where
-  gteq = do { ret <- parens $ rel ">=" GrEquals; _ <- whitespace; return ret }
-  lteq = do { ret <- parens $ rel "<=" LtEquals; _ <- whitespace; return ret }
-  gt = do { ret <- parens $ rel ">" Greater; _ <- whitespace; return ret }
-  lt = do { ret <- parens $ rel "<" Less; _ <- whitespace; return ret }
-  eq = do { ret <- parens $ rel "==" Equals; _ <- whitespace; return ret }
-  rel tk op = do { x <- tokenizeExp; _ <- string tk; _ <- whitespace; y <- tokenizeExp; _ <- whitespace; return $ Relational op x y}
+  gteq = parens $ rel ">=" GrEquals;
+  lteq = parens $ rel "<=" LtEquals;
+  gt = parens $ rel ">" Greater;
+  lt = parens $ rel "<" Less;
+  eq = parens $ rel "==" Equals;
+  rel tk op = do { x <- tokenizeExp; _ <- string tk; y <- tokenizeExp; return $ Relational op x y}
 
 tokenizeRobotDirection :: Parser Bot.Direction
 tokenizeRobotDirection = parens tokenizeRobotDirection <|> brake <|>forward
                        <|> left <|> right
                        <|> backwardleft <|> backwardright<|> backward where
-  forward = do { _ <- string "forward"; _ <- whitespace; return Bot.DirForward}
-  left = do { _ <- string "left"; _ <- whitespace; return Bot.DirLeft}
-  right = do { _ <- string "right"; _ <- whitespace; return Bot.DirRight}
-  backward = do { _ <- string "backward"; _ <- whitespace; return Bot.DirBackward}
-  backwardleft = do { _ <- string "backwardleft"; _ <- whitespace; return Bot.DirBackwardLeft}
-  backwardright = do { _ <- string "backwardright"; _ <- whitespace; return Bot.DirBackwardRight}
-  brake = do { _ <- string "brake"; _ <- whitespace; return Bot.Brake}
+  forward = do { _ <- string "forward"; return Bot.DirForward}
+  left = do { _ <- string "left"; return Bot.DirLeft}
+  right = do { _ <- string "right"; return Bot.DirRight}
+  backward = do { _ <- string "backward"; return Bot.DirBackward}
+  backwardleft = do { _ <- string "backwardleft"; return Bot.DirBackwardLeft}
+  backwardright = do { _ <- string "backwardright"; return Bot.DirBackwardRight}
+  brake = do { _ <- string "brake"; return Bot.Brake}
 
 tokenizeRobotLed :: Parser Bot.Led
 tokenizeRobotLed = left <|> right where
