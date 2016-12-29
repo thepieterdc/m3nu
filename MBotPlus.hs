@@ -1,4 +1,4 @@
-module MBotPlus () where
+module MBotPlus (module MBotPlus) where
 
 import Data.Bits
 import Data.Maybe(fromJust)

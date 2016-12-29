@@ -1,4 +1,4 @@
-module Utils() where
+module Utils(module Utils) where
 
 import Data.List(elemIndex)
 import Data.Maybe(fromJust)

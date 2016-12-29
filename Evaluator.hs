@@ -1,4 +1,4 @@
-module Evaluator() where
+module Evaluator(evaluate) where
 
 import Control.Concurrent(threadDelay)
 import Control.Monad
@@ -6,6 +6,7 @@ import Control.Monad.IO.Class
 import qualified MBotPlus as Bot
 
 import Types
+import Utils
 
 evaluate :: Statement -> Environment ()
 evaluate (Cook a) = evaluateCook a

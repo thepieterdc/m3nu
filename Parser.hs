@@ -1,4 +1,4 @@
-module Parser() where
+module Parser(parseFile, parseString) where
 
 import Lexer
 import Types
@@ -99,9 +99,9 @@ robotLedParser = do
   col <- color
   _ <- end
   return $ RobotLeds l col
---
--- parseString :: String -> IO Statement
--- parseString code = return $ doParse parse $ trim code
---
--- parseFile :: String -> IO Statement
--- parseFile file = do { code <- readFile file; return $ doParse parse $ trim code }
+
+parseString :: String -> IO Statement
+parseString code = return $ doParse parse $ preprocess code
+
+parseFile :: String -> IO Statement
+parseFile file = do { code <- readFile file; return $ doParse parse $ preprocess code }
