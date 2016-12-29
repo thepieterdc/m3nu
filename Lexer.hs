@@ -83,9 +83,14 @@ preprocess = filter (`notElem` [' ', '\t', '\n', '\r'])
 -- [ TOKENIZERS ] --
 
 bool :: Parser Exp
-bool = true <|> false where
+bool = parens bool <|> true <|> false where
   true = do { _ <- string "tasty"; return $ Constant 1 }
   false = do { _ <- string "disguisting"; return $ Constant 0 }
+
+binaryExpr :: Parser Exp
+binaryExpr = parens binaryExpr <|> add <|> sub <|> mul <|> dvd
+           <|> binand <|> binor <|> gteq <|> lteq <|> gt <|> lt <|> eq
+  rel tk op = do { (x,y) <- help tk; return $ Relational op x y}
 
 color :: Parser Color
 color = rgb <|> off <|> white <|> red <|> green <|> blue
@@ -102,13 +107,8 @@ color = rgb <|> off <|> white <|> red <|> green <|> blue
 
 -- parses an expr
 expr :: Parser Exp
-expr = parens bool <|> bool
-            <|> parens robotline <|> robotline
-            <|> parens robotultrason <|> robotultrason
-            <|> parens num <|> num <|> parens var <|> var
-            <|> add <|> sub <|> mul <|> dvd <|> binand <|> binor
-            <|> parens absval <|> absval <|> parens notval <|> notval
-            <|> gteq <|> lteq <|> gt <|> lt <|> eq where
+expr = parens expr <|> bool <|> robotline <|> robotultrason <|> num <|> var
+     <|> binaryExpr <|> unaryExpr where
   num = do { n <- number; return $ Constant n }
   var = do { x <- some (spot isAlphaNum); return $ Variable x }
   robotline = do { _ <- string "linesensor"; return RobotLineSensor}
@@ -121,8 +121,6 @@ expr = parens bool <|> bool
   binor = parens $ bin "or" Or;
   help tk = do { x <- expr; _ <- string tk; y <- expr; return (x,y)}
   bin tk op = do { (x,y) <- help tk; return $ Binary op x y}
-  absval = do { ret <- between '|' '|' expr; return $ Unary Abs ret }
-  notval = do { _ <- token '!'; ret <- expr; return $ Unary Not ret }
   gteq = parens $ rel ">=" GrEquals;
   lteq = parens $ rel "<=" LtEquals;
   gt = parens $ rel ">" Greater;
@@ -153,3 +151,8 @@ robotLed :: Parser Bot.Led
 robotLed = left <|> right where
   left = do { _ <- string "left"; return Bot.LeftLed}
   right = do { _ <- string "right"; return Bot.RightLed}
+
+unaryExpr :: Parser Exp
+unaryExpr = parens unaryExpr <|> absval <|> notval where
+  absval = do { ret <- between '|' '|' expr; return $ Unary Abs ret }
+  notval = do { _ <- token '!'; ret <- expr; return $ Unary Not ret }
