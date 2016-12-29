@@ -12,7 +12,7 @@ import Types
 main :: IO ((), EnvironmentVar)
 main = do
   args <- getArgs
-  if length args /= 1 then error "Usage: ./Main path_to_course.course"
+  if length args /= 1 then error ("Usage: ./Main path_to_course.course: " ++ (show $ length args))
   else do
     ast <- parseFile $ head args;
     runStateT (evaluate ast) (fromList [])
