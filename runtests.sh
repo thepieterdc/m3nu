@@ -2,6 +2,7 @@
 TESTS=courses/tests/*.course
 for t in $TESTS
 do
-  echo "Testing: $t"
-  runhaskell Main.hs $t
+  echo -n "Testing: $t "
+  runhaskell Main.hs $t > /dev/null
+  echo ""
 done

@@ -1,1 +1,5 @@
-puke 6;
+puke 8;
+puke (6);
+order x -> 2;
+puke x;
+puke (x);

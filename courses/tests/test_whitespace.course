@@ -1,7 +1,5 @@
 order x -> 5;
-eating(tasty) ->
-  hungry(x == 5) ->
-    puke x;
-    puke(x);
-  satisfied;
+eating(x) ->
+  order x -> (x-1);
+  puke x;
 enough;

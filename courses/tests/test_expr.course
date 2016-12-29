@@ -1,5 +1,5 @@
-puke (4>=4);
-puke (10+4);
+puke (4 >= 4);
+puke (10 + 4);
 puke (tasty or disguisting);
 puke (tasty and disguisting);
 puke (tasty);
@@ -12,4 +12,4 @@ puke (10 < 4);
 puke 10;
 puke (10);
 puke tasty;
-puke (1+tasty);
+puke (1 + tasty);

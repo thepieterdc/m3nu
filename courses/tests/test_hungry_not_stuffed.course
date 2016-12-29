@@ -1,3 +1,7 @@
-hungry (tasty) {
-puke 2;
-}
+hungry (tasty) ->
+  puke 2;
+satisfied;
+
+hungry (disguisting) ->
+  puke 0;
+satisfied;
