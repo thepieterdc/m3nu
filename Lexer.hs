@@ -91,7 +91,7 @@ bool = true <|> false where
 color :: Parser Color
 color = rgb <|> off <|> white <|> red <|> green <|> blue
                 <|> cyan <|> yellow <|> magenta where
-  rgb = do { r <- expr; _ <- token ","; g <- expr; _ <- token ","; b <- expr; return (r, g, b)}
+  rgb = do { r <- expr; _ <- token ','; g <- expr; _ <- token ','; b <- expr; return (r, g, b)}
   off = do { _ <- string "off"; return (Constant 0, Constant 0, Constant 0)}
   red = do { _ <- string "red"; return (Constant 255, Constant 0, Constant 0)}
   green = do { _ <- string "green"; return (Constant 0, Constant 255, Constant 0)}

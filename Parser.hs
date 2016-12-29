@@ -95,7 +95,7 @@ robotLedParser :: Parser Statement
 robotLedParser = do
   _ <- keyword "led"
   l <- robotLed
-  _ <- identifier "->"
+  _ <- string "->"
   col <- color
   _ <- end
   return $ RobotLeds l col
