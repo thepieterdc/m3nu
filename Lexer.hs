@@ -114,6 +114,19 @@ tokenizeBool = true <|> false where
   true = do { _ <- string "tasty"; _ <- whitespace; return $ Constant 1 }
   false = do { _ <- string "disguisting"; _ <- whitespace; return $ Constant 0 }
 
+tokenizeColor :: Parser Color
+tokenizeColor = rgb <|> off <|> white <|> red <|> green <|> blue
+                <|> cyan <|> yellow <|> magenta where
+  rgb = do { r <- tokenizeExp; g <- tokenizeExp; b <- tokenizeExp; return (r, g, b)}
+  off = do { _ <- string "off"; return (Constant 0, Constant 0, Constant 0)}
+  red = do { _ <- string "red"; return (Constant 255, Constant 0, Constant 0)}
+  green = do { _ <- string "green"; return (Constant 0, Constant 255, Constant 0)}
+  blue = do { _ <- string "blue"; return (Constant 0, Constant 0, Constant 255)}
+  cyan = do { _ <- string "cyan"; return (Constant 0, Constant 255, Constant 255)}
+  magenta = do { _ <- string "magenta"; return (Constant 255, Constant 0, Constant 255)}
+  yellow = do { _ <- string "yellow"; return (Constant 255, Constant 255, Constant 0)}
+  white = do { _ <- string "white"; return (Constant 255, Constant 255, Constant 255)}
+
 -- parses an expr
 tokenizeExp :: Parser Exp
 tokenizeExp = parens tokenizeBool <|> tokenizeBool

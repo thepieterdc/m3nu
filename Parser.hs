@@ -104,11 +104,9 @@ robotLedParser = do
   _ <- identifier "led"
   l <- tokenizeRobotLed
   _ <- identifier "->"
-  r <- tokenizeExp
-  g <- tokenizeExp
-  b <- tokenizeExp
+  col <- tokenizeColor
   _ <- endline
-  return $ RobotLeds l r g b
+  return $ RobotLeds l col
 
 parseString :: String -> IO Statement
 parseString code = return $ doParse parse $ trim code

@@ -16,7 +16,7 @@ evaluate (Order val var) = evaluateOrder val var
 evaluate (Puke v) = evaluatePuke v
 evaluate Review = return ()
 evaluate (RobotDrive d) = evaluateRobotDrive d
-evaluate (RobotLeds l r g b) = evaluateRobotLed l r g b
+evaluate (RobotLeds l c) = evaluateRobotLed l c
 evaluate (Seq s) = evaluateSequence s
 
 evaluateBinaryExp :: BinaryOp -> Exp -> Exp -> Environment Double
@@ -69,14 +69,15 @@ evaluateRobotDrive dir = do
   liftIO $ Bot.motorDirection dir handle
   liftIO $ Bot.close handle
 
-evaluateRobotLed :: Bot.Led -> Exp -> Exp -> Exp -> Environment ()
-evaluateRobotLed l r g b = do
+evaluateRobotLed :: Bot.Led -> Color -> Environment ()
+evaluateRobotLed l col = do
   rv <- evaluateExp r
   gv <- evaluateExp g
   bv <- evaluateExp b
   handle <- liftIO Bot.connect
   liftIO $ Bot.led handle l rv gv bv
-  liftIO $ Bot.close handle
+  liftIO $ Bot.close handle where
+    (r, g, b) = col
 
 evaluateRobotLineSensor :: Environment Double
 evaluateRobotLineSensor = do

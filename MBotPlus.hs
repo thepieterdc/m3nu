@@ -7,10 +7,10 @@ import System.HIDAPI as HID(Device)
 
 import Utils
 
-data Led = LeftLed | RightLed deriving (Eq, Ord, Show)
-
 data Direction = DirForward | DirLeft | DirRight | Brake | DirBackward
                     | DirBackwardLeft | DirBackwardRight deriving (Eq, Show)
+
+data Led = LeftLed | RightLed deriving (Eq, Ord, Show)
 
 data Motor = LeftMotor | RightMotor deriving (Eq, Ord, Show)
 
@@ -43,8 +43,8 @@ ledId x = 1 + index [LeftLed, RightLed] x
 
 -- sets a led
 led :: Device -> Led -> Double -> Double -> Double -> IO ()
-led d l r g b = command d $ setRGB (ledId l) ri gi bi
-                where (ri, gi, bi) = (doubleInt r, doubleInt g, doubleInt b)
+led d l r g b = command d $ setRGB (ledId l) ri gi bi where
+  (ri, gi, bi) = (doubleInt r, doubleInt g, doubleInt b)
 
 -- gets the double of a line
 lineDouble :: Line -> Double
@@ -67,7 +67,6 @@ motorDirection Brake = stop
 -- gets the identifier of a motor
 motorId :: Motor -> Int
 motorId r = fromJust $ mapLookup [(LeftMotor, 0x9), (RightMotor, 0xa)] r
-
 
 -- gets the ultrason value
 ultrason :: Device -> IO Double

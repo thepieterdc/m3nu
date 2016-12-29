@@ -51,6 +51,8 @@ data Exp = Constant Double
 
 data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving (Eq, Show)
 
+type Color = (Exp, Exp, Exp)
+
 data UnaryOp = Abs | Not deriving (Eq, Show)
 
 data RelationalOp = Greater | Equals | Less deriving (Eq, Show)
@@ -63,7 +65,7 @@ data Statement = Cook Exp
                | Puke Exp
                | Review
                | RobotDrive Bot.Direction
-               | RobotLeds Bot.Led Exp Exp Exp
+               | RobotLeds Bot.Led Color
                | Seq [Statement]
                deriving Show
 
