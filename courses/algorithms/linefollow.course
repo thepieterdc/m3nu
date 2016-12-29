@@ -1,1 +1,30 @@
-order prev linesensor;eating (tasty){order x linesensor;hungry (x == 3){drive forward;order prev x;} hungry (x == 2){drive right;order prev x;} hungry (x == 1){drive left;order prev x;} hungry (x == 0){hungry (prev == 1){drive backwardright;} hungry (prev == 2){drive backwardleft;} hungry ((prev == 0)or(prev == 3)){drive backward;}}}
+order prev -> linesensor;
+eating (tasty) ->
+  order x -> linesensor;
+  hungry (x == 3) ->
+    drive forward;
+    order prev -> x;
+  satisfied;
+
+  hungry (x == 2) ->
+    drive right;
+    order prev -> x;
+  satisfied;
+
+  hungry (x == 1) ->
+    drive left;
+    order prev -> x;
+  satisfied;
+
+  hungry (x == 0) ->
+    hungry (prev == 1) ->
+      drive backwardright;
+    stuffed ->
+      hungry (prev == 2) ->
+        drive backwardleft;
+      stuffed ->
+        drive backward;
+      satisfied;
+    satisfied;
+  satisfied;
+enough;
