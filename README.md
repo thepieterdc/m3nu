@@ -3,17 +3,17 @@ Project Functioneel Programmeren - Parser
 
 lowercase alles
 
-if/else = hunry/stuffed {}
-while = eating {}
+if/else = hunry/stuffed -> stuffed
+while = eating -> enough;
 true/false = tasty/disguisting
-x = 5    -> order x 5
+x = 5    -> order x -> 5;
 bool exp = and/or ipv && / ||
 arith exp = + - * / % > < >= <= ==
 comments = review test
 print = puke "test"
 sleep = cook (want kan niet eten tijdens koken) tijd in seconden!
-led left 0 0 0 = led 1    led left off = uit, led left white blue red green yellow 
-led right 0 0 0 = led 2
+led left -> 0,0,0 = led 1    led left off = uit, led left white blue red green yellow
+led right -> 0,0,0 = led 2
 linesensor = positie in [BOTHW, LEFTB, RIGHTB, BOTHB]
 not x = 0 als niet 0 anders 1
 drive forward left right backward brake

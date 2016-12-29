@@ -1,0 +1,4 @@
+order x -> 5;
+eating(tasty) ->
+  puke x;
+enough;

@@ -7,7 +7,7 @@ import Types
 
 -- parses between two delims
 between :: Char -> Char -> Parser a -> Parser a
-between l r p = do { _ <- token l; ret <- p; _ <- token r; _ <- whitespace; return ret}
+between l r p = do { _ <- token l; ret <- p; _ <- token r; return ret}
 
 -- runs the parser between { }
 brackets :: Parser a -> Parser a
@@ -28,12 +28,8 @@ digits :: Parser String
 digits = some digit
 
 -- parses the end of a line
-endline :: Parser Char
-endline = do { _ <- some semicolon; _ <- whitespace; return ';'}
-
--- parses an identifier; must always be followed by at least one whitespace
-identifier :: String -> Parser String
-identifier s = do {i <- string s; _ <- spaces; return i}
+endline :: Parser ()
+endline = do { _ <- some semicolon; return ()}
 
 -- parsers a letter
 letter :: Parser Char
@@ -55,14 +51,6 @@ parens = between '(' ')'
 semicolon :: Parser Char
 semicolon = token ';'
 
--- parses a space/newline/tabs
-space :: Parser Char
-space = spot isSpace
-
--- parses multiple spaces/newlines/tabs
-spaces :: Parser String
-spaces = some space
-
 -- matches a given predicate
 spot :: (Char -> Bool) -> Parser Char
 spot p = do { c <- char; guard (p c); return c}
@@ -70,14 +58,6 @@ spot p = do { c <- char; guard (p c); return c}
 -- matches a string
 string :: String -> Parser String
 string = mapM token
-
--- matches a tab character
-tab :: Parser Char
-tab = token '\t'
-
--- matches multiple tabs
-tabs :: Parser String
-tabs = some tab
 
 -- matches a given char
 token :: Char -> Parser Char
@@ -87,26 +67,22 @@ token c = spot (== c)
 upper :: Parser Char
 upper = spot isUpper
 
--- parses whitespace
-whitespace :: Parser String
-whitespace = many space
-
--- [ OTHER FUNCTIONS ] --
-trim :: String -> String
-trim = filter (/= '\n') . filter (/= '\r')
+-- preproceses a file for parsing, removes all whitespace
+preprocess :: String -> String
+preprocess = filter (`notElem` [' ', '\t', '\n', '\r'])
 
 -- [ TOKENIZERS ] --
 
 -- parses a binary expression
 tokenizeBinExp :: Parser Exp
 tokenizeBinExp = add <|> sub <|> mul <|> dvd <|> binand <|> binor where
-  add = do { ret <- parens $ bin "+" Add; _ <- whitespace; return ret }
-  sub = do { ret <- parens $ bin "-" Minus; _ <- whitespace; return ret }
-  mul = do { ret <- parens $ bin "*" Multiply; _ <- whitespace; return ret }
-  dvd = do { ret <- parens $ bin "/" Divide; _ <- whitespace; return ret }
-  binand = do { ret <- parens $ bin "and" And; _ <- whitespace; return ret }
-  binor = do { ret <- parens $ bin "or" Or; _ <- whitespace; return ret }
-  bin tk op = do { x <- tokenizeExp; _ <- string tk; _ <- whitespace; y <- tokenizeExp; _ <- whitespace; return $ Binary op x y}
+  add = do { ret <- parens $ bin "+" Add; return ret }
+  sub = do { ret <- parens $ bin "-" Minus; return ret }
+  mul = do { ret <- parens $ bin "*" Multiply; return ret }
+  dvd = do { ret <- parens $ bin "/" Divide; return ret }
+  binand = do { ret <- parens $ bin "and" And; return ret }
+  binor = do { ret <- parens $ bin "or" Or; return ret }
+  bin tk op = do { x <- tokenizeExp; _ <- string tk; y <- tokenizeExp; return $ Binary op x y}
 
 -- parses a boolean
 tokenizeBool :: Parser Exp

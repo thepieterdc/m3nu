@@ -107,9 +107,9 @@ robotLedParser = do
   col <- tokenizeColor
   _ <- endline
   return $ RobotLeds l col
-
-parseString :: String -> IO Statement
-parseString code = return $ doParse parse $ trim code
-
-parseFile :: String -> IO Statement
-parseFile file = do { code <- readFile file; return $ doParse parse $ trim code }
+--
+-- parseString :: String -> IO Statement
+-- parseString code = return $ doParse parse $ trim code
+--
+-- parseFile :: String -> IO Statement
+-- parseFile file = do { code <- readFile file; return $ doParse parse $ trim code }
