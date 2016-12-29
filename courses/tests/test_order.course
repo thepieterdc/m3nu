@@ -1,4 +1,6 @@
 order x -> tasty;
 puke x;
-order x -> (not x);
+order x -> (!x);
+puke x;
+order x -> (!x);
 puke x;

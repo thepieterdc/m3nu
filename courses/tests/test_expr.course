@@ -1,9 +1,9 @@
 puke (4 >= 4);
 puke (10 + 4);
-puke (tasty or disguisting);
-puke (tasty and disguisting);
+puke ((tasty) or (disguisting));
+puke ((tasty) and (disguisting));
 puke (tasty);
-puke (not tasty);
+puke (!tasty);
 puke (disguisting);
 puke (tasty == disguisting);
 puke (tasty == tasty);

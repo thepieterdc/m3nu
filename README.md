@@ -7,7 +7,7 @@ if/else = hunry/stuffed -> stuffed
 while = eating -> enough;
 true/false = tasty/disguisting
 x = 5    -> order x -> 5;
-bool exp = and/or ipv && / ||
+bool exp = and/or ipv && / || not = !
 arith exp = + - * / % > < >= <= ==
 comments = review test
 print = puke "test"

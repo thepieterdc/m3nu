@@ -122,7 +122,7 @@ expr = parens bool <|> bool
   help tk = do { x <- expr; _ <- string tk; y <- expr; return (x,y)}
   bin tk op = do { (x,y) <- help tk; return $ Binary op x y}
   absval = do { ret <- between '|' '|' expr; return $ Unary Abs ret }
-  notval = do { _ <- string "not"; ret <- expr; return $ Unary Not ret }
+  notval = do { _ <- token '!'; ret <- expr; return $ Unary Not ret }
   gteq = parens $ rel ">=" GrEquals;
   lteq = parens $ rel "<=" LtEquals;
   gt = parens $ rel ">" Greater;
