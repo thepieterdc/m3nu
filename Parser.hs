@@ -56,7 +56,7 @@ hungryParser = do
   elseClause <- ifelse <|> none
   _ <- keyword "satisfied"
   return $ Hungry cond ifClause elseClause where
-    ifelse = do {_ <- string "stuffed"; _ <- string "->"; return parse }
+    ifelse = do {_ <- string "stuffed"; _ <- string "->"; parse }
     none = return Review
 
 -- parses orders (assignments)
