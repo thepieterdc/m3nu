@@ -1,2 +1,2 @@
-order y 5;
+order y -> 5;
 puke y;

@@ -1,5 +1,0 @@
-order x -> 5;
-eating(x) ->
-  order x -> (x-1);
-  puke x;
-enough;

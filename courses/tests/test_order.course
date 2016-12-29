@@ -1,6 +1,4 @@
-order x tasty;
+order x -> tasty;
 puke x;
-order x (not x);
-puke x;
-order x (not x);
+order x -> (not x);
 puke x;
