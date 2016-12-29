@@ -1,8 +1,8 @@
-module Types(module Types, module Control.Applicative, module Control.Monad) where
+module Types(module Types, module X) where
 
-import Control.Applicative
-import Control.Monad
-import Control.Monad.Trans.State.Lazy
+import Control.Applicative as X
+import Control.Monad as X
+import Control.Monad.Trans.State.Lazy as X
 import qualified Data.Map as Map
 import Data.Maybe
 
