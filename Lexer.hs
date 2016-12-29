@@ -89,8 +89,21 @@ bool = parens bool <|> true <|> false where
 
 binaryExpr :: Parser Exp
 binaryExpr = parens binaryExpr <|> add <|> sub <|> mul <|> dvd
-           <|> binand <|> binor <|> gteq <|> lteq <|> gt <|> lt <|> eq
-  rel tk op = do { (x,y) <- help tk; return $ Relational op x y}
+           <|> binand <|> binor <|> gteq <|> lteq <|> gt <|> lt <|> eq where
+  arit tk op = do { (x,y) <- ex tk; return $ Binary op x y}
+  add = arit "+" Add;
+  sub = arit "-" Minus;
+  mul = arit "*" Multiply;
+  dvd = arit "/" Divide;
+  binand = arit "and" And;
+  binor = arit "or" Or;
+  rel tk op = do { (x,y) <- ex tk; return $ Relational op x y}
+  gteq = rel ">=" GrEquals;
+  lteq = rel "<=" LtEquals;
+  gt = rel ">" Greater;
+  lt = rel "<" Less;
+  eq = rel "==" Equals;
+  ex tk = do { x <- expr; _ <- string tk; y <- expr; return (x,y)}
 
 color :: Parser Color
 color = rgb <|> off <|> white <|> red <|> green <|> blue
@@ -113,20 +126,6 @@ expr = parens expr <|> bool <|> robotline <|> robotultrason <|> num <|> var
   var = do { x <- some (spot isAlphaNum); return $ Variable x }
   robotline = do { _ <- string "linesensor"; return RobotLineSensor}
   robotultrason = do { _ <- string "ultrason"; return RobotUltrason}
-  add = parens $ bin "+" Add;
-  sub = parens $ bin "-" Minus;
-  mul = parens $ bin "*" Multiply;
-  dvd = parens $ bin "/" Divide;
-  binand = parens $ bin "and" And;
-  binor = parens $ bin "or" Or;
-  help tk = do { x <- expr; _ <- string tk; y <- expr; return (x,y)}
-  bin tk op = do { (x,y) <- help tk; return $ Binary op x y}
-  gteq = parens $ rel ">=" GrEquals;
-  lteq = parens $ rel "<=" LtEquals;
-  gt = parens $ rel ">" Greater;
-  lt = parens $ rel "<" Less;
-  eq = parens $ rel "==" Equals;
-  rel tk op = do { (x,y) <- help tk; return $ Relational op x y}
 
 -- parses a double number
 number :: Parser Double
