@@ -51,6 +51,12 @@ parens = between '(' ')'
 semicolon :: Parser Char
 semicolon = token ';'
 
+-- skips until a given token, returning the skipped part including the cond obv because parsed
+skipUntil :: Parser a -> Parser String
+skipUntil cond = done <|> oncemore where
+  done = do { _ <- cond; return ""}
+  oncemore = do { c <- char; b <- skipUntil cond; return $ c : b}
+
 -- matches a given predicate
 spot :: (Char -> Bool) -> Parser Char
 spot p = do { c <- char; guard (p c); return c}
@@ -73,27 +79,15 @@ preprocess = filter (`notElem` [' ', '\t', '\n', '\r'])
 
 -- [ TOKENIZERS ] --
 
--- parses a binary expression
-tokenizeBinExp :: Parser Exp
-tokenizeBinExp = add <|> sub <|> mul <|> dvd <|> binand <|> binor where
-  add = parens $ bin "+" Add;
-  sub = parens $ bin "-" Minus;
-  mul = parens $ bin "*" Multiply;
-  dvd = parens $ bin "/" Divide;
-  binand = parens $ bin "and" And;
-  binor = parens $ bin "or" Or;
-  bin tk op = do { x <- tokenizeExp; _ <- string tk; y <- tokenizeExp; return $ Binary op x y}
-
--- parses a boolean
-tokenizeBool :: Parser Exp
-tokenizeBool = true <|> false where
+bool :: Parser Exp
+bool = true <|> false where
   true = do { _ <- string "tasty"; return $ Constant 1 }
   false = do { _ <- string "disguisting"; return $ Constant 0 }
 
-tokenizeColor :: Parser Color
-tokenizeColor = rgb <|> off <|> white <|> red <|> green <|> blue
+color :: Parser Color
+color = rgb <|> off <|> white <|> red <|> green <|> blue
                 <|> cyan <|> yellow <|> magenta where
-  rgb = do { r <- tokenizeExp; g <- tokenizeExp; b <- tokenizeExp; return (r, g, b)}
+  rgb = do { r <- expr; g <- expr; b <- expr; return (r, g, b)}
   off = do { _ <- string "off"; return (Constant 0, Constant 0, Constant 0)}
   red = do { _ <- string "red"; return (Constant 255, Constant 0, Constant 0)}
   green = do { _ <- string "green"; return (Constant 0, Constant 255, Constant 0)}
@@ -104,38 +98,46 @@ tokenizeColor = rgb <|> off <|> white <|> red <|> green <|> blue
   white = do { _ <- string "white"; return (Constant 255, Constant 255, Constant 255)}
 
 -- parses an expr
-tokenizeExp :: Parser Exp
-tokenizeExp = parens tokenizeBool <|> tokenizeBool
+expr :: Parser Exp
+expr = parens bool <|> bool
             <|> parens robotline <|> robotline
             <|> parens robotultrason <|> robotultrason
             <|> parens num <|> num <|> parens var <|> var
-            <|> tokenizeBinExp <|> tokenizeUnaryExp <|> tokenizeRelExp where
-  num = do { n <- tokenizeNumber; return $ Constant n }
+            <|> add <|> sub <|> mul <|> dvd <|> binand <|> binor
+            <|> parens absval <|> absval <|> parens notval <|> notval
+            <|> gteq <|> lteq <|> gt <|> lt <|> eq where
+  num = do { n <- number; return $ Constant n }
   var = do { x <- some (spot isAlphaNum); return $ Variable x }
   robotline = do { _ <- string "linesensor"; return RobotLineSensor}
   robotultrason = do { _ <- string "ultrason"; return RobotUltrason}
-
--- parses a double number
-tokenizeNumber :: Parser Double
-tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
-  float = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
-  nat = do { s <- digits; return $ read s}
-  negFloat = do { _ <- token '-'; n <- float; return $ -n}
-  negNat = do { _ <- token '-'; n <- nat; return $ -n}
-
-tokenizeRelExp :: Parser Exp
-tokenizeRelExp = gteq <|> lteq <|> gt <|> lt <|> eq where
+  add = parens $ bin "+" Add;
+  sub = parens $ bin "-" Minus;
+  mul = parens $ bin "*" Multiply;
+  dvd = parens $ bin "/" Divide;
+  binand = parens $ bin "and" And;
+  binor = parens $ bin "or" Or;
+  help tk = do { x <- expr; _ <- string tk; y <- expr; return (x,y)}
+  bin tk op = do { (x,y) <- help tk; return $ Binary op x y}
+  absval = do { ret <- between '|' '|' expr; return $ Unary Abs ret }
+  notval = do { _ <- string "not"; ret <- expr; return $ Unary Not ret }
   gteq = parens $ rel ">=" GrEquals;
   lteq = parens $ rel "<=" LtEquals;
   gt = parens $ rel ">" Greater;
   lt = parens $ rel "<" Less;
   eq = parens $ rel "==" Equals;
-  rel tk op = do { x <- tokenizeExp; _ <- string tk; y <- tokenizeExp; return $ Relational op x y}
+  rel tk op = do { (x,y) <- help tk; return $ Relational op x y}
 
-tokenizeRobotDirection :: Parser Bot.Direction
-tokenizeRobotDirection = parens tokenizeRobotDirection <|> brake <|>forward
-                       <|> left <|> right
-                       <|> backwardleft <|> backwardright<|> backward where
+-- parses a double number
+number :: Parser Double
+number = float <|> negFloat <|> nat <|> negNat where
+  float = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
+  nat = do { s <- digits; return $ read s}
+  negFloat = do { _ <- token '-'; n <- float; return $ -n}
+  negNat = do { _ <- token '-'; n <- nat; return $ -n}
+
+robotDirection :: Parser Bot.Direction
+robotDirection = parens robotDirection <|> brake <|>forward <|> left <|> right
+               <|> backwardleft <|> backwardright<|> backward where
   forward = do { _ <- string "forward"; return Bot.DirForward}
   left = do { _ <- string "left"; return Bot.DirLeft}
   right = do { _ <- string "right"; return Bot.DirRight}
@@ -144,20 +146,7 @@ tokenizeRobotDirection = parens tokenizeRobotDirection <|> brake <|>forward
   backwardright = do { _ <- string "backwardright"; return Bot.DirBackwardRight}
   brake = do { _ <- string "brake"; return Bot.Brake}
 
-tokenizeRobotLed :: Parser Bot.Led
-tokenizeRobotLed = left <|> right where
-  left = do { _ <- identifier "left"; return Bot.LeftLed}
-  right = do { _ <- identifier "right"; return Bot.RightLed}
-
--- parses a Unary expression
-tokenizeUnaryExp :: Parser Exp
-tokenizeUnaryExp = parens absval <|> absval
-                 <|> parens notval <|> notval where
-  absval = do { ret <- between '|' '|' tokenizeExp; return $ Unary Abs ret }
-  notval = do { _ <- identifier "not"; ret <- tokenizeExp; return $ Unary Not ret }
-
--- skips until a given token, returning the skipped part including the cond obv because parsed
-tokenizeUntil :: Parser a -> Parser String
-tokenizeUntil cond = done <|> oncemore where
-  done = do { _ <- cond; return ""}
-  oncemore = do { c <- char; b <- tokenizeUntil cond; return $ c : b}
+robotLed :: Parser Bot.Led
+robotLed = left <|> right where
+  left = do { _ <- string "left"; return Bot.LeftLed}
+  right = do { _ <- string "right"; return Bot.RightLed}
