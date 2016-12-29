@@ -148,7 +148,9 @@ tokenizeNumber = float <|> negFloat <|> nat <|> negNat where
   negNat = do { _ <- token '-'; n <- nat; return $ -n}
 
 tokenizeRelExp :: Parser Exp
-tokenizeRelExp = gt <|> lt <|> eq where
+tokenizeRelExp = gteq <|> lteq <|> gt <|> lt <|> eq where
+  gteq = do { ret <- parens $ rel ">=" GrEquals; _ <- whitespace; return ret }
+  lteq = do { ret <- parens $ rel "<=" LtEquals; _ <- whitespace; return ret }
   gt = do { ret <- parens $ rel ">" Greater; _ <- whitespace; return ret }
   lt = do { ret <- parens $ rel "<" Less; _ <- whitespace; return ret }
   eq = do { ret <- parens $ rel "==" Equals; _ <- whitespace; return ret }

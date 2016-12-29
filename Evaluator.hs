@@ -60,8 +60,10 @@ evaluatePuke e = do { val <- evaluateExp e; liftIO $ print val; return ()}
 
 evaluateRelationalExp :: RelationalOp -> Exp -> Exp -> Environment Double
 evaluateRelationalExp Greater x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe > ye}
+evaluateRelationalExp GrEquals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe >= ye}
 evaluateRelationalExp Equals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe == ye}
 evaluateRelationalExp Less x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe < ye}
+evaluateRelationalExp LtEquals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe <= ye}
 
 evaluateRobotDrive :: Bot.Direction -> Environment ()
 evaluateRobotDrive dir = do

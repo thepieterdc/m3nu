@@ -55,7 +55,7 @@ type Color = (Exp, Exp, Exp)
 
 data UnaryOp = Abs | Not deriving (Eq, Show)
 
-data RelationalOp = Greater | Equals | Less deriving (Eq, Show)
+data RelationalOp = Greater | GrEquals | Equals | LtEquals | Less deriving (Eq, Show)
 
 data Statement = Cook Exp
                | Debug String
