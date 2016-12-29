@@ -80,20 +80,20 @@ pukeParser = do
 -- parses reviews (comments -> destroying these)
 reviewParser :: Parser Statement
 reviewParser = do
-  _ <- keyword "review"
+  _ <- string "review"
   _ <- skipUntil end
   return Review
 
 robotDriveParser :: Parser Statement
 robotDriveParser = do
-  _ <- keyword "drive"
+  _ <- string "drive"
   dir <- robotDirection
   _ <- end
   return $ RobotDrive dir
 
 robotLedParser :: Parser Statement
 robotLedParser = do
-  _ <- keyword "led"
+  _ <- string "led"
   l <- robotLed
   _ <- string "->"
   col <- color
