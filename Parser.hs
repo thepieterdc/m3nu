@@ -1,4 +1,4 @@
-module Parser(module Parser, module Lexer, module Types) where
+module Parser() where
 
 import Lexer
 import Types
@@ -81,7 +81,7 @@ pukeParser = do
 reviewParser :: Parser Statement
 reviewParser = do
   _ <- keyword "review"
-  _ <- until end
+  _ <- skipUntil end
   return Review
 
 robotDriveParser :: Parser Statement

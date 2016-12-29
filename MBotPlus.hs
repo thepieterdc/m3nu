@@ -1,4 +1,4 @@
-module MBotPlus (module MBotPlus, module HID) where
+module MBotPlus () where
 
 import Data.Bits
 import Data.Maybe(fromJust)

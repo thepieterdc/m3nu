@@ -1,4 +1,4 @@
-module Lexer(module Lexer, module Types, module Data.Char) where
+module Lexer() where
 
 import Data.Char
 --

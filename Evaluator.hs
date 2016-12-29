@@ -1,4 +1,4 @@
-module Evaluator(module Evaluator, module Types) where
+module Evaluator() where
 
 import Control.Concurrent(threadDelay)
 import Control.Monad

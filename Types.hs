@@ -1,4 +1,4 @@
-module Types(module Types, module Control.Applicative, module Control.Monad, module Utils) where
+module Types() where
 
 import Control.Applicative
 import Control.Monad
