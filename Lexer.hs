@@ -27,9 +27,13 @@ digit = spot isDigit
 digits :: Parser String
 digits = some digit
 
--- parses the end of a line
-endline :: Parser ()
-endline = do { _ <- some semicolon; return ()}
+-- matches the end of an instruction
+end :: Parser ()
+end = do { _ <- some semicolon; return ()}
+
+-- parses a keyword, must be followed by a semicolon
+keyword :: String -> Parser ()
+keyword k = do { _ <- string k; _ <- end; return ()}
 
 -- parsers a letter
 letter :: Parser Char
@@ -87,7 +91,7 @@ bool = true <|> false where
 color :: Parser Color
 color = rgb <|> off <|> white <|> red <|> green <|> blue
                 <|> cyan <|> yellow <|> magenta where
-  rgb = do { r <- expr; g <- expr; b <- expr; return (r, g, b)}
+  rgb = do { r <- expr; _ <- token ","; g <- expr; _ <- token ","; b <- expr; return (r, g, b)}
   off = do { _ <- string "off"; return (Constant 0, Constant 0, Constant 0)}
   red = do { _ <- string "red"; return (Constant 255, Constant 0, Constant 0)}
   green = do { _ <- string "green"; return (Constant 0, Constant 255, Constant 0)}

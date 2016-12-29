@@ -14,7 +14,5 @@ main = do
   args <- getArgs
   if length args /= 1 then error "Usage: ./Main path_to_course.course"
   else do
-    file <- readFile $ head args
-    print $ preprocess $ file
-    -- ast <- parseFile $ head args;
-    -- runStateT (evaluate ast) (fromList [])
+    ast <- parseFile $ head args;
+    runStateT (evaluate ast) (fromList [])

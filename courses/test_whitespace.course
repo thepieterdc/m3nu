@@ -1,4 +1,7 @@
 order x -> 5;
 eating(tasty) ->
-  puke x;
+  hungry(x == 5) ->
+    puke x;
+    puke(x);
+  satisfied;
 enough;

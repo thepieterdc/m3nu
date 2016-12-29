@@ -27,85 +27,77 @@ statementParser = reviewParser
                 <|> cookParser
                 <|> robotDriveParser
                 <|> robotLedParser
-                -- <|> debugParser -- vervangen door error
 
 -- parses cook (sleep)
 cookParser :: Parser Statement
 cookParser = do
-  _ <- identifier "cook"
-  amt <- tokenizeExp
-  _ <- endline
+  _ <- string "cook"
+  amt <- expr
+  _ <- end
   return $ Cook amt
-
--- parses anything for debugging
-debugParser :: Parser Statement
-debugParser = do { o <- many (spot isAscii); return $ Debug o}
 
 -- parses eating (while)
 eatingParser :: Parser Statement
 eatingParser = do
-  _ <- identifier "eating"
-  cond <- tokenizeExp
-  _ <- token '{'
+  _ <- string "eating"
+  cond <- expr
+  _ <- string "->"
   action <- parse
-  _ <- token '}'
+  _ <- keyword "enough"
   return $ Eating cond action
 
 -- parses hungry (if else)
 hungryParser :: Parser Statement
 hungryParser = do
-  _ <- identifier "hungry"
-  cond <- tokenizeExp
-  _ <- token '{'
-  _ <- whitespace
+  _ <- string "hungry"
+  cond <- expr
+  _ <- string "->"
   ifClause <- parse
-  _ <- whitespace
-  _ <- token '}'
-  _ <- whitespace
   elseClause <- ifelse <|> none
+  _ <- keyword "satisfied"
   return $ Hungry cond ifClause elseClause where
-    ifelse = do {_ <- identifier "stuffed"; _ <- token '{'; _ <- whitespace; ret <- parse; _ <- whitespace; _ <- token '}'; _ <- whitespace; return ret }
+    ifelse = do {_ <- string "stuffed"; _ <- string "->"; return parse }
     none = return Review
 
 -- parses orders (assignments)
 orderParser :: Parser Statement
 orderParser = do
-  _ <- identifier "order"
+  _ <- string "order"
   var <- many (spot isAlphaNum)
-  _ <- spaces
-  val <- tokenizeExp
-  _ <- endline
+  _ <- string "->"
+  val <- expr
+  _ <- end
   return $ Order var val
 
 -- parses pukes (prints)
 pukeParser :: Parser Statement
 pukeParser = do
-  _ <- identifier "puke"
-  var <- tokenizeExp
-  _ <- endline
+  _ <- string "puke"
+  var <- expr
+  _ <- end
   return $ Puke var
 
 -- parses reviews (comments -> destroying these)
 reviewParser :: Parser Statement
 reviewParser = do
-  _ <- identifier "review"
-  _ <- tokenizeUntil endline
+  _ <- keyword "review"
+  _ <- until end
   return Review
 
 robotDriveParser :: Parser Statement
 robotDriveParser = do
-  _ <- identifier "drive"
-  dir <- tokenizeRobotDirection
-  _ <- endline
+  _ <- keyword "drive"
+  dir <- robotDirection
+  _ <- end
   return $ RobotDrive dir
 
 robotLedParser :: Parser Statement
 robotLedParser = do
-  _ <- identifier "led"
-  l <- tokenizeRobotLed
+  _ <- keyword "led"
+  l <- robotLed
   _ <- identifier "->"
-  col <- tokenizeColor
-  _ <- endline
+  col <- color
+  _ <- end
   return $ RobotLeds l col
 --
 -- parseString :: String -> IO Statement
