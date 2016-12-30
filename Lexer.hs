@@ -7,7 +7,7 @@ import Types hiding(optional)
 
 -- parses between two delims
 between :: Char -> Char -> Parser a -> Parser a
-between l r p = do { _ <- token l; ret <- p; _ <- token r; return ret}
+between l r p = do { token l; ret <- p; token r; return ret}
 
 -- runs the parser between { }
 brackets :: Parser a -> Parser a
@@ -94,8 +94,8 @@ preprocess = filter (`notElem` [' ', '\t', '\n', '\r'])
 
 bool :: Parser Exp
 bool = true <|> false where
-  true = do { ident "tasty"; return $ Constant 1 }
-  false = do { ident "disguisting"; return $ Constant 0 }
+  true = ident "tasty" >> return (Constant 1)
+  false = ident "disguisting" >> return (Constant 0)
 
 binaryExpr :: Parser Exp
 binaryExpr = add <|> sub <|> mul <|> dvd
