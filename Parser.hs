@@ -19,14 +19,15 @@ multipleStatementsParser = do { mult <- many statementParser; return $ Seq mult}
 
 -- parses a statement
 statementParser :: Parser Statement
-statementParser = reviewParser
-                <|> eatingParser
-                <|> hungryParser
-                <|> orderParser
-                <|> pukeParser
-                <|> cookParser
-                <|> robotDriveParser
-                <|> robotLedParser
+statementParser = pukeParser
+                -- reviewParser
+                -- <|> eatingParser
+                -- <|> hungryParser
+                -- <|> orderParser
+                -- <|> pukeParser
+                -- <|> cookParser
+                -- <|> robotDriveParser
+                -- <|> robotLedParser
 
 -- parses cook (sleep)
 cookParser :: Parser Statement
@@ -72,7 +73,7 @@ orderParser = do
 -- parses pukes (prints)
 pukeParser :: Parser Statement
 pukeParser = do
-  _ <- string "puke"
+  -- _ <- string "puke"
   var <- expr
   _ <- end
   return $ Puke var

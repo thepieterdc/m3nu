@@ -83,12 +83,12 @@ preprocess = filter (`notElem` [' ', '\t', '\n', '\r'])
 -- [ TOKENIZERS ] --
 
 bool :: Parser Exp
-bool = parens bool <|> true <|> false where
+bool = true <|> false where
   true = do { _ <- string "tasty"; return $ Constant 1 }
   false = do { _ <- string "disguisting"; return $ Constant 0 }
 
 binaryExpr :: Parser Exp
-binaryExpr = parens binaryExpr <|> add <|> sub <|> mul <|> dvd
+binaryExpr = add <|> sub <|> mul <|> dvd
            <|> binand <|> binor <|> gteq <|> lteq <|> gt <|> lt <|> eq where
   arit tk op = do { (x,y) <- ex tk; return $ Binary op x y}
   add = arit "+" Add;
@@ -118,18 +118,21 @@ color = rgb <|> off <|> white <|> red <|> green <|> blue
   yellow = do { _ <- string "yellow"; return (Constant 255, Constant 255, Constant 0)}
   white = do { _ <- string "white"; return (Constant 255, Constant 255, Constant 255)}
 
--- parses an expr
-expr :: Parser Exp
-expr = parens expr <|> bool <|> robotline <|> robotultrason <|> num <|> var
-     <|> binaryExpr <|> unaryExpr where
+-- constant expression
+constant :: Parser Exp
+constant = num <|> bool <|> robotline <|> robotultrason <|> var where
   num = do { n <- number; return $ Constant n }
   var = do { x <- some (spot isAlphaNum); return $ Variable x }
   robotline = do { _ <- string "linesensor"; return RobotLineSensor}
   robotultrason = do { _ <- string "ultrason"; return RobotUltrason}
 
+-- parses an expr
+expr :: Parser Exp
+expr = parens constant <|> unaryExpr <|> binaryExpr
+
 -- parses a double number
 number :: Parser Double
-number = float <|> negFloat <|> nat <|> negNat where
+number = float <|> nat <|> negFloat <|> negNat where
   float = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
   nat = do { s <- digits; return $ read s}
   negFloat = do { _ <- token '-'; n <- float; return $ -n}

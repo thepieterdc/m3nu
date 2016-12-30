@@ -8,7 +8,7 @@ while = eating -> enough;
 true/false = tasty/disguisting
 x = 5    -> order x -> 5;
 bool exp = and/or ipv && / || not = !
-arith exp = + - * / % > < >= <= ==
+arith exp = + - * / % > < >= <= == moeten verplicht tussen brackets want obv reasons
 comments = review test
 print = puke "test"
 sleep = cook (want kan niet eten tijdens koken) tijd in seconden!
@@ -34,6 +34,7 @@ http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-
 parsec lib voor hulpfuncties
 https://en.wikibooks.org/wiki/Haskell/ParseExps
 https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/12-State-Monad
+http://dev.stephendiehl.com/fun/002_parsers.html
 
 features
 - fromjust want gaat niet werken als waarde niet bestaat
