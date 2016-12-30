@@ -1,6 +1,7 @@
 module Lexer(module Lexer, module Data.Char) where
 
 import Data.Char
+
 import qualified MBotPlus as Bot
 import Types hiding(optional)
 

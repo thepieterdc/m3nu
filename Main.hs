@@ -1,9 +1,8 @@
 module Main where
 
 import Control.Monad.Trans.State.Lazy
-import System.Environment
-
 import Data.Map
+import System.Environment
 
 import Evaluator
 import Parser

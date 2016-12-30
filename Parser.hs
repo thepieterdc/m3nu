@@ -15,7 +15,7 @@ doParse m s = one [x | (x,t) <- apply m s, t == "" ] where
 
 -- parses multiple statements
 multipleStatementsParser :: Parser Statement
-multipleStatementsParser = do { mult <- many statementParser; return $ Seq mult}
+multipleStatementsParser = do {mult <- many statementParser; return $ Seq mult}
 
 -- parses a statement
 statementParser :: Parser Statement
@@ -79,17 +79,11 @@ pukeParser = do
 
 -- parses reviews (comments -> destroying these)
 reviewParser :: Parser Statement
-reviewParser = do
-  _ <- string "review"
-  _ <- skipUntil end
-  return Review
+reviewParser = do {_ <- string "review"; _ <- skipUntil end; return Review}
 
 robotDriveParser :: Parser Statement
-robotDriveParser = do
-  _ <- string "drive"
-  dir <- robotDirection
-  _ <- end
-  return $ RobotDrive dir
+robotDriveParser = do {_ <- string "drive"; dir <- robotDirection; _ <- end;
+                   return $ RobotDrive dir}
 
 robotLedParser :: Parser Statement
 robotLedParser = do
