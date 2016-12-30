@@ -78,7 +78,7 @@ robotDriveParser = do {ident "drive"; dir <- robotDirection; end;
                    return $ RobotDrive dir}
 
 robotLedParser :: Parser Statement
-robotLedParser = do {ident "led"; l <- robotLed; ident "->"; col <- color; end
+robotLedParser = do {ident "led"; l <- robotLed; ident "->"; col <- color; end;
                  return $ RobotLeds l col}
 
 parseString :: String -> IO Statement
