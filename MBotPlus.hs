@@ -52,7 +52,7 @@ lineDouble x = intDouble $ index [BOTHW, LEFTB, RIGHTB, BOTHB] x
 
 -- gets the line sensor value
 lineSensor :: Device -> IO Double
-lineSensor d = do { val <- readLineFollower d; return $ lineDouble val }
+lineSensor d = readLineFollower d >>= \l -> return $ lineDouble l
 
 -- gets the function for direction movement
 motorDirection :: Direction -> (Device -> IO())
@@ -70,4 +70,4 @@ motorId r = fromJust $ mapLookup [(LeftMotor, 0x9), (RightMotor, 0xa)] r
 
 -- gets the ultrason value
 ultrason :: Device -> IO Double
-ultrason d = do { val <- readUltraSonic d; return $ floatDouble val}
+ultrason d = readUltraSonic d >>= \u -> return $ floatDouble u

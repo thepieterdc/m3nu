@@ -122,14 +122,14 @@ color = rgb <|> off <|> white <|> red <|> green <|> blue
                 <|> cyan <|> yellow <|> magenta where
   rgbpart = do{ret <- expr; token ','; return ret}
   rgb = do {r <- rgbpart; g <- rgbpart; b <- expr; return (r, g, b)}
-  off = do {ident "off"; return (Constant 0, Constant 0, Constant 0)}
-  red = do {ident "red"; return (Constant 255, Constant 0, Constant 0)}
-  green = do {ident "green"; return (Constant 0, Constant 255, Constant 0)}
-  blue = do {ident "blue"; return (Constant 0, Constant 0, Constant 255)}
-  cyan = do {ident "cyan"; return (Constant 0, Constant 255, Constant 255)}
-  magenta = do {ident "magenta"; return (Constant 255, Constant 0, Constant 255)}
-  yellow = do {ident "yellow"; return (Constant 255, Constant 255, Constant 0)}
-  white = do {ident "white"; return (Constant 255, Constant 255, Constant 255)}
+  off = ident "off" >> return (Constant 0, Constant 0, Constant 0)
+  red = ident "red" >> return (Constant 255, Constant 0, Constant 0)
+  green = ident "green" >> return (Constant 0, Constant 255, Constant 0)
+  blue = ident "blue" >> return (Constant 0, Constant 0, Constant 255)
+  cyan = ident "cyan" >> return (Constant 0, Constant 255, Constant 255)
+  magenta = ident "magenta" >> return (Constant 255, Constant 0, Constant 255)
+  yellow = ident "yellow" >> return (Constant 255, Constant 255, Constant 0)
+  white = ident "white" >> return (Constant 255, Constant 255, Constant 255)
 
 -- constant expression
 constant :: Parser Exp
