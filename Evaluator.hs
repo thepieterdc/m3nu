@@ -1,4 +1,4 @@
-module Evaluator(evaluate) where
+module Evaluator(eval) where
 
 import Control.Concurrent(threadDelay)
 import Control.Monad
@@ -8,98 +8,94 @@ import qualified MBotPlus as Bot
 import Types
 import Utils
 
-evaluate :: Statement -> Environment ()
-evaluate (Cook a) = evaluateCook a
-evaluate (Debug s) = evaluateDebug s
-evaluate (Eating cond s) = evaluateEating cond s
-evaluate (Hungry cond t d) = evaluateHungry cond t d
-evaluate (Order val var) = evaluateOrder val var
-evaluate (Puke v) = evaluatePuke v
-evaluate Review = return ()
-evaluate (RobotDrive d) = evaluateRobotDrive d
-evaluate (RobotLeds l c) = evaluateRobotLed l c
-evaluate (Seq s) = evaluateSequence s
+eval :: Statement -> Environment ()
+eval (Cook a) = cook a
+eval (Debug s) = debug s
+eval (Eating cond s) = eating cond s
+eval (Hungry cond ifc elsec) = hungry cond ifc elsec
+eval (Order val var) = order val var
+eval (Puke v) = puke v
+eval Review = return ()
+eval (RobotDrive d) = robotDrive d
+eval (RobotLeds l c) = robotLed l c
+eval (Seq s) = sq s
 
-evaluateBinaryExp :: BinaryOp -> Exp -> Exp -> Environment Double
-evaluateBinaryExp Add x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ xe+ye}
-evaluateBinaryExp Minus x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ xe-ye}
-evaluateBinaryExp Multiply x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ xe*ye}
-evaluateBinaryExp Divide x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ xe/ye}
-evaluateBinaryExp And x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe /= 0 && ye /= 0}
-evaluateBinaryExp Or x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe /= 0 || ye /= 0}
+binaryExpr :: BinaryOp -> Exp -> Exp -> Environment Double
+binaryExpr Add x y = do {xe <- expr x; ye <- expr y; return $ xe+ye}
+binaryExpr Minus x y = do {xe <- expr x; ye <- expr y; return $ xe-ye}
+binaryExpr Multiply x y = do{xe <- expr x; ye <- expr y; return $ xe*ye}
+binaryExpr Divide x y = do {xe <- expr x; ye <- expr y; return $ xe/ye}
 
-evaluateCook :: Exp -> Environment ()
-evaluateCook amtexp = do { amt <- evaluateExp amtexp; liftIO $ threadDelay $ round $ amt*1000000; return ()}
+boolExpr :: BooleanOp -> Exp -> Exp -> Environment Double
+boolExpr And x y = do {xe <- expr x; ye <- expr y;
+                   return $ boolDouble $ xe /= 0 && ye /= 0}
+boolExpr Or x y = do {xe <- expr x; ye <- expr y;
+                  return $ boolDouble $ xe /= 0 || ye /= 0}
 
-evaluateDebug :: String -> Environment ()
-evaluateDebug txt = do { liftIO $ print txt; return ()}
+cook :: Exp -> Environment ()
+cook amtexp = do {amt <- expr amtexp;
+              liftIO $ threadDelay $ round $ amt*1000000; return ()}
 
-evaluateEating :: Exp -> Statement -> Environment ()
-evaluateEating cond task = do
-  loopcond <- evaluateExp cond
-  when (doubleBool loopcond) $ do {_ <- evaluate task; evaluateEating cond task}
+debug :: String -> Environment ()
+debug txt = do {liftIO $ print txt; return ()}
 
-evaluateExp :: Exp -> Environment Double
-evaluateExp (Constant c) = return c
-evaluateExp (Variable v) = environmentGet v
-evaluateExp (Binary op x y) = evaluateBinaryExp op x y
-evaluateExp (Unary op x) = evaluateUnaryExp op x
-evaluateExp (Relational op x y) = evaluateRelationalExp op x y
-evaluateExp RobotLineSensor = evaluateRobotLineSensor
-evaluateExp RobotUltrason = evaluateRobotUltrason
+eating :: Exp -> Statement -> Environment ()
+eating cond task = do
+  loopcond <- expr cond
+  when (doubleBool loopcond) $ do {_ <- eval task; eating cond task}
 
-evaluateHungry :: Exp -> Statement -> Statement -> Environment ()
-evaluateHungry cond ifc elsec = do
-  c <- evaluateExp cond
-  if doubleBool c then evaluate ifc else evaluate elsec
+expr :: Exp -> Environment Double
+expr (Constant c) = return c
+expr (Variable v) = environmentGet v
+expr (Binary op x y) = binaryExpr op x y
+expr (Boolean op x y) = boolExpr op x y;
+expr (Unary op x) = unaryExpr op x
+expr (Relational op x y) = relationalExpr op x y;
+expr RobotLineSensor = robotLineSensor
+expr RobotUltrason = robotUltrason
 
-evaluateOrder :: String -> Exp -> Environment ()
-evaluateOrder var v = do { x <- evaluateExp v; environmentSet var x; return () }
+hungry :: Exp -> Statement -> Statement -> Environment ()
+hungry cond i e = do {c <- expr cond; if doubleBool c then eval i else eval e}
 
-evaluatePuke :: Exp -> Environment ()
-evaluatePuke e = do { val <- evaluateExp e; liftIO $ print val; return ()}
+order :: String -> Exp -> Environment ()
+order var v = do {x <- expr v; environmentSet var x; return ()}
 
-evaluateRelationalExp :: RelationalOp -> Exp -> Exp -> Environment Double
-evaluateRelationalExp Greater x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe > ye}
-evaluateRelationalExp GrEquals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe >= ye}
-evaluateRelationalExp Equals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe == ye}
-evaluateRelationalExp Less x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe < ye}
-evaluateRelationalExp LtEquals x y = do { xe <- evaluateExp x; ye <- evaluateExp y; return $ boolDouble $ xe <= ye}
+puke :: Exp -> Environment ()
+puke e = do {val <- expr e; liftIO $ print val; return ()}
 
-evaluateRobotDrive :: Bot.Direction -> Environment ()
-evaluateRobotDrive dir = do
-  handle <- liftIO Bot.connect
-  liftIO $ Bot.motorDirection dir handle
-  liftIO $ Bot.close handle
+relationalExpr :: RelationalOp -> Exp -> Exp -> Environment Double
+relationalExpr Greater x y = do {xe <- expr x; ye <- expr y;
+                             return $ boolDouble $ xe > ye}
+relationalExpr GrEquals x y = do {xe <- expr x; ye <- expr y;
+                              return $ boolDouble $ xe >= ye}
+relationalExpr Equals x y = do {xe <- expr x; ye <- expr y;
+                            return $ boolDouble $ xe == ye}
+relationalExpr Less x y = do {xe <- expr x; ye <- expr y;
+                          return $ boolDouble $ xe < ye}
+relationalExpr LtEquals x y = do {xe <- expr x; ye <- expr y;
+                              return $ boolDouble $ xe <= ye}
 
-evaluateRobotLed :: Bot.Led -> Color -> Environment ()
-evaluateRobotLed l col = do
-  rv <- evaluateExp r
-  gv <- evaluateExp g
-  bv <- evaluateExp b
-  handle <- liftIO Bot.connect
-  liftIO $ Bot.led handle l rv gv bv
-  liftIO $ Bot.close handle where
-    (r, g, b) = col
+robotDrive :: Bot.Direction -> Environment ()
+robotDrive dir = do {d <- liftIO Bot.connect; liftIO $ Bot.motorDirection dir d;
+                 liftIO $ Bot.close d;}
 
-evaluateRobotLineSensor :: Environment Double
-evaluateRobotLineSensor = do
-  handle <- liftIO Bot.connect
-  val <- liftIO $ Bot.lineSensor handle
-  liftIO $ Bot.close handle
-  return val
+robotLed :: Bot.Led -> Color -> Environment ()
+robotLed l col = do {rv <- expr r; gv <- expr g; bv <- expr b;
+               d <- liftIO Bot.connect; liftIO $ Bot.led d l rv gv bv;
+               liftIO $ Bot.close d} where (r, g, b) = col
 
-evaluateRobotUltrason :: Environment Double
-evaluateRobotUltrason = do
-  handle <- liftIO Bot.connect
-  val <- liftIO $ Bot.ultrason handle
-  liftIO $ Bot.close handle
-  return val
+robotLineSensor :: Environment Double
+robotLineSensor = do {d <- liftIO Bot.connect; v <- liftIO $ Bot.lineSensor d;
+                liftIO $ Bot.close d; return v}
 
-evaluateSequence :: [Statement] -> Environment ()
-evaluateSequence [] = return ()
-evaluateSequence (s:sq) = do {_ <- evaluate s; evaluateSequence sq}
+robotUltrason :: Environment Double
+robotUltrason = do {d <- liftIO Bot.connect; v <- liftIO $ Bot.ultrason d;
+                liftIO $ Bot.close d; return v}
 
-evaluateUnaryExp :: UnaryOp -> Exp -> Environment Double
-evaluateUnaryExp Abs x = do { e <- evaluateExp x; return $ if e < 0 then -e else e }
-evaluateUnaryExp Not x = do { e <- evaluateExp x; return $ if e == 0 then 1 else 0}
+sq :: [Statement] -> Environment ()
+sq [] = return ()
+sq (s:ss) = do {_ <- eval s; sq ss}
+
+unaryExpr :: UnaryOp -> Exp -> Environment Double
+unaryExpr Abs x = do {e <- expr x; return $ if e < 0 then -e else e}
+unaryExpr Not x = do {e <- expr x; return $ if e == 0 then 1 else 0}

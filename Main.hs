@@ -15,4 +15,4 @@ main = do
   if length args /= 1 then error "Usage: ./Main path_to_course.course: "
   else do
     ast <- parseFile $ head args
-    runStateT (evaluate ast) (fromList [])
+    runStateT (eval ast) (fromList [])

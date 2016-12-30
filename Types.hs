@@ -44,12 +44,15 @@ data Exp = Constant Double
          | Variable String
          | Binary BinaryOp Exp Exp
          | Unary UnaryOp Exp
+         | Boolean BooleanOp Exp Exp
          | Relational RelationalOp Exp Exp
          | RobotLineSensor
          | RobotUltrason
          deriving (Eq, Show)
 
-data BinaryOp = And | Or | Add | Minus | Multiply | Divide deriving (Eq, Show)
+data BinaryOp = Add | Minus | Multiply | Divide deriving (Eq, Show)
+
+data BooleanOp = And | Or deriving (Eq, Show)
 
 type Color = (Exp, Exp, Exp)
 

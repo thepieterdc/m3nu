@@ -54,7 +54,8 @@ parens = between '(' ')'
 semicolon :: Parser Char
 semicolon = token ';'
 
--- skips until a given token, returning the skipped part including the cond obv because parsed
+-- skips until a given token, returning the skipped part including the cond
+-- obv because parsed
 skipUntil :: Parser a -> Parser String
 skipUntil cond = done <|> oncemore where
   done = do { _ <- cond; return ""}
@@ -92,19 +93,20 @@ binaryExpr = add <|> sub <|> mul <|> dvd
            <|> booland <|> boolor <|> gteq <|> lteq <|> gt <|> lt <|> eq where
   binpart = constant <|> unaryExpr <|> binaryExpr
   bin tk = do { x <- binpart; _ <- string tk; y <- binpart; return (x,y)}
-  arit tk op = do { (x,y) <- parens $ bin tk; return $ Binary op x y}
-  add = arit "+" Add;
-  sub = arit "-" Minus;
-  mul = arit "*" Multiply;
-  dvd = arit "/" Divide;
-  booland = arit "and" And;
-  boolor = arit "or" Or;
-  rel tk op = do { (x,y) <- parens $ bin tk; return $ Relational op x y}
-  gteq = rel ">=" GrEquals;
-  lteq = rel "<=" LtEquals;
-  gt = rel ">" Greater;
-  lt = rel "<" Less;
-  eq = rel "==" Equals;
+  aritexp tk op = do { (x,y) <- parens $ bin tk; return $ Binary op x y}
+  add = aritexp "+" Add;
+  sub = aritexp "-" Minus;
+  mul = aritexp "*" Multiply;
+  dvd = aritexp "/" Divide;
+  boolexp tk op = do { (x,y) <- parens $ bin tk; return $ Boolean op x y}
+  booland = boolexp "and" And;
+  boolor = boolexp "or" Or;
+  relexp tk op = do { (x,y) <- parens $ bin tk; return $ Relational op x y}
+  gteq = relexp ">=" GrEquals;
+  lteq = relexp "<=" LtEquals;
+  gt = relexp ">" Greater;
+  lt = relexp "<" Less;
+  eq = relexp "==" Equals;
 
 color :: Parser Color
 color = rgb <|> off <|> white <|> red <|> green <|> blue
