@@ -60,7 +60,7 @@ parens :: Parser a -> Parser a
 parens = between '(' ')'
 
 -- parses a semicolon
-semicolon :: Parser Char
+semicolon :: Parser ()
 semicolon = token ';'
 
 -- skips until a given token, returning the skipped part including the cond
@@ -76,11 +76,11 @@ spot p = do { c <- char; guard (p c); return c}
 
 -- matches a string
 string :: String -> Parser String
-string = mapM token
+string = mapM (\x -> spot (== x))
 
 -- matches a given char
-token :: Char -> Parser Char
-token c = spot (== c)
+token :: Char -> Parser ()
+token c = void $ spot (== c)
 
 -- matches an uppercase letter
 upper :: Parser Char
@@ -94,8 +94,8 @@ preprocess = filter (`notElem` [' ', '\t', '\n', '\r'])
 
 bool :: Parser Exp
 bool = true <|> false where
-  true = do { _ <- string "tasty"; return $ Constant 1 }
-  false = do { _ <- string "disguisting"; return $ Constant 0 }
+  true = do { ident "tasty"; return $ Constant 1 }
+  false = do { ident "disguisting"; return $ Constant 0 }
 
 binaryExpr :: Parser Exp
 binaryExpr = add <|> sub <|> mul <|> dvd
@@ -120,15 +120,16 @@ binaryExpr = add <|> sub <|> mul <|> dvd
 color :: Parser Color
 color = rgb <|> off <|> white <|> red <|> green <|> blue
                 <|> cyan <|> yellow <|> magenta where
-  rgb = do { r <- expr; _ <- token ','; g <- expr; _ <- token ','; b <- expr; return (r, g, b)}
-  off = do { _ <- string "off"; return (Constant 0, Constant 0, Constant 0)}
-  red = do { _ <- string "red"; return (Constant 255, Constant 0, Constant 0)}
-  green = do { _ <- string "green"; return (Constant 0, Constant 255, Constant 0)}
-  blue = do { _ <- string "blue"; return (Constant 0, Constant 0, Constant 255)}
-  cyan = do { _ <- string "cyan"; return (Constant 0, Constant 255, Constant 255)}
-  magenta = do { _ <- string "magenta"; return (Constant 255, Constant 0, Constant 255)}
-  yellow = do { _ <- string "yellow"; return (Constant 255, Constant 255, Constant 0)}
-  white = do { _ <- string "white"; return (Constant 255, Constant 255, Constant 255)}
+  rgbpart = do{ret <- expr; token ','; return ret}
+  rgb = do {r <- rgbpart; g <- rgbpart; b <- expr; return (r, g, b)}
+  off = do {ident "off"; return (Constant 0, Constant 0, Constant 0)}
+  red = do {ident "red"; return (Constant 255, Constant 0, Constant 0)}
+  green = do {ident "green"; return (Constant 0, Constant 255, Constant 0)}
+  blue = do {ident "blue"; return (Constant 0, Constant 0, Constant 255)}
+  cyan = do {ident "cyan"; return (Constant 0, Constant 255, Constant 255)}
+  magenta = do {ident "magenta"; return (Constant 255, Constant 0, Constant 255)}
+  yellow = do {ident "yellow"; return (Constant 255, Constant 255, Constant 0)}
+  white = do {ident "white"; return (Constant 255, Constant 255, Constant 255)}
 
 -- constant expression
 constant :: Parser Exp
@@ -136,8 +137,8 @@ constant = parens constant
          <|> num <|> bool <|> robotline <|> robotultrason <|> var where
   num = do { n <- number; return $ Constant n }
   var = do { x <- some (spot isAlphaNum); return $ Variable x }
-  robotline = do { _ <- string "linesensor"; return RobotLineSensor}
-  robotultrason = do { _ <- string "ultrason"; return RobotUltrason}
+  robotline = do { ident "linesensor"; return RobotLineSensor}
+  robotultrason = do { ident "ultrason"; return RobotUltrason}
 
 -- parses an expr
 expr :: Parser Exp
@@ -146,27 +147,27 @@ expr = constant <|> unaryExpr <|> binaryExpr
 -- parses a double number
 number :: Parser Double
 number = float <|> nat where
-  float = do { s <- optional $ string "-"; n <- digits; dot <- token '.';
-          f <- digits; return $ read (s ++ n ++ [dot] ++ f)}
+  float = do { s <- optional $ string "-"; n <- digits; token '.';
+          f <- digits; return $ read (s ++ n ++ "." ++ f)}
   nat = do { s <- optional $ string "-"; n <- digits; return $ read (s ++ n) }
 
 robotDirection :: Parser Bot.Direction
 robotDirection = parens robotDirection <|> brake <|>forward <|> left <|> right
                <|> backwardleft <|> backwardright<|> backward where
-  forward = do { _ <- string "forward"; return Bot.DirForward}
-  left = do { _ <- string "left"; return Bot.DirLeft}
-  right = do { _ <- string "right"; return Bot.DirRight}
-  backward = do { _ <- string "backward"; return Bot.DirBackward}
-  backwardleft = do { _ <- string "backwardleft"; return Bot.DirBackwardLeft}
-  backwardright = do { _ <- string "backwardright"; return Bot.DirBackwardRight}
-  brake = do { _ <- string "brake"; return Bot.Brake}
+  forward = do { ident "forward"; return Bot.DirForward}
+  left = do { ident "left"; return Bot.DirLeft}
+  right = do { ident "right"; return Bot.DirRight}
+  backward = do { ident "backward"; return Bot.DirBackward}
+  backwardleft = do { ident "backwardleft"; return Bot.DirBackwardLeft}
+  backwardright = do { ident "backwardright"; return Bot.DirBackwardRight}
+  brake = do { ident "brake"; return Bot.Brake}
 
 robotLed :: Parser Bot.Led
 robotLed = left <|> right where
-  left = do { _ <- string "left"; return Bot.LeftLed}
-  right = do { _ <- string "right"; return Bot.RightLed}
+  left = do { ident "left"; return Bot.LeftLed}
+  right = do { ident "right"; return Bot.RightLed}
 
 unaryExpr :: Parser Exp
 unaryExpr = parens unaryExpr <|> absval <|> notval where
   absval = do { ret <- between '|' '|' expr; return $ Unary Abs ret }
-  notval = do { _ <- token '!'; ret <- expr; return $ Unary Not ret }
+  notval = do { token '!'; ret <- expr; return $ Unary Not ret }
