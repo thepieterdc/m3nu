@@ -89,21 +89,22 @@ bool = true <|> false where
 
 binaryExpr :: Parser Exp
 binaryExpr = add <|> sub <|> mul <|> dvd
-           <|> binand <|> binor <|> gteq <|> lteq <|> gt <|> lt <|> eq where
-  arit tk op = do { (x,y) <- ex tk; return $ Binary op x y}
+           <|> booland <|> boolor <|> gteq <|> lteq <|> gt <|> lt <|> eq where
+  binpart = constant <|> unaryExpr <|> parens binaryExpr
+  bin tk = do { x <- binpart; _ <- string tk; y <- binpart; return (x,y)}
+  arit tk op = do { (x,y) <- bin tk; return $ Binary op x y}
   add = arit "+" Add;
   sub = arit "-" Minus;
   mul = arit "*" Multiply;
   dvd = arit "/" Divide;
-  binand = arit "and" And;
-  binor = arit "or" Or;
-  rel tk op = do { (x,y) <- ex tk; return $ Relational op x y}
+  booland = arit "and" And;
+  boolor = arit "or" Or;
+  rel tk op = do { (x,y) <- bin tk; return $ Relational op x y}
   gteq = rel ">=" GrEquals;
   lteq = rel "<=" LtEquals;
   gt = rel ">" Greater;
   lt = rel "<" Less;
   eq = rel "==" Equals;
-  ex tk = do { x <- expr; _ <- string tk; y <- expr; return (x,y)}
 
 color :: Parser Color
 color = rgb <|> off <|> white <|> red <|> green <|> blue
