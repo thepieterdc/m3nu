@@ -50,7 +50,7 @@ hungryParser = do
   ident "->"
   ifClause <- parse
   elseClause <- ifelse <|> none
-  ident "satisfied"
+  keyword "satisfied"
   return $ Hungry cond ifClause elseClause where
     ifelse = do {ident "stuffed"; ident "->"; parse }
     none = return Review
