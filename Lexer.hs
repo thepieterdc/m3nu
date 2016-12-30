@@ -90,16 +90,16 @@ bool = true <|> false where
 binaryExpr :: Parser Exp
 binaryExpr = add <|> sub <|> mul <|> dvd
            <|> booland <|> boolor <|> gteq <|> lteq <|> gt <|> lt <|> eq where
-  binpart = constant <|> unaryExpr <|> parens binaryExpr
+  binpart = constant <|> unaryExpr <|> binaryExpr
   bin tk = do { x <- binpart; _ <- string tk; y <- binpart; return (x,y)}
-  arit tk op = do { (x,y) <- bin tk; return $ Binary op x y}
+  arit tk op = do { (x,y) <- parens $ bin tk; return $ Binary op x y}
   add = arit "+" Add;
   sub = arit "-" Minus;
   mul = arit "*" Multiply;
   dvd = arit "/" Divide;
   booland = arit "and" And;
   boolor = arit "or" Or;
-  rel tk op = do { (x,y) <- bin tk; return $ Relational op x y}
+  rel tk op = do { (x,y) <- parens $ bin tk; return $ Relational op x y}
   gteq = rel ">=" GrEquals;
   lteq = rel "<=" LtEquals;
   gt = rel ">" Greater;
@@ -121,7 +121,8 @@ color = rgb <|> off <|> white <|> red <|> green <|> blue
 
 -- constant expression
 constant :: Parser Exp
-constant = num <|> bool <|> robotline <|> robotultrason <|> var where
+constant = parens constant
+         <|> num <|> bool <|> robotline <|> robotultrason <|> var where
   num = do { n <- number; return $ Constant n }
   var = do { x <- some (spot isAlphaNum); return $ Variable x }
   robotline = do { _ <- string "linesensor"; return RobotLineSensor}
@@ -129,7 +130,7 @@ constant = num <|> bool <|> robotline <|> robotultrason <|> var where
 
 -- parses an expr
 expr :: Parser Exp
-expr = parens constant <|> unaryExpr <|> binaryExpr
+expr = constant <|> unaryExpr <|> binaryExpr
 
 -- parses a double number
 number :: Parser Double

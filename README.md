@@ -8,7 +8,7 @@ while = eating -> enough;
 true/false = tasty/disguisting
 x = 5    -> order x -> 5;
 bool exp = and/or ipv && / || not = !
-arith exp = + - * / % > < >= <= == moeten verplicht tussen brackets want obv reasons
+arith exp = + - * / % > < >= <= == moeten verplicht tussen brackets want overflow reasons
 comments = review test
 print = puke "test"
 sleep = cook (want kan niet eten tijdens koken) tijd in seconden!

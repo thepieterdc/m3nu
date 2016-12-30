@@ -73,7 +73,7 @@ orderParser = do
 -- parses pukes (prints)
 pukeParser :: Parser Statement
 pukeParser = do
-  -- _ <- string "puke"
+  _ <- string "puke"
   var <- expr
   _ <- end
   return $ Puke var

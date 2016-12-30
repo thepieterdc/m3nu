@@ -9,11 +9,10 @@ import Evaluator
 import Parser
 import Types
 
---main :: IO ((), EnvironmentVar)
+main :: IO ((), EnvironmentVar)
 main = do
   args <- getArgs
   if length args /= 1 then error "Usage: ./Main path_to_course.course: "
   else do
     ast <- parseFile $ head args
-    print ast
-    --runStateT (evaluate ast) (fromList [])
+    runStateT (evaluate ast) (fromList [])
