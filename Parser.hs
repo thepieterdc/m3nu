@@ -30,69 +30,56 @@ statementParser = reviewParser
 
 -- parses cook (sleep)
 cookParser :: Parser Statement
-cookParser = do
-  _ <- string "cook"
-  amt <- expr
-  _ <- end
-  return $ Cook amt
+cookParser = do {ident "cook"; amt <- expr; end; return $ Cook amt}
 
 -- parses eating (while)
 eatingParser :: Parser Statement
 eatingParser = do
-  _ <- string "eating"
+  ident "eating"
   cond <- expr
-  _ <- string "->"
+  ident "->"
   action <- parse
-  _ <- keyword "enough"
+  keyword "enough"
   return $ Eating cond action
 
 -- parses hungry (if else)
 hungryParser :: Parser Statement
 hungryParser = do
-  _ <- string "hungry"
+  ident "hungry"
   cond <- expr
-  _ <- string "->"
+  ident "->"
   ifClause <- parse
   elseClause <- ifelse <|> none
-  _ <- keyword "satisfied"
+  ident "satisfied"
   return $ Hungry cond ifClause elseClause where
-    ifelse = do {_ <- string "stuffed"; _ <- string "->"; parse }
+    ifelse = do {ident "stuffed"; ident "->"; parse }
     none = return Review
 
 -- parses orders (assignments)
 orderParser :: Parser Statement
 orderParser = do
-  _ <- string "order"
+  ident "order"
   var <- many (spot isAlphaNum)
-  _ <- string "->"
+  ident "->"
   val <- expr
-  _ <- end
+  end
   return $ Order var val
 
 -- parses pukes (prints)
 pukeParser :: Parser Statement
-pukeParser = do
-  _ <- string "puke"
-  var <- expr
-  _ <- end
-  return $ Puke var
+pukeParser = do {ident "puke"; var <- expr; end; return $ Puke var}
 
 -- parses reviews (comments -> destroying these)
 reviewParser :: Parser Statement
 reviewParser = string "review" >> skipUntil end >> return Review
 
 robotDriveParser :: Parser Statement
-robotDriveParser = do {_ <- string "drive"; dir <- robotDirection; _ <- end;
+robotDriveParser = do {ident "drive"; dir <- robotDirection; end;
                    return $ RobotDrive dir}
 
 robotLedParser :: Parser Statement
-robotLedParser = do
-  _ <- string "led"
-  l <- robotLed
-  _ <- string "->"
-  col <- color
-  _ <- end
-  return $ RobotLeds l col
+robotLedParser = do {ident "led"; l <- robotLed; ident "->"; col <- color; end
+                 return $ RobotLeds l col}
 
 parseString :: String -> IO Statement
 parseString code = return $ doParse parse $ preprocess code
