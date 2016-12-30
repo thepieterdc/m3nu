@@ -101,7 +101,7 @@ binaryExpr :: Parser Exp
 binaryExpr = add <|> sub <|> mul <|> dvd
            <|> booland <|> boolor <|> gteq <|> lteq <|> gt <|> lt <|> eq where
   binpart = constant <|> unaryExpr <|> binaryExpr
-  bin tk = do { x <- binpart; _ <- string tk; y <- binpart; return (x,y)}
+  bin tk = do { x <- binpart; ident tk; y <- binpart; return (x,y)}
   aritexp tk op = do { (x,y) <- parens $ bin tk; return $ Binary op x y}
   add = aritexp "+" Add;
   sub = aritexp "-" Minus;
@@ -135,8 +135,8 @@ color = rgb <|> off <|> white <|> red <|> green <|> blue
 constant :: Parser Exp
 constant = parens constant
          <|> num <|> bool <|> robotline <|> robotultrason <|> var where
-  num = do { n <- number; return $ Constant n }
-  var = do { x <- some (spot isAlphaNum); return $ Variable x }
+  num = number >>= \n -> return $ Constant n
+  var = some (spot isAlphaNum) >>= \v -> return $ Variable v
   robotline = ident "linesensor" >> return RobotLineSensor
   robotultrason = ident "ultrason" >> return RobotUltrason
 
@@ -154,20 +154,20 @@ number = float <|> nat where
 robotDirection :: Parser Bot.Direction
 robotDirection = parens robotDirection <|> brake <|>forward <|> left <|> right
                <|> backwardleft <|> backwardright<|> backward where
-  forward = do { ident "forward"; return Bot.DirForward}
-  left = do { ident "left"; return Bot.DirLeft}
-  right = do { ident "right"; return Bot.DirRight}
-  backward = do { ident "backward"; return Bot.DirBackward}
-  backwardleft = do { ident "backwardleft"; return Bot.DirBackwardLeft}
-  backwardright = do { ident "backwardright"; return Bot.DirBackwardRight}
-  brake = do { ident "brake"; return Bot.Brake}
+  forward = ident "forward" >> return Bot.DirForward
+  left = ident "left" >> return Bot.DirLeft
+  right = ident "right" >> return Bot.DirRight
+  backward = ident "backward" >> return Bot.DirBackward
+  backwardleft = ident "backwardleft" >> return Bot.DirBackwardLeft
+  backwardright = ident "backwardright" >> return Bot.DirBackwardRight
+  brake = ident "brake" >> return Bot.Brake
 
 robotLed :: Parser Bot.Led
 robotLed = left <|> right where
-  left = do { ident "left"; return Bot.LeftLed}
-  right = do { ident "right"; return Bot.RightLed}
+  left = ident "left" >> return Bot.LeftLed
+  right = ident "right" >> return Bot.RightLed
 
 unaryExpr :: Parser Exp
 unaryExpr = parens unaryExpr <|> absval <|> notval where
-  absval = do { ret <- between '|' '|' expr; return $ Unary Abs ret }
-  notval = do { token '!'; ret <- expr; return $ Unary Not ret }
+  absval = between '|' '|' expr >>= \x -> return $ Unary Abs x
+  notval = token '!' >> expr >>= \x -> return $ Unary Not x
