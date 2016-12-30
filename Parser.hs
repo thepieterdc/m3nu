@@ -85,4 +85,5 @@ parseString :: String -> IO Statement
 parseString code = return $ doParse parse $ preprocess code
 
 parseFile :: String -> IO Statement
-parseFile file = do { code <- readFile file; return $ doParse parse $ preprocess code }
+parseFile file = do {code <- readFile file;
+                 return $ doParse parse $ preprocess code }

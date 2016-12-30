@@ -20,11 +20,11 @@ eval (RobotDrive d) = robotDrive d
 eval (RobotLeds l c) = robotLed l c
 eval (Seq s) = sq s
 
-binaryExpr :: BinaryOp -> Exp -> Exp -> Environment Double
-binaryExpr Add x y = do {xe <- expr x; ye <- expr y; return $ xe+ye}
-binaryExpr Minus x y = do {xe <- expr x; ye <- expr y; return $ xe-ye}
-binaryExpr Multiply x y = do{xe <- expr x; ye <- expr y; return $ xe*ye}
-binaryExpr Divide x y = do {xe <- expr x; ye <- expr y; return $ xe/ye}
+binExpr :: BinaryOp -> Exp -> Exp -> Environment Double
+binExpr Add x y = do {xe <- expr x; ye <- expr y; return $ xe+ye}
+binExpr Minus x y = do {xe <- expr x; ye <- expr y; return $ xe-ye}
+binExpr Multiply x y = do{xe <- expr x; ye <- expr y; return $ xe*ye}
+binExpr Divide x y = do {xe <- expr x; ye <- expr y; return $ xe/ye}
 
 boolExpr :: BooleanOp -> Exp -> Exp -> Environment Double
 boolExpr And x y = do {xe <- expr x; ye <- expr y;
@@ -37,7 +37,7 @@ cook amtexp = do {amt <- expr amtexp;
               liftIO $ threadDelay $ round $ amt*1000000; return ()}
 
 debug :: String -> Environment ()
-debug txt = do {liftIO $ print txt; return ()}
+debug txt = liftIO $ void (print txt)
 
 eating :: Exp -> Statement -> Environment ()
 eating cond task = do
@@ -47,10 +47,10 @@ eating cond task = do
 expr :: Exp -> Environment Double
 expr (Constant c) = return c
 expr (Variable v) = environmentGet v
-expr (Binary op x y) = binaryExpr op x y
+expr (Binary op x y) = binExpr op x y
 expr (Boolean op x y) = boolExpr op x y;
 expr (Unary op x) = unaryExpr op x
-expr (Relational op x y) = relationalExpr op x y;
+expr (Relational op x y) = relExpr op x y;
 expr RobotLineSensor = robotLineSensor
 expr RobotUltrason = robotUltrason
 
@@ -63,16 +63,16 @@ order var v = expr v >>= \x -> void $ environmentSet var x
 puke :: Exp -> Environment ()
 puke e = expr e >>= \x -> liftIO $ void $ print x
 
-relationalExpr :: RelationalOp -> Exp -> Exp -> Environment Double
-relationalExpr Greater x y = do {xe <- expr x; ye <- expr y;
+relExpr :: RelationalOp -> Exp -> Exp -> Environment Double
+relExpr Greater x y = do {xe <- expr x; ye <- expr y;
                              return $ boolDouble $ xe > ye}
-relationalExpr GrEquals x y = do {xe <- expr x; ye <- expr y;
+relExpr GrEquals x y = do {xe <- expr x; ye <- expr y;
                               return $ boolDouble $ xe >= ye}
-relationalExpr Equals x y = do {xe <- expr x; ye <- expr y;
+relExpr Equals x y = do {xe <- expr x; ye <- expr y;
                             return $ boolDouble $ xe == ye}
-relationalExpr Less x y = do {xe <- expr x; ye <- expr y;
+relExpr Less x y = do {xe <- expr x; ye <- expr y;
                           return $ boolDouble $ xe < ye}
-relationalExpr LtEquals x y = do {xe <- expr x; ye <- expr y;
+relExpr LtEquals x y = do {xe <- expr x; ye <- expr y;
                               return $ boolDouble $ xe <= ye}
 
 robotDrive :: Bot.Direction -> Environment ()
