@@ -137,8 +137,8 @@ constant = parens constant
          <|> num <|> bool <|> robotline <|> robotultrason <|> var where
   num = do { n <- number; return $ Constant n }
   var = do { x <- some (spot isAlphaNum); return $ Variable x }
-  robotline = do { ident "linesensor"; return RobotLineSensor}
-  robotultrason = do { ident "ultrason"; return RobotUltrason}
+  robotline = ident "linesensor" >> return RobotLineSensor
+  robotultrason = ident "ultrason" >> return RobotUltrason
 
 -- parses an expr
 expr :: Parser Exp
