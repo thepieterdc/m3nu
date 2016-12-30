@@ -38,7 +38,7 @@ instance Alternative Parser where
 
 instance MonadPlus Parser where
   mzero = Parser (const [])
-  mplus m n = Parser (\s -> apply m s ++ apply n s)
+  mplus m n = Parser (ap ((++) . apply m) (apply n))
 
 data Exp = Constant Double
          | Variable String
@@ -78,8 +78,8 @@ type Environment a = StateT EnvironmentVar IO a
 
 -- gets variable
 environmentGet :: String -> Environment Double
-environmentGet k = do { env <- get; return $ fromJust $ Map.lookup k env }
+environmentGet k = fmap (fromJust . Map.lookup k) get
 
 -- sets variable
 environmentSet :: String -> Double -> Environment ()
-environmentSet k v = do { env <- get; put $ Map.insert k v env; return () }
+environmentSet k v = put . Map.insert k v =<< get

@@ -33,8 +33,7 @@ boolExpr Or x y = do {xe <- expr x; ye <- expr y;
                   return $ boolDouble $ xe /= 0 || ye /= 0}
 
 cook :: Exp -> Environment ()
-cook amtexp = do {amt <- expr amtexp;
-              liftIO $ threadDelay $ round $ amt*1000000; return ()}
+cook e = expr e >>= \a -> liftIO $ threadDelay $ round $ 1000000*a
 
 debug :: String -> Environment ()
 debug txt = liftIO $ void (print txt)
