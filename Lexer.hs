@@ -29,11 +29,11 @@ digits = some digit
 
 -- matches the end of an instruction
 end :: Parser ()
-end = void $ some semicolon
+end = void (some semicolon)
 
 -- parses an identifier
 ident :: String -> Parser ()
-ident k = void $ string k
+ident k = void (string k)
 
 -- parses a keyword, must be followed by a semicolon
 keyword :: String -> Parser ()
@@ -67,7 +67,7 @@ semicolon = token ';'
 -- obv because parsed
 skipUntil :: Parser a -> Parser String
 skipUntil cond = done <|> oncemore where
-  done = cond >> return ""
+  done = cond >> return []
   oncemore = do { c <- char; b <- skipUntil cond; return $ c : b}
 
 -- matches a given predicate
@@ -76,11 +76,11 @@ spot p = do { c <- char; guard (p c); return c}
 
 -- matches a string
 string :: String -> Parser String
-string = mapM (\x -> spot (== x))
+string = mapM (spot . (==))
 
 -- matches a given char
 token :: Char -> Parser ()
-token c = void $ spot (== c)
+token c = void (spot (c ==))
 
 -- matches an uppercase letter
 upper :: Parser Char
@@ -88,7 +88,7 @@ upper = spot isUpper
 
 -- preproceses a file for parsing, removes all whitespace
 preprocess :: String -> String
-preprocess = filter (`notElem` [' ', '\t', '\n', '\r'])
+preprocess = filter (`notElem` " \t\n\r")
 
 -- [ TOKENIZERS ] --
 
@@ -135,8 +135,8 @@ color = rgb <|> off <|> white <|> red <|> green <|> blue
 constant :: Parser Exp
 constant = parens constant
          <|> num <|> bool <|> robotline <|> robotultrason <|> var where
-  num = number >>= \n -> return $ Constant n
-  var = some (spot isAlphaNum) >>= \v -> return $ Variable v
+  num = fmap Constant number
+  var = fmap Variable (some (spot isAlphaNum))
   robotline = ident "linesensor" >> return RobotLineSensor
   robotultrason = ident "ultrason" >> return RobotUltrason
 
@@ -169,5 +169,5 @@ robotLed = left <|> right where
 
 unaryExpr :: Parser Exp
 unaryExpr = parens unaryExpr <|> absval <|> notval where
-  absval = between '|' '|' expr >>= \x -> return $ Unary Abs x
-  notval = token '!' >> expr >>= \x -> return $ Unary Not x
+  absval = fmap (Unary Abs) (between '|' '|' expr)
+  notval = fmap (Unary Not) (token '!' >> expr)

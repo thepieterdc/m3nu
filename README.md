@@ -34,6 +34,7 @@ http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-
 parsec lib voor hulpfuncties
 https://en.wikibooks.org/wiki/Haskell/ParseExps
 https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/12-State-Monad
+http://pointfree.io/
 http://dev.stephendiehl.com/fun/002_parsers.html
 
 features

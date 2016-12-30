@@ -33,15 +33,15 @@ boolExpr Or x y = do {xe <- expr x; ye <- expr y;
                   return $ boolDouble $ xe /= 0 || ye /= 0}
 
 cook :: Exp -> Environment ()
-cook e = expr e >>= \a -> liftIO $ threadDelay $ round $ 1000000*a
+cook e = liftIO . threadDelay . round . (1000000 *) =<< expr e
 
 debug :: String -> Environment ()
-debug txt = liftIO $ void (print txt)
+debug txt = liftIO (void (print txt))
 
 eating :: Exp -> Statement -> Environment ()
 eating cond task = do
   loopcond <- expr cond
-  when (doubleBool loopcond) $ eval task >> eating cond task
+  when (doubleBool loopcond) (eval task >> eating cond task)
 
 expr :: Exp -> Environment Double
 expr (Constant c) = return c
@@ -57,10 +57,10 @@ hungry :: Exp -> Statement -> Statement -> Environment ()
 hungry cond i e = expr cond >>= \c -> if doubleBool c then eval i else eval e
 
 order :: String -> Exp -> Environment ()
-order var v = expr v >>= \x -> void $ environmentSet var x
+order var v = void . environmentSet var =<< expr v
 
 puke :: Exp -> Environment ()
-puke e = expr e >>= \x -> liftIO $ void $ print x
+puke e = liftIO . void . print =<< expr e
 
 relExpr :: RelationalOp -> Exp -> Exp -> Environment Double
 relExpr Greater x y = do {xe <- expr x; ye <- expr y;
