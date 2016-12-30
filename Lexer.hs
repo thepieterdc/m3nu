@@ -2,7 +2,7 @@ module Lexer(module Lexer, module Data.Char) where
 
 import Data.Char
 import qualified MBotPlus as Bot
-import Types
+import Types hiding(optional)
 
 -- parses between two delims
 between :: Char -> Char -> Parser a -> Parser a
@@ -45,6 +45,10 @@ letters = some letter
 -- parses a lowercase letter
 lower :: Parser Char
 lower = spot isLower
+
+-- parses an optional string
+optional :: Parser String -> Parser String
+optional a = a <|> return []
 
 -- runs the parser between ( )
 parens :: Parser a -> Parser a
@@ -136,11 +140,10 @@ expr = constant <|> unaryExpr <|> binaryExpr
 
 -- parses a double number
 number :: Parser Double
-number = float <|> nat <|> negFloat <|> negNat where
-  float = do { n <- digits; dot <- token '.'; f <- digits; return $ read (n ++ [dot] ++ f)}
-  nat = do { s <- digits; return $ read s}
-  negFloat = do { _ <- token '-'; n <- float; return $ -n}
-  negNat = do { _ <- token '-'; n <- nat; return $ -n}
+number = float <|> nat where
+  float = do { s <- optional $ string "-"; n <- digits; dot <- token '.';
+          f <- digits; return $ read (s ++ n ++ [dot] ++ f)}
+  nat = do { s <- optional $ string "-"; n <- digits; return $ read (s ++ n) }
 
 robotDirection :: Parser Bot.Direction
 robotDirection = parens robotDirection <|> brake <|>forward <|> left <|> right
