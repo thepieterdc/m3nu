@@ -31,6 +31,10 @@ digits = some digit
 end :: Parser ()
 end = do { _ <- some semicolon; return ()}
 
+-- parses an identifier
+ident :: String -> Parser ()
+ident k = do {_ <- string k; return ()}
+
 -- parses a keyword, must be followed by a semicolon
 keyword :: String -> Parser ()
 keyword k = do { _ <- string k; _ <- end; return ()}

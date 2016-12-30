@@ -79,7 +79,7 @@ pukeParser = do
 
 -- parses reviews (comments -> destroying these)
 reviewParser :: Parser Statement
-reviewParser = do {_ <- string "review"; _ <- skipUntil end; return Review}
+reviewParser = string "review" >> skipUntil end >> return Review
 
 robotDriveParser :: Parser Statement
 robotDriveParser = do {_ <- string "drive"; dir <- robotDirection; _ <- end;

@@ -93,8 +93,7 @@ robotUltrason = do {d <- liftIO Bot.connect; v <- liftIO $ Bot.ultrason d;
                 liftIO $ Bot.close d; return v}
 
 sq :: [Statement] -> Environment ()
-sq [] = return ()
-sq (s:ss) = do {_ <- eval s; sq ss}
+sq = foldr ((>>) . eval) (return ())
 
 unaryExpr :: UnaryOp -> Exp -> Environment Double
 unaryExpr Abs x = do {e <- expr x; return $ if e < 0 then -e else e}
