@@ -29,15 +29,15 @@ digits = some digit
 
 -- matches the end of an instruction
 end :: Parser ()
-end = do { _ <- some semicolon; return ()}
+end = void $ some semicolon
 
 -- parses an identifier
 ident :: String -> Parser ()
-ident k = do {_ <- string k; return ()}
+ident k = void $ string k
 
 -- parses a keyword, must be followed by a semicolon
 keyword :: String -> Parser ()
-keyword k = do { _ <- string k; _ <- end; return ()}
+keyword k = string k >> end >> return ()
 
 -- parsers a letter
 letter :: Parser Char
@@ -67,7 +67,7 @@ semicolon = token ';'
 -- obv because parsed
 skipUntil :: Parser a -> Parser String
 skipUntil cond = done <|> oncemore where
-  done = do { _ <- cond; return ""}
+  done = cond >> return ""
   oncemore = do { c <- char; b <- skipUntil cond; return $ c : b}
 
 -- matches a given predicate
