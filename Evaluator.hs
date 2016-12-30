@@ -21,10 +21,10 @@ eval (RobotLeds l c) = robotLed l c
 eval (Seq s) = sq s
 
 binExpr :: BinaryOp -> Exp -> Exp -> Environment Double
-binExpr Add x y = do {xe <- expr x; ye <- expr y; return $ xe+ye}
-binExpr Minus x y = do {xe <- expr x; ye <- expr y; return $ xe-ye}
-binExpr Multiply x y = do{xe <- expr x; ye <- expr y; return $ xe*ye}
-binExpr Divide x y = do {xe <- expr x; ye <- expr y; return $ xe/ye}
+binExpr Add x y = (+) <$> expr x <*> expr y;
+binExpr Minus x y = (-) <$> expr x <*> expr y;
+binExpr Multiply x y = (*) <$> expr x <*> expr y;
+binExpr Divide x y = (/) <$> expr x <*> expr y;
 
 boolExpr :: BooleanOp -> Exp -> Exp -> Environment Double
 boolExpr And x y = do {xe <- expr x; ye <- expr y;
