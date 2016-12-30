@@ -19,15 +19,14 @@ multipleStatementsParser = do { mult <- many statementParser; return $ Seq mult}
 
 -- parses a statement
 statementParser :: Parser Statement
-statementParser = pukeParser
-                -- reviewParser
-                -- <|> eatingParser
-                -- <|> hungryParser
-                -- <|> orderParser
-                -- <|> pukeParser
-                -- <|> cookParser
-                -- <|> robotDriveParser
-                -- <|> robotLedParser
+statementParser = reviewParser
+                <|> eatingParser
+                <|> hungryParser
+                <|> orderParser
+                <|> pukeParser
+                <|> cookParser
+                <|> robotDriveParser
+                <|> robotLedParser
 
 -- parses cook (sleep)
 cookParser :: Parser Statement
