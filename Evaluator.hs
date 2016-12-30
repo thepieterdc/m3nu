@@ -42,7 +42,7 @@ debug txt = do {liftIO $ print txt; return ()}
 eating :: Exp -> Statement -> Environment ()
 eating cond task = do
   loopcond <- expr cond
-  when (doubleBool loopcond) $ do {_ <- eval task; eating cond task}
+  when (doubleBool loopcond) $ eval task >> eating cond task
 
 expr :: Exp -> Environment Double
 expr (Constant c) = return c
@@ -55,13 +55,13 @@ expr RobotLineSensor = robotLineSensor
 expr RobotUltrason = robotUltrason
 
 hungry :: Exp -> Statement -> Statement -> Environment ()
-hungry cond i e = do {c <- expr cond; if doubleBool c then eval i else eval e}
+hungry cond i e = expr cond >>= \c -> if doubleBool c then eval i else eval e
 
 order :: String -> Exp -> Environment ()
-order var v = do {x <- expr v; environmentSet var x; return ()}
+order var v = expr v >>= \x -> void $ environmentSet var x
 
 puke :: Exp -> Environment ()
-puke e = do {val <- expr e; liftIO $ print val; return ()}
+puke e = expr e >>= \x -> liftIO $ void $ print x
 
 relationalExpr :: RelationalOp -> Exp -> Exp -> Environment Double
 relationalExpr Greater x y = do {xe <- expr x; ye <- expr y;
@@ -96,5 +96,5 @@ sq :: [Statement] -> Environment ()
 sq = foldr ((>>) . eval) (return ())
 
 unaryExpr :: UnaryOp -> Exp -> Environment Double
-unaryExpr Abs x = do {e <- expr x; return $ if e < 0 then -e else e}
-unaryExpr Not x = do {e <- expr x; return $ if e == 0 then 1 else 0}
+unaryExpr Abs x = expr x >>= \e -> return $ if e < 0 then -e else e
+unaryExpr Not x = expr x >>= \e -> return $ if e == 0 then 1 else 0
