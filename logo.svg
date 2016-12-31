@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="logo.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.86453075"
+     inkscape:cx="575.53734"
+     inkscape:cy="869.25313"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="710"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Laag 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3336"
+       style="font-style:normal;font-weight:normal;font-size:90px;line-height:125%;font-family:sans-serif;letter-spacing:48.81999588px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="translate(79,-9.75)"><flowRegion
+         id="flowRegion3338"><rect
+           id="rect3340"
+           width="548.57141"
+           height="222.85715"
+           x="125.71429"
+           y="206.64792"
+           style="font-size:90px;letter-spacing:48.81999588px" /></flowRegion><flowPara
+         id="flowPara3342"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:90px;font-family:Raleway;-inkscape-font-specification:'Raleway Bold';letter-spacing:50px;fill:#000080">M3NU</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:46.31000519px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="235.5"
+       y="200.1122"
+       id="text3337"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3339"
+         x="235.5"
+         y="200.1122"></tspan></text>
+    <path
+       style="fill:#000080"
+       id="path3799"
+       d="m 140.96692,298.03015 c 5.15915,0.7277 10.29453,1.65046 15.47746,2.1831 34.72748,3.56885 69.54433,5.47142 104.42958,6.88787 33.61376,1.36481 67.23928,2.51909 100.87421,3.18148 45.42326,0.89453 90.85734,1.8386 136.28806,1.48901 54.9847,-0.42311 109.94337,-2.53784 164.91505,-3.80676 243.04891,-16.85751 122.24178,-4.71872 362.43402,-36.29033 0,0 0.5266,0.0764 0.5266,0.0764 l 0,0 c -240.08015,31.56109 -119.38715,19.4097 -362.0895,36.34973 -57.01699,1.50023 -114.01854,3.80094 -171.05096,4.50068 -47.2158,0.5793 -94.44078,-0.0778 -141.65649,-0.664 -35.35312,-0.43892 -70.70065,-1.33522 -106.04011,-2.41122 -39.4064,-1.19984 -73.96091,-2.69281 -112.45379,-5.84268 -5.78691,-0.47355 -11.54206,-1.27715 -17.31309,-1.91572 0,0 25.65896,-3.73752 25.65896,-3.73752 z"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

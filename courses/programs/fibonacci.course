@@ -1,0 +1,10 @@
+order x -> 0;
+order y -> 1;
+puke x;
+puke y;
+eating (tasty) ->
+  order z -> (x+y);
+  order x -> y;
+  order y -> z;
+  puke (z);
+enough;
