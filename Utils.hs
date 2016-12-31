@@ -6,7 +6,8 @@ import qualified Data.Map as Map
 
 -- converts bool to double-- converts bool to double
 boolDouble :: Bool -> Double
-boolDouble x = if x then 1 else 0
+boolDouble True = 1
+boolDouble False = 0
 
 -- converts double to bool
 doubleBool :: Double -> Bool

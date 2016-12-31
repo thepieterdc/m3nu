@@ -63,16 +63,11 @@ puke :: Exp -> Environment ()
 puke e = liftIO . void . print =<< expr e
 
 relExpr :: RelationalOp -> Exp -> Exp -> Environment Double
-relExpr Greater x y = do {xe <- expr x; ye <- expr y;
-                             return $ boolDouble $ xe > ye}
-relExpr GrEquals x y = do {xe <- expr x; ye <- expr y;
-                              return $ boolDouble $ xe >= ye}
-relExpr Equals x y = do {xe <- expr x; ye <- expr y;
-                            return $ boolDouble $ xe == ye}
-relExpr Less x y = do {xe <- expr x; ye <- expr y;
-                          return $ boolDouble $ xe < ye}
-relExpr LtEquals x y = do {xe <- expr x; ye <- expr y;
-                              return $ boolDouble $ xe <= ye}
+relExpr Greater x y = fmap boolDouble ((>) <$> expr x <*> expr y)
+relExpr GrEquals x y = fmap boolDouble ((>=) <$> expr x <*> expr y)
+relExpr Equals x y = fmap boolDouble ((==) <$> expr x <*> expr y)
+relExpr Less x y = fmap boolDouble ((<) <$> expr x <*> expr y)
+relExpr LtEquals x y = fmap boolDouble ((<=) <$> expr x <*> expr y)
 
 robotDrive :: Bot.Direction -> Environment ()
 robotDrive dir = do {d <- liftIO Bot.connect; liftIO $ Bot.motorDirection dir d;
@@ -95,5 +90,5 @@ sq :: [Statement] -> Environment ()
 sq = foldr ((>>) . eval) (return ())
 
 unaryExpr :: UnaryOp -> Exp -> Environment Double
-unaryExpr Abs x = expr x >>= \e -> return $ if e < 0 then -e else e
+unaryExpr Abs x = fmap abs (expr x)
 unaryExpr Not x = expr x >>= \e -> return $ if e == 0 then 1 else 0

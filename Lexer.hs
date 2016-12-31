@@ -147,7 +147,7 @@ expr = constant <|> unaryExpr <|> binaryExpr
 -- parses a double number
 number :: Parser Double
 number = float <|> nat where
-  float = do { s <- optional $ string "-"; n <- digits; token '.';
+  float = do {s <- optional $ string "-"; n <- digits; token '.';
           f <- digits; return $ read (s ++ n ++ "." ++ f)}
   nat = do { s <- optional $ string "-"; n <- digits; return $ read (s ++ n) }
 
