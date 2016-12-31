@@ -15,6 +15,7 @@ import Evaluator
 import Parser
 import Types
 
+-- |The main entrypoint of the parser.
 main :: IO ((), EnvironmentVar)
 main = do
   args <- getArgs
