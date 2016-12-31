@@ -10,9 +10,14 @@ module Parser(parseFile, parseString) where
 import Lexer
 import Types
 
+-- |Parses a statement
 parse :: Parser Statement
 parse = parens parse <|> multipleStatementsParser
 
+{-|
+  Runs a parser and creates an Abstract Syntax Tree.
+  The entire input string must be consumed.
+-}
 doParse :: (Show a) => Parser a -> String -> a
 doParse m s = one [x | (x,t) <- apply m s, t == "" ] where
   one [x] = x
@@ -20,11 +25,11 @@ doParse m s = one [x | (x,t) <- apply m s, t == "" ] where
   one xs | length xs > 1 = error ("Multiple parses found:\n " ++ show xs)
   one _ = error "Unknown parse error."
 
--- parses multiple statements
+-- |Parses multiple statements.
 multipleStatementsParser :: Parser Statement
 multipleStatementsParser = do {mult <- many statementParser; return $ Seq mult}
 
--- parses a statement
+-- |Parses a statement.
 statementParser :: Parser Statement
 statementParser = reviewParser
                 <|> eatingParser
@@ -35,11 +40,11 @@ statementParser = reviewParser
                 <|> robotDriveParser
                 <|> robotLedParser
 
--- parses cook (sleep)
+-- |Parses a sleep statement.
 cookParser :: Parser Statement
 cookParser = do {ident "cook"; amt <- expr; end; return $ Cook amt}
 
--- parses eating (while)
+-- |Parses a while loop statement.
 eatingParser :: Parser Statement
 eatingParser = do
   ident "eating"
@@ -49,7 +54,7 @@ eatingParser = do
   keyword "enough"
   return $ Eating cond action
 
--- parses hungry (if else)
+-- |Parses a if/else conditional statement.
 hungryParser :: Parser Statement
 hungryParser = do
   ident "hungry"
@@ -62,7 +67,7 @@ hungryParser = do
     ifelse = do {ident "stuffed"; ident "->"; parse }
     none = return Review
 
--- parses orders (assignments)
+-- |Parses an assignment statement.
 orderParser :: Parser Statement
 orderParser = do
   ident "order"
@@ -72,25 +77,29 @@ orderParser = do
   end
   return $ Order var val
 
--- parses pukes (prints)
+-- |Parses a print statement.
 pukeParser :: Parser Statement
 pukeParser = do {ident "puke"; var <- expr; end; return $ Puke var}
 
--- parses reviews (comments -> destroying these)
+-- |Parses comments (ignoring them).
 reviewParser :: Parser Statement
 reviewParser = string "review" >> skipUntil end >> return Review
 
+-- |Parses an MBot motor command.
 robotDriveParser :: Parser Statement
 robotDriveParser = do {ident "drive"; dir <- robotDirection; end;
                    return $ RobotDrive dir}
 
+-- |Parses an MBot LED command.
 robotLedParser :: Parser Statement
 robotLedParser = do {ident "led"; l <- robotLed; ident "->"; col <- color; end;
                  return $ RobotLeds l col}
 
+-- |Builds an Abstract Syntax Tree from a String.
 parseString :: String -> IO Statement
 parseString code = return $ doParse parse $ preprocess code
 
+-- |Builds an Abstract Syntax Tree from a file.
 parseFile :: String -> IO Statement
 parseFile file = do {code <- readFile file;
                  return $ doParse parse $ preprocess code }
