@@ -19,22 +19,29 @@ import Utils
 -- |The type for Parsers.
 newtype Parser a = Parser (String -> [(a, String)])
 
-apply :: Parser a -> String -> [(a, String)]
+-- |Applies a parser.
+apply :: Parser a -- ^ The parser to apply
+      -> String -- ^ The string to apply the parser on
+      -> [(a, String)] -- ^ The parsed expression and the remaining string
 apply (Parser f) = f
 
+-- |The functor instance for a Parser.
 instance Functor Parser where
   fmap = liftM
 
+-- |The Applicative instance for a Parser.
 instance Applicative Parser where
   pure = return
   (<*>) = ap
 
+-- |The Monad instance for a Parser.
 instance Monad Parser where
   return x = Parser (\s -> [(x, s)])
   m >>= k = Parser (\s -> [(y, u) |
                            (x, t) <- apply m s,
                            (y, u) <- apply (k x) t])
 
+-- |The Alternative instance for a Parser.
 instance Alternative Parser where
   empty = mzero
   (<|>) p q = Parser (\s ->
@@ -44,6 +51,7 @@ instance Alternative Parser where
   some p = do { x <- p; xs <- many p; return (x:xs)}
   many p = some p `mplus` return []
 
+-- |The MonadPlus instance for a Parser.
 instance MonadPlus Parser where
   mzero = Parser (const [])
   mplus m n = Parser (ap ((++) . apply m) (apply n))
