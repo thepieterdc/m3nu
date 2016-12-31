@@ -7,4 +7,5 @@ eating (tasty) ->
   order x -> y;
   order y -> z;
   puke (z);
+  cook 1;
 enough;
