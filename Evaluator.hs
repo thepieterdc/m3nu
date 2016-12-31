@@ -1,3 +1,10 @@
+{-|
+Module      : Evaluator
+Description : Evaluates parsed expressions.
+Copyright   : (c) Pieter De Clercq, 2016
+License     : MIT
+Maintainer  : piedcler.declercq@ugent.be
+-}
 module Evaluator(eval) where
 
 import Control.Concurrent(threadDelay)

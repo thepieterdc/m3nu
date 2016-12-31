@@ -1,3 +1,10 @@
+{-|
+Module      : Lexer
+Description : Contains tokenizing functions and functions for lexical analysis.
+Copyright   : (c) Pieter De Clercq, 2016
+License     : MIT
+Maintainer  : piedcler.declercq@ugent.be
+-}
 module Lexer(module Lexer, module Data.Char) where
 
 import Data.Char

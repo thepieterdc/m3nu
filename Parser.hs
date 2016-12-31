@@ -1,3 +1,10 @@
+{-|
+Module      : Parser
+Description : Parses code into an Abstract Syntax Tree.
+Copyright   : (c) Pieter De Clercq, 2016
+License     : MIT
+Maintainer  : piedcler.declercq@ugent.be
+-}
 module Parser(parseFile, parseString) where
 
 import Lexer

@@ -1,3 +1,10 @@
+{-|
+Module      : Main
+Description : Entrypoint of the parser.
+Copyright   : (c) Pieter De Clercq, 2016
+License     : MIT
+Maintainer  : piedcler.declercq@ugent.be
+-}
 module Main where
 
 import Control.Monad.Trans.State.Lazy

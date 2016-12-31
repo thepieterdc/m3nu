@@ -1,3 +1,10 @@
+{-|
+Module      : MBotPlus
+Description : Provides functions to work with the MBot.
+Copyright   : (c) Pieter De Clercq, 2016
+License     : MIT
+Maintainer  : piedcler.declercq@ugent.be
+-}
 module MBotPlus (module MBotPlus) where
 
 import Data.Bits
