@@ -15,6 +15,7 @@ import qualified MBotPlus as Bot
 import Types
 import Utils
 
+-- |Evaluates any expression.
 eval :: Statement -> Environment ()
 eval (Cook a) = cook a
 eval (Eating cond s) = eating cond s
