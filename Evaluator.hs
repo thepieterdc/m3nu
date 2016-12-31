@@ -10,7 +10,6 @@ import Utils
 
 eval :: Statement -> Environment ()
 eval (Cook a) = cook a
-eval (Debug s) = debug s
 eval (Eating cond s) = eating cond s
 eval (Hungry cond ifc elsec) = hungry cond ifc elsec
 eval (Order val var) = order val var
@@ -34,9 +33,6 @@ boolExpr Or x y = do {xe <- expr x; ye <- expr y;
 
 cook :: Exp -> Environment ()
 cook e = liftIO . threadDelay . round . (1000000 *) =<< expr e
-
-debug :: String -> Environment ()
-debug txt = liftIO (void (print txt))
 
 eating :: Exp -> Statement -> Environment ()
 eating cond task = do

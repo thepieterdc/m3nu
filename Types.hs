@@ -1,3 +1,10 @@
+{-|
+Module      : Types
+Description : Contains all datatypes and classes used in the project.
+Copyright   : (c) Pieter De Clercq, 2016
+License     : MIT
+Maintainer  : piedcler.declercq@ugent.be
+-}
 module Types(module Types, module X) where
 
 import Control.Applicative as X
@@ -9,6 +16,7 @@ import Data.Maybe
 import qualified MBotPlus as Bot
 import Utils
 
+-- |The type for Parsers.
 newtype Parser a = Parser (String -> [(a, String)])
 
 apply :: Parser a -> String -> [(a, String)]
@@ -40,46 +48,67 @@ instance MonadPlus Parser where
   mzero = Parser (const [])
   mplus m n = Parser (ap ((++) . apply m) (apply n))
 
-data Exp = Constant Double
-         | Variable String
-         | Binary BinaryOp Exp Exp
-         | Unary UnaryOp Exp
-         | Boolean BooleanOp Exp Exp
-         | Relational RelationalOp Exp Exp
-         | RobotLineSensor
-         | RobotUltrason
+-- |Expressions.
+data Exp = Constant Double -- ^ A literal/constant number
+         | Variable String -- ^ A variable name
+         | Binary BinaryOp Exp Exp -- ^ A binary expression
+         | Unary UnaryOp Exp -- ^ A unary expression
+         | Boolean BooleanOp Exp Exp -- ^ A boolean expression
+         | Relational RelationalOp Exp Exp -- ^ A relational binary expression
+         | RobotLineSensor -- ^ A statement to read te MBot linesensor
+         | RobotUltrason -- ^ A statement to read the MBot ultrasonic sensor
          deriving (Eq, Show)
 
-data BinaryOp = Add | Minus | Multiply | Divide deriving (Eq, Show)
+-- |Binary operators.
+data BinaryOp = Add -- ^ Add 2 expressions
+              | Minus -- ^ Substract 2 expressions
+              | Multiply -- ^ Multiply 2 expressions
+              | Divide -- ^ Divide 2 expressions
+              deriving (Eq, Show)
 
-data BooleanOp = And | Or deriving (Eq, Show)
+-- |Boolean operators.
+data BooleanOp = And -- ^ Logic AND operator
+               | Or -- ^ Logic OR operator
+               deriving (Eq, Show)
 
+-- |Colors consist of 3 expressions: red, green, blue respectively.
 type Color = (Exp, Exp, Exp)
 
-data UnaryOp = Abs | Not deriving (Eq, Show)
+-- |Unary operators.
+data UnaryOp = Abs -- ^ Absolute value of an expression
+             | Not -- ^ Boolean negate an expression
+            deriving (Eq, Show)
 
-data RelationalOp = Greater | GrEquals | Equals | LtEquals | Less deriving (Eq, Show)
+-- |Relational operators.
+data RelationalOp = Greater -- ^ Strict greater than (>)
+                  | GrEquals -- ^ Greater than or equals (>=)
+                  | Equals -- ^ Equals (==)
+                  | LtEquals -- ^ Less than or equals (<=)
+                  | Less -- ^ Strict less than (<)
+                  deriving (Eq, Show)
 
-data Statement = Cook Exp
-               | Debug String
-               | Eating Exp Statement
-               | Hungry Exp Statement Statement
-               | Order String Exp
-               | Puke Exp
-               | Review
-               | RobotDrive Bot.Direction
-               | RobotLeds Bot.Led Color
-               | Seq [Statement]
+-- |Statements.
+data Statement = Cook Exp -- ^ A sleep statement
+               | Eating Exp Statement -- ^ A while statement
+               | Hungry Exp Statement Statement -- ^ A conditional statement
+               | Order String Exp -- ^ An assignment statement
+               | Puke Exp -- ^ A print statement
+               | Review -- ^ Comments
+               | RobotDrive Bot.Direction -- ^ MBot command: motors
+               | RobotLeds Bot.Led Color -- ^ MBot command: LEDs
+               | Seq [Statement] -- ^ A sequence of multiple statements
                deriving Show
 
+-- |An environment variable.
 type EnvironmentVar = Map.Map String Double
 
+-- |An environment; built upon a State/IO Transformer.
 type Environment a = StateT EnvironmentVar IO a
 
--- gets variable
+-- |Retrieves an environment variable.
 environmentGet :: String -> Environment Double
 environmentGet k = fmap (fromJust . Map.lookup k) get
 
--- sets variable
+-- |Sets an environment variable.
 environmentSet :: String -> Double -> Environment ()
 environmentSet k v = put . Map.insert k v =<< get
