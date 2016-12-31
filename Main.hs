@@ -1,7 +1,7 @@
 module Main where
 
 import Control.Monad.Trans.State.Lazy
-import Data.Map
+import qualified Data.Map as Map
 import System.Environment
 
 import Evaluator
@@ -14,4 +14,4 @@ main = do
   if length args /= 1 then error "Usage: ./Main path_to_course.course: "
   else do
     ast <- parseFile $ head args
-    runStateT (eval ast) (fromList [])
+    runStateT (eval ast) (Map.fromList [])

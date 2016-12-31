@@ -1,34 +1,44 @@
+{-|
+Module      : Utils
+Description : Provides simple utility functions.
+Copyright   : (c) Pieter De Clercq, 2016
+License     : MIT
+Maintainer  : piedcler.declercq@ugent.be
+-}
 module Utils(module Utils) where
 
-import Data.List(elemIndex)
-import Data.Maybe(fromJust)
+import qualified Data.List as List
+import qualified Data.Maybe as Maybe
 import qualified Data.Map as Map
 
--- converts bool to double-- converts bool to double
+-- |Converts a Boolean to a Double value.
 boolDouble :: Bool -> Double
 boolDouble True = 1
 boolDouble False = 0
 
--- converts double to bool
+{-|
+  Converts a Double to a Boolean value. Every number is converted to True except
+  for zero.
+-}
 doubleBool :: Double -> Bool
 doubleBool = (/= 0)
 
--- converts double to int
+-- |Converts a Double to an Integer.
 doubleInt :: Double -> Int
 doubleInt = round
 
--- converts float to double
+-- |Converts a floating point number to a Double.
 floatDouble :: Float -> Double
 floatDouble = realToFrac
 
--- gets the index of an element in a list and errors otherwise
+-- |Retrieves the index of an element in a list, erroring if not found.
 index :: (Eq a) => [a] -> a -> Int
-index xs x = fromJust (elemIndex x xs)
+index xs x = Maybe.fromJust (List.elemIndex x xs)
 
--- converts int to double
+-- |Converts an Integer to a Double.
 intDouble :: Int -> Double
 intDouble x = fromIntegral x :: Double
 
--- map.lookup for lists
+-- |Retrieves the value corresponding to a key in a list of tuples.
 mapLookup :: (Ord a) => [(a,b)] -> a -> Maybe b
 mapLookup xs x = Map.lookup x (Map.fromList xs)
