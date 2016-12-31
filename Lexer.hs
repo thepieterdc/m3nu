@@ -12,98 +12,104 @@ import Data.Char
 import qualified MBotPlus as Bot
 import Types hiding(optional)
 
--- parses between two delims
+-- [ LEXICOGRAPHIC HELP FUNCTIONS ] --
+
+-- |Runs a parser between two delimiters.
 between :: Char -> Char -> Parser a -> Parser a
 between l r p = do { token l; ret <- p; token r; return ret}
 
--- runs the parser between { }
+-- |Runs a parser between two brackets { }.
 brackets :: Parser a -> Parser a
 brackets = between '{' '}'
 
--- parser one char, anything, returns the char + rest of string
+{-|
+  Parses one character, returning the character and the rest of the unparsed
+  string.
+-}
 char :: Parser Char
 char = Parser f where
   f [] = []
   f (c:s) = [(c,s)]
 
--- parses a digit, returns it as a char for composing numbers
+-- |Parses a digit.
 digit :: Parser Char
 digit = spot isDigit
 
--- parses multiple digits, returns them as string for composing numbers
+-- |Parses multiple digits, returning them as a string.
 digits :: Parser String
 digits = some digit
 
--- matches the end of an instruction
+-- |Parses the end of an instruction, denoted by a semicolon. Discards result.
 end :: Parser ()
 end = void (some semicolon)
 
--- parses an identifier
+-- |Parses an identifier. Discards the result.
 ident :: String -> Parser ()
 ident k = void (string k)
 
--- parses a keyword, must be followed by a semicolon
+-- |Parses an identifier followed by a semicolon. Discards the result.
 keyword :: String -> Parser ()
 keyword k = string k >> end >> return ()
 
--- parsers a letter
+-- |Parses a letter, returning the letter.
 letter :: Parser Char
 letter = spot isAlpha
 
--- parses multiple letters
+-- |Parses multiple letters, returning them as a string.
 letters :: Parser String
 letters = some letter
 
--- parses a lowercase letter
+-- |Parses a lowercase letter.
 lower :: Parser Char
 lower = spot isLower
 
--- parses an optional string
+-- |Parses a string if it is found, returning the empty string otherwise.
 optional :: Parser String -> Parser String
 optional a = a <|> return []
 
--- runs the parser between ( )
+-- |Runs a parser between parentheses ( ).
 parens :: Parser a -> Parser a
 parens = between '(' ')'
 
--- parses a semicolon
+-- |Parses a semicolon. Discards the result.
 semicolon :: Parser ()
 semicolon = token ';'
 
--- skips until a given token, returning the skipped part including the cond
--- obv because parsed
+-- |Parses characters as long as a given condition holds true.
 skipUntil :: Parser a -> Parser String
 skipUntil cond = done <|> oncemore where
   done = cond >> return []
   oncemore = do { c <- char; b <- skipUntil cond; return $ c : b}
 
--- matches a given predicate
+-- |Parses a character satisfying a given predicate.
 spot :: (Char -> Bool) -> Parser Char
 spot p = do { c <- char; guard (p c); return c}
 
--- matches a string
+-- |Parses a string.
 string :: String -> Parser String
 string = mapM (spot . (==))
 
--- matches a given char
+-- |Parses a given character. Discards the result.
 token :: Char -> Parser ()
 token c = void (spot (c ==))
 
--- matches an uppercase letter
+-- |Parses an uppercase letter.
 upper :: Parser Char
 upper = spot isUpper
 
--- preproceses a file for parsing, removes all whitespace
+-- |Preprocesses a file for parsing, removing all whitespace.
 preprocess :: String -> String
 preprocess = filter (`notElem` " \t\n\r")
 
 -- [ TOKENIZERS ] --
 
+-- |Tokenizes a boolean expression.
 bool :: Parser Exp
 bool = true <|> false where
   true = ident "tasty" >> return (Constant 1)
   false = ident "disguisting" >> return (Constant 0)
 
+-- |Tokenizes a binary expression.
 binaryExpr :: Parser Exp
 binaryExpr = add <|> sub <|> mul <|> dvd
            <|> booland <|> boolor <|> gteq <|> lteq <|> gt <|> lt <|> eq where
@@ -124,6 +130,7 @@ binaryExpr = add <|> sub <|> mul <|> dvd
   lt = relexp "<" Less;
   eq = relexp "==" Equals;
 
+-- |Tokenizes a color.
 color :: Parser Color
 color = rgb <|> off <|> white <|> red <|> green <|> blue
                 <|> cyan <|> yellow <|> magenta where
@@ -138,7 +145,7 @@ color = rgb <|> off <|> white <|> red <|> green <|> blue
   yellow = ident "yellow" >> return (Constant 255, Constant 255, Constant 0)
   white = ident "white" >> return (Constant 255, Constant 255, Constant 255)
 
--- constant expression
+-- |Tokenizes a constant/variable/robot expression.
 constant :: Parser Exp
 constant = parens constant
          <|> num <|> bool <|> robotline <|> robotultrason <|> var where
@@ -147,17 +154,18 @@ constant = parens constant
   robotline = ident "linesensor" >> return RobotLineSensor
   robotultrason = ident "ultrason" >> return RobotUltrason
 
--- parses an expr
+-- |Tokenizes any expression.
 expr :: Parser Exp
 expr = constant <|> unaryExpr <|> binaryExpr
 
--- parses a double number
+-- |Tokenizes a number expression.
 number :: Parser Double
 number = float <|> nat where
   float = do {s <- optional $ string "-"; n <- digits; token '.';
           f <- digits; return $ read (s ++ n ++ "." ++ f)}
   nat = do { s <- optional $ string "-"; n <- digits; return $ read (s ++ n) }
 
+-- |Tokenizes an MBot direction.
 robotDirection :: Parser Bot.Direction
 robotDirection = parens robotDirection <|> brake <|>forward <|> left <|> right
                <|> backwardleft <|> backwardright<|> backward where
@@ -169,11 +177,13 @@ robotDirection = parens robotDirection <|> brake <|>forward <|> left <|> right
   backwardright = ident "backwardright" >> return Bot.DirBackwardRight
   brake = ident "brake" >> return Bot.Brake
 
+-- |Tokenizes an MBot LED identifier.
 robotLed :: Parser Bot.Led
 robotLed = left <|> right where
   left = ident "left" >> return Bot.LeftLed
   right = ident "right" >> return Bot.RightLed
 
+-- |Tokenizes a unary expression.
 unaryExpr :: Parser Exp
 unaryExpr = parens unaryExpr <|> absval <|> notval where
   absval = fmap (Unary Abs) (between '|' '|' expr)
