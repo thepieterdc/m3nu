@@ -22,3 +22,4 @@ cabal.project.local
 *.ilg
 *.ind
 *.out
+*.toc
