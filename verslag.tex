@@ -1,6 +1,7 @@
 \documentclass[12pt,a4paper]{report}
 \usepackage{color}
 \usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
 \usepackage[T1]{fontenc}
 \usepackage[dutch]{babel}
 \usepackage[margin=1in]{geometry}
@@ -13,13 +14,24 @@
 
 \makeindex
 
-\setcounter{tocdepth}{0}
+\setcounter{tocdepth}{2}
 
 \titleformat{\chapter}[display]{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{18pt}{\huge}
 \titlespacing*{\chapter}{0pt}{20pt}{20pt}
 
 \begin{document}
-\lstset{language=Haskell}
+\lstset{ %
+  breakatwhitespace=true,
+  breaklines=true,
+  commentstyle=\color{gray},
+  frame=single,
+  keepspaces=true,
+  language=Haskell,
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\color{gray},
+  showspaces=false
+}
 
 \pagenumbering{arabic}
 \topskip0pt
@@ -37,9 +49,7 @@
 % Include faculty logo at exactly the right size
 \includegraphics[width=74mm]{verslag/logo-we.pdf}
 \end{center}
-\newpage
-\section*{Inhoudsopgave}
-\printindex
+\tableofcontents
 \newpage
 \chapter{Inleiding}
 De syntax van deze taal vertrok van een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de effectieve implementatie van de taal. De naam is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. De statements met betrekking tot de MBot echter, vormen een uitzondering op deze regel. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een "gang" in een menu.
@@ -62,7 +72,7 @@ De obstakel ontwijker is zeer intuïtief geprogrammeerd. Er wordt namelijk altij
 Alle getallen worden voorgesteld als Doubles. Dit zorgt ervoor dat ik nergens rekening moet houden met gehele getallen of kommagetallen, aangezien elk geheel getal kan worden voorgesteld als een kommagetal maar niet omgekeerd. \textsc{Lexer.hs: 162-166.}
 \section{Whitespace}
 Voor aanvang van het parsen wordt alle whitespace, dit zijn zowel spaties, tabs alsook newlines, verwijderd uit de code die geparset moet worden. Dit maakt het niet alleen sneller, het maakt ook de code een stuk aangenamer en duidelijker om te lezen. Bovendien vormde dit toch geen probleem aangezien strings niet ondersteund worden. \textsc{Lexer.hs: 100-102.}
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
   -- |Preprocesses a file for parsing, removing all whitespace.
   preprocess :: String -> String
   preprocess = filter (`notElem` " \t\n\r")
@@ -71,7 +81,7 @@ Voor aanvang van het parsen wordt alle whitespace, dit zijn zowel spaties, tabs 
 Om het project wat overzichtelijk te houden heb ik besloten niet alles in één groot bestand te plaatsen, maar het op te splitsen naar verschillende bestanden. Vooraleer ik de State monad geïmplementeerd had, had ik een simpele environment gemaakt bestaande uit een Map. Hiervoor had ik nog een bestand Environment.hs, maar dat is nu volledig weg aangezien het maar een lijn of 10 meer bevatte.
 \section{Booleans zijn Aritmetische expressies}
 Booleans worden bij het parsen onmiddellijk omgezet van tasty en disguisting naar respectievelijk de getallen 1 en 0. Dit naar analogie met de implementatie van booleans in C. De omgekeerde logica geldt ook, namelijk elk getal dat niet 0 is heeft booleaanse waarde tasty (true) en 0 wordt disguisting (false). Dit is geïnspireerd op de programmeertaal Python. \textsc{Lexer.hs: 107-110.}
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
   -- |Tokenizes a boolean expression.
   bool :: Parser Exp
   bool = true <|> false where
@@ -99,6 +109,26 @@ Alle methoden zijn gedocumenteerd volgens de Haddock-stijl, documentatie gegener
 \chapter{Appendix Broncode}
 
 \section{- Evaluator.hs}
-\lstinputlisting{evaluator.hs}
-
+\lstinputlisting{Evaluator.hs}
+\newpage
+\section{- Lexer.hs}
+\lstinputlisting{Lexer.hs}
+\newpage
+\section{- Main.hs}
+\lstinputlisting{Main.hs}
+\newpage
+\section{- MBotPlus.hs}
+\lstinputlisting{MBotPlus.hs}
+\newpage
+\section{- Parser.hs}
+\lstinputlisting{Parser.hs}
+\newpage
+\section{- Types.hs}
+\lstinputlisting{Types.hs}
+\newpage
+\section{- Utils.hs}
+\lstinputlisting{Utils.hs}
+\section{- runtests.hs}
+Dit is een klein bash-script, geschreven om alle tests sequentieel uit te voeren. Dit heb ik telkens gedaan bij een aanpassing aan de code, om te garanderen dat alles bleef werken.
+\lstinputlisting[language=sh]{runtests.sh}
 \end{document}
