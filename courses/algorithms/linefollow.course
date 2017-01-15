@@ -2,28 +2,28 @@ order prev -> linesensor;
 eating (tasty) ->
   order x -> linesensor;
   hungry (x == 3) ->
-    drive forward;
+    drivethrough forward;
     order prev -> x;
   satisfied;
 
   hungry (x == 2) ->
-    drive right;
+    drivethrough right;
     order prev -> x;
   satisfied;
 
   hungry (x == 1) ->
-    drive left;
+    drivethrough left;
     order prev -> x;
   satisfied;
 
   hungry (x == 0) ->
     hungry (prev == 1) ->
-      drive backwardright;
+      drivethrough backwardright;
     stuffed ->
       hungry (prev == 2) ->
-        drive backwardleft;
+        drivethrough backwardleft;
       stuffed ->
-        drive backward;
+        drivethrough backward;
       satisfied;
     satisfied;
   satisfied;

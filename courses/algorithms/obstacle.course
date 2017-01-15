@@ -1,11 +1,11 @@
 eating (tasty) ->
   hungry (ultrason < 10) ->
     hungry (ultrason < 6) ->
-      drive backward;
+      drivethrough backward;
     stuffed ->
-      drive right;
+      drivethrough right;
     satisfied;
   stuffed ->
-    drive forward;
+    drivethrough forward;
   satisfied;
 enough;
