@@ -52,10 +52,40 @@
 \tableofcontents
 \newpage
 \chapter{Inleiding}
-De syntax van deze taal vertrok van een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de effectieve implementatie van de taal. De naam is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. De statements met betrekking tot de MBot echter, vormen een uitzondering op deze regel. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een \"gang\" in een menu.
+De syntax van deze taal vertrok van een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de effectieve implementatie van de taal. De naam is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. De statements met betrekking tot de MBot echter, vormen een uitzondering op deze regel. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een ``gang'' in een menu.
 \chapter{Syntaxis}
+BNF shit
 
 \chapter{Semantische constructies}
+\section{- Cook}
+Dit statement biedt de mogelijkheid om de uitvoering van het programma te pauzeren voor een gegeven tijdsspanne, uitgedrukt in seconden. De naamgeving voor deze methode komt van de eenvoudige logica, dat er iemand niet kan eten terwijl die aan het koken is, dus de thread waarop het programma draait ook niet.
+
+\section{- Eating}
+While-lussen kunnen gebruikt worden door middel van ``Eating''-statements. De werking is niet anders dan bij andere programmeertalen; een blok code wordt uitgevoerd zolang een conditie naar ``true'', tasty, evalueert.
+
+\section{- Hungry}
+De traditionele ``if-else''-controlestructuur werd geïmplementeerd door het ``hungry-stuffed''-statement. Als de expressie naar ``tasty'' evalueert wordt de ``hungry''-tak uitgevoerd, anders de ``stuffed''-tak. Een noemenswaardig verschil met Haskell is dat de ``else/stuffed''-tak van het statement hier optioneel is, terwijl dit in Haskell verplicht is.
+
+\section{- Order}
+Assignment gebeurt met het ``Order''-statement. Variabelen worden gestockeerd in de environment en kunnen later in expressies weer gebruikt worden. Scoping van variabelen is niet mogelijk, alles zit in de global scope. Mocht ik functies willen implementeren, zou ik er hoogstwaarschijnlijk voor opteren dit zo te houden aangezien de code een heel stuk gecompliceerder zou worden met ondersteuning voor scope.
+
+\section{- Puke}
+Met het ``Puke''-statement kan uitvoer naar de console, met andere woorden naar ``standaard-uit'' weggeschreven worden. Zowel booleaanse als aritmetische expressies, alsook sensorwaarden kunnen worden getoond. De naamgeving van dit statement is vrij voordehandliggend, maar toch is er nog een diepere betekenis. Het woord ``Puke'' heeft namelijk een eerder negatieve connotatie; dit in overeenstemming met het feit dat I/O over het algemeen traag en bijgevolg negatief is.
+
+\section{- Review}
+Commentaar is mogelijk via het ``Review'' statement. Ondersteuning voor commentaar op willekeurige plaatsen in de code is niet ingebouwd. De ondersteunde vormen van commentaar zijn lijncommentaar en commentaar over meerdere lijnen. Commentaar over meerdere lijnen is een logisch resultaat van \textsc{5.2.} en vereiste geen verdere aanpassing aan de code.
+
+\section{- Drive (MBot)}
+Met dit commando worden de motoren van de MBot aangestuurd. De motoren individueel aansturen is niet mogelijk, wel kan er eenvoudig gestuurd worden door een richting mee te geven aan dit statement. Ondersteunde richtingen zijn ``forward'', ``left'', ``right'', ``backward'', ``backwardleft'', ``backwardright''. De motoren stoppen, remmen, is ook mogelijk met de richting ``brake''.
+
+\section{- Leds (MBot)}
+Om de LED's van de MBot te controleren werd het ``leds'' statement ingevoerd. Dit statement vergt 2 argumenten, namelijk de linkse of rechtse led, gevolgd door de gewenste kleur. Deze kleur kan in RGB-waarden worden opgegeven, maar er zijn ook enkele basiskleuren ingebouwd. Deze zijn ``red'', ``green'', ``blue'', ``cyan'', ``magenta'', ``yellow'', ``white''.
+
+\section{- Sensoren (MBot)}
+De waarden lijnsensor en ultrasonische sensor kunnen worden opgevraagd met de expressies ``linesensor'' en ``ultrason''. Deze worden gewoon als expressies gezien voor de evaluator, waardoor bijvoorbeeld het dubbel van de waarde van de lijnsensor eenvoudig kan worden berekend met
+\begin{lstlisting}[language=Bash]
+  order x (2*linesensor);
+\end{lstlisting}
 
 \chapter{Programma's}
 
