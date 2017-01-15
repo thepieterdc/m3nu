@@ -37,7 +37,7 @@ statementParser = reviewParser
                 <|> orderParser
                 <|> pukeParser
                 <|> cookParser
-                <|> robotDriveThroughParser
+                <|> robotDriveParser
                 <|> robotLedParser
 
 -- |Parses a sleep statement.
@@ -86,8 +86,8 @@ reviewParser :: Parser Statement
 reviewParser = string "review" >> skipUntil end >> return Review
 
 -- |Parses an MBot motor command.
-robotDriveThroughParser :: Parser Statement
-robotDriveThroughParser = do {ident "drivethrough"; dir <- robotDirection; end;
+robotDriveParser :: Parser Statement
+robotDriveParser = do {ident "drivethrough"; dir <- robotDirection; end;
                    return $ RobotDrive dir}
 
 -- |Parses an MBot LED command.
