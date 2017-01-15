@@ -1,6 +1,6 @@
 order x -> tasty;
 eating (tasty) ->
   order x -> (!x);
-  led left  -> (255-(255*x)), 0, (255*x);
-  led right -> (255*x),       0, (255-(255*x));
+  colalight left  -> (255-(255*x)), 0, (255*x);
+  colalight right -> (255*x),       0, (255-(255*x));
 enough;

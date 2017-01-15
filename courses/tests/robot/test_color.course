@@ -1,2 +1,2 @@
-led left -> red;
-led right -> yellow;
+colalight left -> red;
+colalight right -> yellow;

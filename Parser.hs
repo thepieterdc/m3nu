@@ -92,8 +92,11 @@ robotDriveParser = do {ident "drivethrough"; dir <- robotDirection; end;
 
 -- |Parses an MBot LED command.
 robotLedParser :: Parser Statement
-robotLedParser = do {ident "led"; l <- robotLed; ident "->"; col <- color; end;
-                 return $ RobotLeds l col}
+robotLedParser = col <|> off where
+  off = do {ident "colazero"; l <- robotLed; end;
+        return $ RobotLeds l (Constant 0, Constant 0, Constant 0)}
+  col = do {ident "colalight"; l <- robotLed; ident "->"; col <- color; end;
+        return $ RobotLeds l col}
 
 -- |Builds an Abstract Syntax Tree from a String.
 parseString :: String -> IO Statement

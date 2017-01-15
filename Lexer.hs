@@ -132,11 +132,10 @@ binaryExpr = add <|> sub <|> mul <|> dvd
 
 -- |Tokenizes a color.
 color :: Parser Color
-color = rgb <|> off <|> white <|> red <|> green <|> blue
+color = rgb <|> white <|> red <|> green <|> blue
                 <|> cyan <|> yellow <|> magenta where
   rgbpart = do{ret <- expr; token ','; return ret}
   rgb = do {r <- rgbpart; g <- rgbpart; b <- expr; return (r, g, b)}
-  off = ident "off" >> return (Constant 0, Constant 0, Constant 0)
   red = ident "red" >> return (Constant 255, Constant 0, Constant 0)
   green = ident "green" >> return (Constant 0, Constant 255, Constant 0)
   blue = ident "blue" >> return (Constant 0, Constant 0, Constant 255)

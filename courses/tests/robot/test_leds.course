@@ -1,4 +1,8 @@
-led left -> 0, 0, 0;
-led right -> 0, 0, 0;
-led left -> 255, 0, 0;
-led right -> 0, 0, 255;
+colalight left -> 0, 0, 0;
+colalight right -> 0, 0, 0;
+colalight left -> 255, 0, 0;
+colalight right -> 0, 0, 255;
+cook 1;
+colazero left;
+cook 1;
+colazero right;
