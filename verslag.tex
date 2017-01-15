@@ -55,11 +55,10 @@
 \tableofcontents
 \newpage
 \chapter{Inleiding}
-De syntax van deze taal vindt zijn oorsprong in een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de effectieve implementatie van de taal. De naam M3NU is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. De statements met betrekking tot de MBot echter, vormen een uitzondering op deze regel. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een ``gang'' in een menu.
+De syntax van deze taal vindt zijn oorsprong in een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de uiteindelijke implementatie van de taal. De naam M3NU is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. De statements met betrekking tot de MBot echter, vormen een uitzondering op deze regel. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een ``gang'' in een menu.
 \chapter{Syntaxis}
 arrow $::= ->$\\
-end $::= \{$`;'$\}_{1+}$\\
-
+end $::= $`;'\\
 \section{Getallen}
 digit $::= 0|1|2|...|9$\\
 commasep $::= .$\\
@@ -77,7 +76,7 @@ opa $::= +$ $|$ $-$ $|$ $*$ $|$ $/$\\
 opb $::= and$ $|$ $or$\\
 opr $::= >|>=|==|<=|<$\\
 operator $::= \{opa\}_{1} | \{opb\}_{1} | \{opr\}_{1}$\\
-exppart $::= \{sgnnumber\}_{1} | \{variable\}_{1} | \{bool\}_{1} | \{linesensor\}_{1} | \{ultrason\}_{1} | \{(exppart)\}_{1}$\\
+exppart $::= \{sgnnumber\}_{1} | \{variable\}_{1} | \{bool\}_{1} | \{mbotSensor\}_{1} | \{(exppart)\}_{1}$\\
 unexp $::= $`|' $\{exp\}_{1}$ `|' $| !\{exp\}_{1} | (\{unexp\}_{1})$\\
 binexp $::= (\{exp\}_{1} \{operator\}_{1} \{exp\}_{1})$\\
 exp $::= \{exppart\}_{1} | \{binexp\}_{1} | \{(exp)\}_{1}$\\
@@ -86,13 +85,25 @@ exp $::= \{exppart\}_{1} | \{binexp\}_{1} | \{(exp)\}_{1}$\\
 knowncol $::= red$ $|$ $green$ $|$ $blue$ $|$ $cyan$ $|$ $magenta$ $|$ $yellow$ $|$ $white$\\
 rgbcol $::= \{exp\}_{1}, \{exp\}_{1}, \{exp\}_{1}$\\
 color $::= \{knowncol\}_{1} | \{rgbcol\}_{1}$\\
-direction $::= forward$ $|$ $left$ $|$ $right$ $|$ $backward$ $|$ $backwardleft$ $|$ $backwardright$ $|$ $brake$\\
+direction $::= forward$ $|$ $left$ $|$ $right$ $|$ $backward$ $|$ $backwardleft$ $|$ $backwardright$ \\
+\indent\indent\indent$|$ $brake$\\
 leds $::= left$ $|$ $right$\\
+mbotSensor $::= linesensor | ultrason$\\
 mbotLed $::= led \{leds\}_{1} \{arrow\} \{color\}_{1} $\\
+mbotDrive $::= drive \{direction\}_{1}$\\
 
 \section{Statements}
-
-
+cookStmt $::= cook \{exp\}_{1} \{end\}_{1+}$\\
+eatingStmt $::= eating \{exp\}_{1} \{arrow\}_{1} \{stmt\}_{0+} enough \{end\}_{1+}$\\
+hungryStuffed $::= hungry \{exp\}_{1} \{arrow\}_{1} \{stmt\}_{0+}$\\
+\indent\indent\indent\indent $stuffed \{arrow\}_{1} \{stmt\}_{0+} satisfied \{end\}_{1+}$\\
+hungryNotStuffed $::= hungry \{exp\}_{1} \{arrow\}_{1} \{stmt\}_{0+} satisfied \{end\}_{1+}$\\
+hungryStmt $::= \{hungryStuffed\}_{1} | \{hungryNotStuffed\}_{1}$\\
+orderStmt $::= order \{variable\}_{1} \{arrow\}_{1} \{exp\}_{1} \{end\}_{1+}$\\
+pukeStmt $::= puke \{exp\}_{1} \{end\}_{1+}$\\
+reviewStmt $::= review \{any_character\}_{0+} \{end\}_{1+}$\\
+stmt $::= \{cookStmt\}_{1} | \{eatingStmt\}_{1} | \{hungryStmt\}_{1} | \{orderStmt\}_{1} | \{pukeStmt\}_{1}$\\
+\indent\indent$| \{reviewStmt\}_{1} | \{stmt\}_{1+}$\\
 
 \chapter{Semantische constructies}
 \section{Cook}
