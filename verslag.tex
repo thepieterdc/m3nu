@@ -11,6 +11,9 @@
 \usepackage{imakeidx}
 \usepackage{listings}
 \usepackage{hyperref}
+\usepackage{syntax}
+\usepackage{amsmath}
+\usepackage{breakurl}
 
 \makeindex
 
@@ -52,36 +55,71 @@
 \tableofcontents
 \newpage
 \chapter{Inleiding}
-De syntax van deze taal vertrok van een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de effectieve implementatie van de taal. De naam is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. De statements met betrekking tot de MBot echter, vormen een uitzondering op deze regel. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een ``gang'' in een menu.
+De syntax van deze taal vindt zijn oorsprong in een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de effectieve implementatie van de taal. De naam M3NU is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. De statements met betrekking tot de MBot echter, vormen een uitzondering op deze regel. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een ``gang'' in een menu.
 \chapter{Syntaxis}
-BNF shit
+arrow $::= ->$\\
+end $::= \{$`;'$\}_{1+}$\\
+
+\section{Getallen}
+digit $::= 0|1|2|...|9$\\
+commasep $::= .$\\
+neg $::= -$\\
+number $::= \{digit\}_{1+}$ $|$ $\{digit\}_{1+}\{commasep\}_{1}\{digit\}_{1+}$\\
+sgnnumber $::= \{number\}_{1}$ $|$ $\{neg\}_{1}\{number\}_{1}$\\
+
+\section{Expressies}
+lowercase $::= a|b|c|...|z$\\
+uppercase $::= A|B|C|...|Z$\\
+letter $::= \{lowercase\}_{1} | \{uppercase\}_{1}$\\
+variable $::= \{letter|digit\}_{1+}$\\
+bool $::= tasty$ $|$ $disguisting$\\
+opa $::= +$ $|$ $-$ $|$ $*$ $|$ $/$\\
+opb $::= and$ $|$ $or$\\
+opr $::= >|>=|==|<=|<$\\
+operator $::= \{opa\}_{1} | \{opb\}_{1} | \{opr\}_{1}$\\
+exppart $::= \{sgnnumber\}_{1} | \{variable\}_{1} | \{bool\}_{1} | \{linesensor\}_{1} | \{ultrason\}_{1} | \{(exppart)\}_{1}$\\
+unexp $::= $`|' $\{exp\}_{1}$ `|' $| !\{exp\}_{1} | (\{unexp\}_{1})$\\
+binexp $::= (\{exp\}_{1} \{operator\}_{1} \{exp\}_{1})$\\
+exp $::= \{exppart\}_{1} | \{binexp\}_{1} | \{(exp)\}_{1}$\\
+
+\section{MBot}
+knowncol $::= red$ $|$ $green$ $|$ $blue$ $|$ $cyan$ $|$ $magenta$ $|$ $yellow$ $|$ $white$\\
+rgbcol $::= \{exp\}_{1}, \{exp\}_{1}, \{exp\}_{1}$\\
+color $::= \{knowncol\}_{1} | \{rgbcol\}_{1}$\\
+direction $::= forward$ $|$ $left$ $|$ $right$ $|$ $backward$ $|$ $backwardleft$ $|$ $backwardright$ $|$ $brake$\\
+leds $::= left$ $|$ $right$\\
+mbotLed $::= led \{leds\}_{1} \{arrow\} \{color\}_{1} $\\
+
+\section{Statements}
+
+
 
 \chapter{Semantische constructies}
-\section{- Cook}
+\section{Cook}
 Dit statement biedt de mogelijkheid om de uitvoering van het programma te pauzeren voor een gegeven tijdsspanne, uitgedrukt in seconden. De naamgeving voor deze methode komt van de eenvoudige logica, dat er iemand niet kan eten terwijl die aan het koken is, dus de thread waarop het programma draait ook niet.
 
-\section{- Eating}
+\section{Eating}
 While-lussen kunnen gebruikt worden door middel van ``Eating''-statements. De werking is niet anders dan bij andere programmeertalen; een blok code wordt uitgevoerd zolang een conditie naar ``true'', tasty, evalueert.
 
-\section{- Hungry}
+\section{Hungry}
 De traditionele ``if-else''-controlestructuur werd geïmplementeerd door het ``hungry-stuffed''-statement. Als de expressie naar ``tasty'' evalueert wordt de ``hungry''-tak uitgevoerd, anders de ``stuffed''-tak. Een noemenswaardig verschil met Haskell is dat de ``else/stuffed''-tak van het statement hier optioneel is, terwijl dit in Haskell verplicht is.
 
-\section{- Order}
+\section{Order}
 Assignment gebeurt met het ``Order''-statement. Variabelen worden gestockeerd in de environment en kunnen later in expressies weer gebruikt worden. Scoping van variabelen is niet mogelijk, alles zit in de global scope. Mocht ik functies willen implementeren, zou ik er hoogstwaarschijnlijk voor opteren dit zo te houden aangezien de code een heel stuk gecompliceerder zou worden met ondersteuning voor scope.
 
-\section{- Puke}
+\section{Puke}
 Met het ``Puke''-statement kan uitvoer naar de console, met andere woorden naar ``standaard-uit'' weggeschreven worden. Zowel booleaanse als aritmetische expressies, alsook sensorwaarden kunnen worden getoond. De naamgeving van dit statement is vrij voordehandliggend, maar toch is er nog een diepere betekenis. Het woord ``Puke'' heeft namelijk een eerder negatieve connotatie; dit in overeenstemming met het feit dat I/O over het algemeen traag en bijgevolg negatief is.
 
-\section{- Review}
+\section{Review}
 Commentaar is mogelijk via het ``Review'' statement. Ondersteuning voor commentaar op willekeurige plaatsen in de code is niet ingebouwd. De ondersteunde vormen van commentaar zijn lijncommentaar en commentaar over meerdere lijnen. Commentaar over meerdere lijnen is een logisch resultaat van \textsc{5.2.} en vereiste geen verdere aanpassing aan de code.
 
-\section{- Drive (MBot)}
+\section{Drive (MBot)}
 Met dit commando worden de motoren van de MBot aangestuurd. De motoren individueel aansturen is niet mogelijk, wel kan er eenvoudig gestuurd worden door een richting mee te geven aan dit statement. Ondersteunde richtingen zijn ``forward'', ``left'', ``right'', ``backward'', ``backwardleft'', ``backwardright''. De motoren stoppen, remmen, is ook mogelijk met de richting ``brake''.
 
-\section{- Leds (MBot)}
+\section{Leds (MBot)}
 Om de LED's van de MBot te controleren werd het ``leds'' statement ingevoerd. Dit statement vergt 2 argumenten, namelijk de linkse of rechtse led, gevolgd door de gewenste kleur. Deze kleur kan in RGB-waarden worden opgegeven, maar er zijn ook enkele basiskleuren ingebouwd. Deze zijn ``red'', ``green'', ``blue'', ``cyan'', ``magenta'', ``yellow'', ``white''.
 
-\section{- Sensoren (MBot)}
+\section{Sensoren (MBot)}
 De waarden lijnsensor en ultrasonische sensor kunnen worden opgevraagd met de expressies ``linesensor'' en ``ultrason''. Deze worden gewoon als expressies gezien voor de evaluator, waardoor bijvoorbeeld het dubbel van de waarde van de lijnsensor eenvoudig kan worden berekend met
 \begin{lstlisting}[language=Bash]
   order x (2*linesensor);
@@ -91,14 +129,18 @@ De waarden lijnsensor en ultrasonische sensor kunnen worden opgevraagd met de ex
 
 \section{Fibonacci}
 Dit programma print de Fibonacci getallen tot het afgesloten wordt. Aangezien het zo snel ging en na één enkele seconde reeds Infinity bereikte, heb ik het vertraagd met een cook-statement. \textsc{courses/programs/fibonacci.course}
+\lstinputlisting{courses/programs/fibonacci.course}
 \section{MBot: Politiewagen}
 Laat de LEDs afwisselend rood en blauw knipperen, zoals een zwaailicht van een politiewagen of een brandweerauto. Als dit te snel zou gaan zou dit niet aangenaam zijn en tevens aanleiding kunnen geven tot epilepsie, waardoor ik hier ook een vertraging heb ingebouwd. \textsc{courses/algorithms/policecar.course}
+\lstinputlisting{courses/algorithms/policecar.course}
 \section{MBot: Lijnvolger}
 De lijnvolger werkt volgens een zeer eenvoudig principe. Zolang beide sensoren zwart zien, rijdt de robot rechtdoor. Wanneer de linkse of rechtse sensor wit ziet, wordt respectievelijk naar rechts of links gereden. Wanneer beide sensoren wit zien en de robot dus de weg kwijt is, wordt achteruit gereden en gedraaid naar de kant waar het het laatst wit was. \textsc{courses/algorithms/linefollow.course}
+\lstinputlisting{courses/algorithms/linefollow.course}
 \section{MBot: Obstakels ontwijken}
-De obstakel ontwijker is zeer intuïtief geprogrammeerd. Er wordt namelijk altijd rechtdoor gereden, tot dit niet meer mogelijk is (de ultrasone sensor detecteert een obstakel), waarna telkens naar dezelfde kant wordt gedraaid, namelijk rechts. Om zeker te zijn dat er altijd kan gedraaid worden, zal de robot eerst een stuk achteruit rijden als deze te dicht bij het obstakel zou staan. \textsc{courses/algorithms/obstacle\_avoid.course}
+De obstakel ontwijker is zeer intuïtief geprogrammeerd. Er wordt namelijk altijd rechtdoor gereden, tot dit niet meer mogelijk is (de ultrasone sensor detecteert een obstakel), waarna telkens naar dezelfde kant wordt gedraaid, namelijk rechts. Om zeker te zijn dat er altijd kan gedraaid worden, zal de robot eerst een stuk achteruit rijden als deze te dicht bij het obstakel zou staan. \textsc{courses/algorithms/obstacle.course}
+\lstinputlisting{courses/algorithms/obstacle.course}
 \chapter{Implementatie}
-\section{-Alle getallen zijn Doubles}
+\section{Alle getallen zijn Doubles}
 Alle getallen worden voorgesteld als Doubles. Dit zorgt ervoor dat ik nergens rekening moet houden met gehele getallen of kommagetallen, aangezien elk geheel getal kan worden voorgesteld als een kommagetal maar niet omgekeerd. \textsc{Lexer.hs: 162-166.}
 \section{Whitespace}
 Voor aanvang van het parsen wordt alle whitespace, dit zijn zowel spaties, tabs alsook newlines, verwijderd uit de code die geparset moet worden. Dit maakt het niet alleen sneller, het maakt ook de code een stuk aangenamer en duidelijker om te lezen. Bovendien vormde dit toch geen probleem aangezien strings niet ondersteund worden. \textsc{Lexer.hs: 100-102.}
@@ -131,34 +173,34 @@ Alle methoden zijn gedocumenteerd volgens de Haddock-stijl, documentatie gegener
   \item De slides over Monads: voor het implementeren van de Parser monad.
   \item De Haskell-library Text.Parsec: inspiratie voor de hulpfuncties in de Lexer.
   \item \url{https://wiki.haskell.org/Parsing_a_simple_imperative_language}: om een basisidee te krijgen over de structuur van Parsers en Evaluators.
-  \item \url{http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-in-haskell}: verdere uitwerking van evalueren.
-  \item \url{https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/12-State-Monad}: zeer goede uitleg over het gebruik van de State monad.
+  \item   \sloppy\url{http://stackoverflow.com/questions/16970431/implementing-a-language-interpreter-in-haskell}: verdere uitwerking van evalueren.
+  \item \sloppy\url{https://www.schoolofhaskell.com/school/starting-with-haskell/basics-of-haskell/12-State-Monad}: zeer goede uitleg over het gebruik van de State monad.
   \item \url{http://pointfree.io/}: het inkorten van code achteraf.
 \end{itemize}
 \newpage
 \chapter{Appendix Broncode}
 
-\section{- Evaluator.hs}
+\section{Evaluator.hs}
 \lstinputlisting{Evaluator.hs}
 \newpage
-\section{- Lexer.hs}
+\section{Lexer.hs}
 \lstinputlisting{Lexer.hs}
 \newpage
-\section{- Main.hs}
+\section{Main.hs}
 \lstinputlisting{Main.hs}
 \newpage
-\section{- MBotPlus.hs}
+\section{MBotPlus.hs}
 \lstinputlisting{MBotPlus.hs}
 \newpage
-\section{- Parser.hs}
+\section{Parser.hs}
 \lstinputlisting{Parser.hs}
 \newpage
-\section{- Types.hs}
+\section{Types.hs}
 \lstinputlisting{Types.hs}
 \newpage
-\section{- Utils.hs}
+\section{Utils.hs}
 \lstinputlisting{Utils.hs}
-\section{- runtests.hs}
+\section{runtests.hs}
 Dit is een klein bash-script, geschreven om alle tests sequentieel uit te voeren. Dit heb ik telkens gedaan bij een aanpassing aan de code, om te garanderen dat alles bleef werken.
 \lstinputlisting[language=sh]{runtests.sh}
 \end{document}
