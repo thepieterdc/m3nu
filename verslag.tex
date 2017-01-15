@@ -89,8 +89,9 @@ direction $::= forward$ $|$ $left$ $|$ $right$ $|$ $backward$ $|$ $backwardleft$
 \indent\indent\indent$|$ $brake$\\
 leds $::= left$ $|$ $right$\\
 mbotSensor $::= linesensor | ultrason$\\
-mbotLed $::= led \{leds\}_{1} \{arrow\} \{color\}_{1} $\\
-mbotDrive $::= drive \{direction\}_{1}$\\
+mbotLed $::= colalight \{leds\}_{1} \{arrow\} \{color\}_{1} \{end\}_{1+}$\\
+mbotLedOff $::= colazero \{leds\}_{1} \{end\}_{1+}$\\
+mbotDrive $::= drivethrough \{direction\}_{1} \{end\}_{1+}$\\
 
 \section{Statements}
 cookStmt $::= cook \{exp\}_{1} \{end\}_{1+}$\\
@@ -124,11 +125,11 @@ Met het ``Puke''-statement kan uitvoer naar de console, met andere woorden naar 
 \section{Review}
 Commentaar is mogelijk via het ``Review'' statement. Ondersteuning voor commentaar op willekeurige plaatsen in de code is niet ingebouwd. De ondersteunde vormen van commentaar zijn lijncommentaar en commentaar over meerdere lijnen. Commentaar over meerdere lijnen is een logisch resultaat van \textsc{5.2.} en vereiste geen verdere aanpassing aan de code.
 
-\section{Drive (MBot)}
+\section{Drivethrough (MBot)}
 Met dit commando worden de motoren van de MBot aangestuurd. De motoren individueel aansturen is niet mogelijk, wel kan er eenvoudig gestuurd worden door een richting mee te geven aan dit statement. Ondersteunde richtingen zijn ``forward'', ``left'', ``right'', ``backward'', ``backwardleft'', ``backwardright''. De motoren stoppen, remmen, is ook mogelijk met de richting ``brake''.
 
 \section{Leds (MBot)}
-Om de LED's van de MBot te controleren werd het ``leds'' statement ingevoerd. Dit statement vergt 2 argumenten, namelijk de linkse of rechtse led, gevolgd door de gewenste kleur. Deze kleur kan in RGB-waarden worden opgegeven, maar er zijn ook enkele basiskleuren ingebouwd. Deze zijn ``red'', ``green'', ``blue'', ``cyan'', ``magenta'', ``yellow'', ``white''.
+Om de LED's van de MBot te controleren werden twee statements ingevoerd. Met het ``colalight'' statement kunnen de LED's afzonderlijk ingeschakeld worden en een kleur krijgen, met het ``colazero'' statement kunnen de LED's worden uitgeschakeld. Kleuren kunnen uitgedrukt in RGB-waarden, maar er zijn ook enkele basiskleuren ingebouwd. Deze zijn ``red'', ``green'', ``blue'', ``cyan'', ``magenta'', ``yellow'', ``white''.
 
 \section{Sensoren (MBot)}
 De waarden lijnsensor en ultrasonische sensor kunnen worden opgevraagd met de expressies ``linesensor'' en ``ultrason''. Deze worden gewoon als expressies gezien voor de evaluator, waardoor bijvoorbeeld het dubbel van de waarde van de lijnsensor eenvoudig kan worden berekend met
