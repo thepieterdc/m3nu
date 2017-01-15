@@ -55,7 +55,7 @@
 \tableofcontents
 \newpage
 \chapter{Inleiding}
-De syntax van deze taal vindt zijn oorsprong in een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de uiteindelijke implementatie van de taal. De naam M3NU is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. De statements met betrekking tot de MBot echter, vormen een uitzondering op deze regel. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een ``gang'' in een menu.
+De syntax van deze taal vindt zijn oorsprong in een schematisch idee op papier. Aangezien mijn schema's doorgaans uitpuilen van de pijltjes, zijn deze blijven staan in de uiteindelijke implementatie van de taal. De naam M3NU is afkomstig van het woord Menu en alle identifiers en keywords zijn gebaseerd op culinaire termen. Oorspronkelijk waren de namen van MBot statements simpelweg ``leds'' en ``drive'', maar Ruben Maes besloot mij van inspiratie te voorzien voor nieuwe namen, waarvoor dank. Inspiratie voor de werking van de taal heb ik geput uit de bestaande talen waarin ik het liefst programmeer, namelijk C, PHP en Python. Een resultaat hiervan is dat booleans geïmplementeerd zijn als getallen 1 en 0, respectievelijk true en false. Elke aritmetische expressie die niet naar 0 evalueert, wordt booleaans true, equivalent aan de implementatie in Python. Als bestandsextensie werd voor .course gekozen, het Engelse woord voor een ``gang'' in een menu.
 \chapter{Syntaxis}
 arrow $::= ->$\\
 end $::= $`;'\\
@@ -90,7 +90,7 @@ direction $::= forward$ $|$ $left$ $|$ $right$ $|$ $backward$ $|$ $backwardleft$
 leds $::= left$ $|$ $right$\\
 mbotSensor $::= linesensor | ultrason$\\
 mbotLed $::= colalight \{leds\}_{1} \{arrow\} \{color\}_{1} \{end\}_{1+}$\\
-mbotLedOff $::= colazero \{leds\}_{1} \{end\}_{1+}$\\
+\indent\indent\indent$| colazero \{leds\}_{1} \{end\}_{1+}$\\
 mbotDrive $::= drivethrough \{direction\}_{1} \{end\}_{1+}$\\
 
 \section{Statements}
