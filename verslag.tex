@@ -2,7 +2,6 @@
 \usepackage{color}
 \usepackage[utf8]{inputenc}
 \usepackage[dvipsnames]{xcolor}
-\usepackage[T1]{fontenc}
 \usepackage[dutch]{babel}
 \usepackage[margin=1in]{geometry}
 \usepackage[pdftex]{graphicx}
@@ -11,6 +10,15 @@
 \usepackage{imakeidx}
 \usepackage{listings}
 \usepackage{hyperref}
+\definecolor{darkblue}{rgb}{0,0,0.5} 
+\hypersetup{
+	linktoc=all,
+	colorlinks=true,    % false: boxed links; true: colored links
+	linkcolor=darkblue, % color of internal links (change box color with linkbordercolor)
+	citecolor=darkblue, % color of links to bibliography
+	filecolor=magenta,  % color of file links
+	urlcolor=blue       % color of external links
+}
 \usepackage{syntax}
 \usepackage{amsmath}
 \usepackage{breakurl}
